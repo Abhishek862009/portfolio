@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-void text-frost antialiased font-sans;
+}
+
+/* Custom cursor active state — only ever added by CustomCursor.tsx after
+   confirming a fine pointer, so this never hides the cursor on mobile. */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none;
+}
+
+::selection {
+  @apply bg-glow/30 text-frost;
+}
+
+/* Visible keyboard focus everywhere — non-negotiable for a premium site */
+:focus-visible {
+  outline: 2px solid theme('colors.glow');
+  outline-offset: 3px;
+}
+
+/* Respect reduced motion — cinematic should never mean inaccessible */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
