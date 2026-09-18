@@ -1,3 +1,4 @@
+"use client";
 export function Contact() {
   return (
     <section id="contact" className="mx-auto max-w-2xl scroll-mt-24 px-6 py-32">
