@@ -55,11 +55,15 @@ export function Contact() {
         />
 
         <input
-          type="tel"
-          name="mobile"
-          placeholder="Mobile number (optional)"
-          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
-        />
+  type="tel"
+  name="mobile"
+  placeholder="Mobile number"
+  required
+  pattern="[6-9][0-9]{9}"
+  maxLength={10}
+  inputMode="numeric"
+  className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
+/>
 
         <textarea
           name="message"
