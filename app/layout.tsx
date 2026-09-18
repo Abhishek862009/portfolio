@@ -28,8 +28,23 @@ export const metadata: Metadata = {
 
   keywords: [
     'Abhishek',
-    'Abhishek software developer',
-    'Abhishek AI',
+    'Arvish',
+    'Abhishek Saini',
+    'Arvish Saini',
+    'Abhishek Mali',
+    'Arvish Mali',
+    'Engineer Abhishek',
+    'Engineer Arvish',
+    'Abhishek Developer',
+    'Arvish Developer',
+    'Abhishek Coder',
+    'Arvish Coder',
+    'Abhishek Coding',
+    'Arvish Coding',
+    'Mali Abhishek',
+    'Mali Arvish',
+    'Saini Abhishek',
+    'Saini Arvish',
     'software developer portfolio',
     'AI enthusiast',
     'developer portfolio',
@@ -75,4 +90,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-  }
+}
