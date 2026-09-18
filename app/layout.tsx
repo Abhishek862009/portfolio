@@ -74,6 +74,29 @@ export const metadata: Metadata = {
   },
 };
 
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Abhishek',
+  alternateName: [
+    'Arvish',
+    'Abhishek Saini',
+    'Arvish Saini',
+    'Abhishek Mali',
+    'Arvish Mali',
+  ],
+  url: 'https://www.arvish.xyz',
+  jobTitle: 'Software Developer',
+  description:
+    'Software developer exploring AI, technology, and creative digital projects.',
+  knowsAbout: [
+    'Software Development',
+    'Artificial Intelligence',
+    'Coding',
+    'Technology',
+  ],
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -87,6 +110,13 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
         </AppShell>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(personSchema),
+          }}
+        />
       </body>
     </html>
   );
