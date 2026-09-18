@@ -6,6 +6,14 @@ import { Skills } from '@/components/sections/Skills';
 import { ProjectsPreview } from '@/components/sections/ProjectsPreview';
 import { Contact } from '@/components/sections/Contact';
 
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Abhishek',
+  url: 'https://www.arvish.xyz',
+  jobTitle: 'Software Developer',
+};
+
 // Navbar/main/Footer now live in app/layout.tsx so every route gets them —
 // this page only supplies the homepage's section content.
 export default function Home() {
@@ -18,6 +26,13 @@ export default function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(personSchema),
+        }}
+      />
+
       <Hero hasPhoto={hasPhoto} />
       <Timeline />
       <Skills />
