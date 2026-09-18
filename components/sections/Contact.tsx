@@ -11,10 +11,33 @@ export function Contact() {
       </p>
 
       <form
-        action="https://formspree.io/f/xyezyqlw"
-        method="POST"
-        className="mt-8 space-y-4"
-      >
+  action="https://formspree.io/f/xyezyqlw"
+  method="POST"
+  className="mt-8 space-y-4"
+  onSubmit={(e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+
+    fetch(form.action, {
+      method: "POST",
+      body: new FormData(form),
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          form.reset();
+          alert("Message sent successfully!");
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
+      })
+      .catch(() => {
+        alert("Something went wrong. Please try again.");
+      });
+  }}
+>
         <input
           type="text"
           name="name"
