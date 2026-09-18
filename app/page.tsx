@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
 import { Hero } from '@/components/sections/Hero';
 import { Timeline } from '@/components/sections/Timeline';
 import { Skills } from '@/components/sections/Skills';
@@ -12,6 +13,10 @@ const personSchema = {
   name: 'Abhishek',
   url: 'https://www.arvish.xyz',
   jobTitle: 'Software Developer',
+  sameAs: [
+    'https://github.com/Abhishek862009',
+    'https://www.linkedin.com/in/abhishek862009',
+  ],
 };
 
 // Navbar/main/Footer now live in app/layout.tsx so every route gets them —
