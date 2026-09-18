@@ -122,8 +122,10 @@ export function Hero({ hasPhoto = false }: HeroProps) {
                 <br />
                 <span className="text-xs">
                   Drop the final file at{' '}
-                  <code className="text-glow">/public/images/hero-photo.png</code> — it
-                  swaps in automatically, no code changes needed
+                  <code className="text-glow">
+                    /public/images/hero-photo.png
+                  </code>{' '}
+                  — it swaps in automatically, no code changes needed
                 </span>
               </p>
             </div>
@@ -138,15 +140,28 @@ export function Hero({ hasPhoto = false }: HeroProps) {
           >
             I am
           </motion.span>
+
           <motion.h1
             variants={nameVariant}
             className="mt-2 text-6xl font-semibold tracking-tight text-frost sm:text-7xl md:text-8xl"
           >
             Abhishek
           </motion.h1>
-          <motion.p variants={fadeUp} className="mt-6 text-xl font-medium text-frost/90">
+
+          <motion.p
+            variants={fadeUp}
+            className="mt-3 text-sm font-medium tracking-wide text-glow/90"
+          >
+            Also known as Arvish.
+          </motion.p>
+
+          <motion.p
+            variants={fadeUp}
+            className="mt-6 text-xl font-medium text-frost/90"
+          >
             Curious by nature. Builder by choice.
           </motion.p>
+
           <motion.p variants={fadeUp} className="mt-3 text-base text-slate">
             Software developer exploring the edges of AI.
           </motion.p>
@@ -154,4 +169,4 @@ export function Hero({ hasPhoto = false }: HeroProps) {
       </motion.div>
     </section>
   );
-}
+            }
