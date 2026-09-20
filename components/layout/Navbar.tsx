@@ -216,7 +216,7 @@ export function Navbar() {
 
 function cnHeader(solid: boolean) {
   return [
-    'fixed inset-x-0 top-0 z-50 transition-colors duration-500',
+    'fixed inset-x-0 top-0 z-[60] transition-colors duration-500',
     solid ? 'bg-ink/80 backdrop-blur-md border-b border-hairline' : 'bg-transparent',
   ].join(' ');
 }
