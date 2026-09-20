@@ -71,7 +71,7 @@ export function Hero({ hasPhoto = false }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen items-center overflow-hidden bg-void px-6 pt-24"
+      className="relative flex min-h-dvh items-center overflow-hidden bg-void px-6 pt-24"
     >
       {/* Signature element: slow, desaturated, breathing glow — elegant/futuristic,
           explicitly not neon or gaming-coded. This motif recurs subtly elsewhere
@@ -143,7 +143,7 @@ export function Hero({ hasPhoto = false }: HeroProps) {
 
           <motion.h1
             variants={nameVariant}
-            className="mt-2 text-6xl font-semibold tracking-tight text-frost sm:text-7xl md:text-8xl"
+            className="mt-2 text-5xl font-semibold tracking-tight text-frost sm:text-6xl md:text-7xl lg:text-8xl"
           >
             Abhishek
           </motion.h1>

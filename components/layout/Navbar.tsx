@@ -10,11 +10,12 @@ const NAV_LINKS = [
   { href: '/#timeline', label: 'Story' },
   { href: '/#skills', label: 'Skills' },
   { href: '/#projects', label: 'Projects' },
+  { href: '/#devato', label: 'Devato' },
   { href: '/blog', label: 'Blog' },
   { href: '/#contact', label: 'Contact' },
 ];
 
-const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'contact'];
+const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'devato', 'contact'];
 
 // Locked behavior (blueprint Section 4): always present, transparent on the
 // hero so it never competes with the reveal, solidifies once the visitor
@@ -78,100 +79,107 @@ export function Navbar() {
   }, []);
 
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className={cnHeader(solid || open)}
-    >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Magnetic strength={6}>
-          <Link href="/" className="text-sm font-semibold tracking-widest text-frost">
-            AB
-          </Link>
-        </Magnetic>
-
-        {/* Desktop nav */}
-        <ul className="hidden gap-8 text-sm text-slate md:flex">
-          <li className="relative">
-            <Link
-              href="/"
-              className={`transition-colors hover:text-frost ${
-                isHomeActive ? 'text-frost' : ''
-              }`}
-            >
-              Home
-            </Link>
-            {isHomeActive && (
-              <motion.span
-                layoutId="nav-active-dot"
-                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                className="absolute -bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-glow"
-              />
-            )}
-          </li>
-          {NAV_LINKS.map((link) => {
-            const id = link.href.includes('#') ? link.href.split('#')[1] : null;
-            const isActive = isHome && id !== null && active === id;
-            return (
-              <li key={link.href} className="relative">
-                <Link
-                  href={link.href}
-                  className={`transition-colors hover:text-frost ${
-                    isActive ? 'text-frost' : ''
-                  }`}
-                >
-                  {link.label}
-                </Link>
-                {isActive && (
-                  <motion.span
-                    layoutId="nav-active-dot"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    className="absolute -bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-glow"
-                  />
-                )}
-              </li>
-            );
-          })}
-        </ul>
-
-        <div className="hidden md:block">
+    <>
+      <motion.header
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className={cnHeader(solid || open)}
+      >
+        <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Magnetic strength={6}>
-            <Link
-              href="/resume.pdf"
-              className="rounded-full border border-hairline px-4 py-1.5 text-sm text-frost transition-colors hover:border-glow/60"
-            >
-              Resume
+            <Link href="/" className="text-sm font-semibold tracking-widest text-frost">
+              AB
             </Link>
           </Magnetic>
-        </div>
 
-        {/* Mobile menu toggle — this is the fix: nav is now reachable on mobile at all */}
-        <button
-          type="button"
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="relative z-[60] flex h-10 w-10 items-center justify-center md:hidden"
-        >
-          <span className="relative block h-4 w-5">
-            <motion.span
-              animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-              className="absolute left-0 top-0 h-px w-5 bg-frost"
-            />
-            <motion.span
-              animate={open ? { opacity: 0 } : { opacity: 1 }}
-              className="absolute left-0 top-[7px] h-px w-5 bg-frost"
-            />
-            <motion.span
-              animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-              className="absolute left-0 top-[14px] h-px w-5 bg-frost"
-            />
-          </span>
-        </button>
-      </nav>
+          {/* Desktop nav */}
+          <ul className="hidden gap-8 text-sm text-slate md:flex">
+            <li className="relative">
+              <Link
+                href="/"
+                className={`transition-colors hover:text-frost ${
+                  isHomeActive ? 'text-frost' : ''
+                }`}
+              >
+                Home
+              </Link>
+              {isHomeActive && (
+                <motion.span
+                  layoutId="nav-active-dot"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  className="absolute -bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-glow"
+                />
+              )}
+            </li>
+            {NAV_LINKS.map((link) => {
+              const id = link.href.includes('#') ? link.href.split('#')[1] : null;
+              const isActive = isHome && id !== null && active === id;
+              return (
+                <li key={link.href} className="relative">
+                  <Link
+                    href={link.href}
+                    className={`transition-colors hover:text-frost ${
+                      isActive ? 'text-frost' : ''
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active-dot"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      className="absolute -bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-glow"
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
 
-      {/* Mobile menu overlay */}
+          <div className="hidden md:block">
+            <Magnetic strength={6}>
+              <Link
+                href="/resume.pdf"
+                className="rounded-full border border-hairline px-4 py-1.5 text-sm text-frost transition-colors hover:border-glow/60"
+              >
+                Resume
+              </Link>
+            </Magnetic>
+          </div>
+
+          {/* Mobile menu toggle — this is the fix: nav is now reachable on mobile at all */}
+          <button
+            type="button"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="relative z-[60] flex h-10 w-10 items-center justify-center md:hidden"
+          >
+            <span className="relative block h-4 w-5">
+              <motion.span
+                animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+                className="absolute left-0 top-0 h-px w-5 bg-frost"
+              />
+              <motion.span
+                animate={open ? { opacity: 0 } : { opacity: 1 }}
+                className="absolute left-0 top-[7px] h-px w-5 bg-frost"
+              />
+              <motion.span
+                animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+                className="absolute left-0 top-[14px] h-px w-5 bg-frost"
+              />
+            </span>
+          </button>
+        </nav>
+      </motion.header>
+
+      {/* Mobile menu overlay — a sibling of the header, not a child of it.
+          motion.header keeps an inline transform after its own entrance
+          animation settles, and a transformed ancestor turns this overlay's
+          fixed positioning into something scoped to the header's box
+          instead of the real viewport. Moving it out fixes the phone-only
+          overlap; nothing about the animation itself changed. */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -202,13 +210,13 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </>
   );
 }
 
 function cnHeader(solid: boolean) {
   return [
-    'fixed inset-x-0 top-0 z-50 transition-colors duration-500',
+    'fixed inset-x-0 top-0 z-[60] transition-colors duration-500',
     solid ? 'bg-ink/80 backdrop-blur-md border-b border-hairline' : 'bg-transparent',
   ].join(' ');
 }
