@@ -44,7 +44,7 @@ export function Contact() {
           name="name"
           placeholder="Name"
           required
-          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
+          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-base sm:text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
         />
 
         <input
@@ -54,7 +54,7 @@ export function Contact() {
           required
           pattern="[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)"
           title="Please enter a valid Gmail, Yahoo, or Outlook email address"
-          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
+          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-base sm:text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
         />
 
         <input
@@ -65,7 +65,7 @@ export function Contact() {
           pattern="[6-9][0-9]{9}"
           maxLength={10}
           inputMode="numeric"
-          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
+          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-base sm:text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
         />
 
         <textarea
@@ -73,7 +73,7 @@ export function Contact() {
           placeholder="Message"
           rows={5}
           required
-          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
+          className="w-full rounded-lg border border-hairline bg-ink/40 px-4 py-3 text-base sm:text-sm text-frost placeholder:text-slate focus:border-glow focus:outline-none"
         />
 
         <button
