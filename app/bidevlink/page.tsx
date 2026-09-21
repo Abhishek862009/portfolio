@@ -4,18 +4,18 @@ import { Space_Grotesk, IBM_Plex_Sans } from 'next/font/google';
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   weight: ['500', '600', '700'],
-  variable: '--font-devato-display',
+  variable: '--font-bidevlink-display',
 });
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
-  variable: '--font-devato-body',
+  variable: '--font-bidevlink-body',
 });
 
 export const metadata: Metadata = {
-  title: 'Devato — Websites for Indian Exporters, Built in 48 Hours',
+  title: 'Bidevlink — Websites for Indian Exporters, Built in 48 Hours',
   description:
-    'Devato builds simple, professional websites for Indian exporters and manufacturers — a new one-page site in 48 hours, or a monthly care plan to refresh an outdated one. Built to help overseas buyers trust you before the first call.',
+    'Bidevlink builds simple, professional websites for Indian exporters and manufacturers — a new one-page site in 48 hours, or a monthly care plan to refresh an outdated one. Built to help overseas buyers trust you before the first call.',
   keywords: [
     'website for exporters',
     'website for manufacturers India',
@@ -24,17 +24,17 @@ export const metadata: Metadata = {
     'small business website 48 hours',
     'website update service',
   ],
-  alternates: { canonical: '/devato' },
+  alternates: { canonical: '/bidevlink' },
   openGraph: {
     type: 'website',
-    title: 'Devato — Websites for Indian Exporters, Built in 48 Hours',
+    title: 'Bidevlink — Websites for Indian Exporters, Built in 48 Hours',
     description:
       'A new website or a refreshed one, built for Indian exporters and manufacturers so international buyers trust you faster.',
-    url: '/devato',
+    url: '/bidevlink',
   },
   twitter: {
     card: 'summary',
-    title: 'Devato — Websites for Indian Exporters',
+    title: 'Bidevlink — Websites for Indian Exporters',
     description:
       'A new website or a refreshed one, built for Indian exporters and manufacturers so international buyers trust you faster.',
   },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
-  name: 'Devato',
+  name: 'Bidevlink',
   description:
     'Websites for Indian exporters and manufacturers — new one-page sites built in 48 hours, or a monthly care plan for an existing site.',
   areaServed: 'IN',
@@ -54,11 +54,11 @@ const jsonLd = {
   ],
 };
 
-// All selectors below are scoped under .devato-page so this page's look
+// All selectors below are scoped under .bidevlink-page so this page's look
 // (its own font pairing and navy/brass palette, distinct from the rest of
 // the site) can't leak into — or be leaked into by — the shared globals.css.
 const styles = `
-.devato-page {
+.bidevlink-page {
   --d-bg: #0F2A3D;
   --d-ink: #EDEAE0;
   --d-ink-soft: #A9BAC4;
@@ -69,46 +69,46 @@ const styles = `
 
   background: var(--d-bg);
   color: var(--d-ink);
-  font-family: var(--font-devato-body), -apple-system, sans-serif;
+  font-family: var(--font-bidevlink-body), -apple-system, sans-serif;
   line-height: 1.55;
   min-height: 100dvh;
 }
-.devato-page h1, .devato-page h2, .devato-page h3 {
-  font-family: var(--font-devato-display), sans-serif;
+.bidevlink-page h1, .bidevlink-page h2, .bidevlink-page h3 {
+  font-family: var(--font-bidevlink-display), sans-serif;
   margin: 0;
 }
-.devato-page .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 70px; }
+.bidevlink-page .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 70px; }
 
-.devato-page header {
+.bidevlink-page header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 60px;
 }
-.devato-page .brand { font-family: var(--font-devato-display), sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.3px; }
-.devato-page .brand span { color: var(--d-brass); }
-.devato-page header nav a {
+.bidevlink-page .brand { font-family: var(--font-bidevlink-display), sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.3px; }
+.bidevlink-page .brand span { color: var(--d-brass); }
+.bidevlink-page header nav a {
   color: var(--d-ink-soft);
   text-decoration: none;
   font-size: 14px;
   margin-left: 20px;
 }
 
-.devato-page .hero { margin-bottom: 72px; }
-.devato-page .hero .kicker { color: var(--d-brass); font-size: 14px; margin-bottom: 14px; }
-.devato-page .hero h1 {
+.bidevlink-page .hero { margin-bottom: 72px; }
+.bidevlink-page .hero .kicker { color: var(--d-brass); font-size: 14px; margin-bottom: 14px; }
+.bidevlink-page .hero h1 {
   font-size: clamp(30px, 6vw, 44px);
   font-weight: 700;
   line-height: 1.15;
   max-width: 14ch;
 }
-.devato-page .hero p {
+.bidevlink-page .hero p {
   color: var(--d-ink-soft);
   font-size: 17px;
   max-width: 46ch;
   margin-top: 18px;
 }
-.devato-page .hero-cta {
+.bidevlink-page .hero-cta {
   display: inline-block;
   margin-top: 26px;
   background: var(--d-brick);
@@ -120,37 +120,37 @@ const styles = `
   font-size: 15px;
 }
 
-.devato-page section { margin-bottom: 64px; }
-.devato-page .section-label { color: var(--d-brass); font-size: 13px; margin-bottom: 10px; }
-.devato-page h2 { font-size: 24px; margin-bottom: 26px; max-width: 26ch; }
+.bidevlink-page section { margin-bottom: 64px; }
+.bidevlink-page .section-label { color: var(--d-brass); font-size: 13px; margin-bottom: 10px; }
+.bidevlink-page h2 { font-size: 24px; margin-bottom: 26px; max-width: 26ch; }
 
-.devato-page .offers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-@media (max-width: 560px) { .devato-page .offers { grid-template-columns: 1fr; } }
+.bidevlink-page .offers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 560px) { .bidevlink-page .offers { grid-template-columns: 1fr; } }
 
-.devato-page .offer { border: 1px solid var(--d-line); border-radius: 6px; padding: 24px; background: var(--d-card); }
-.devato-page .offer.build { border-top: 3px solid var(--d-brick); }
-.devato-page .offer.care { border-top: 3px solid var(--d-brass); }
-.devato-page .offer h3 { font-size: 18px; margin-bottom: 6px; }
-.devato-page .offer .price { font-size: 26px; font-weight: 700; margin: 14px 0 4px; }
-.devato-page .offer .unit { color: var(--d-ink-soft); font-size: 13px; }
-.devato-page .offer ul { padding-left: 18px; margin: 16px 0 0; color: var(--d-ink-soft); font-size: 14.5px; }
-.devato-page .offer li { margin-bottom: 6px; }
+.bidevlink-page .offer { border: 1px solid var(--d-line); border-radius: 6px; padding: 24px; background: var(--d-card); }
+.bidevlink-page .offer.build { border-top: 3px solid var(--d-brick); }
+.bidevlink-page .offer.care { border-top: 3px solid var(--d-brass); }
+.bidevlink-page .offer h3 { font-size: 18px; margin-bottom: 6px; }
+.bidevlink-page .offer .price { font-size: 26px; font-weight: 700; margin: 14px 0 4px; }
+.bidevlink-page .offer .unit { color: var(--d-ink-soft); font-size: 13px; }
+.bidevlink-page .offer ul { padding-left: 18px; margin: 16px 0 0; color: var(--d-ink-soft); font-size: 14.5px; }
+.bidevlink-page .offer li { margin-bottom: 6px; }
 
-.devato-page .steps { counter-reset: step; }
-.devato-page .step { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px dashed var(--d-line); }
-.devato-page .step:last-child { border-bottom: none; }
-.devato-page .step .num {
-  font-family: var(--font-devato-display), sans-serif;
+.bidevlink-page .steps { counter-reset: step; }
+.bidevlink-page .step { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px dashed var(--d-line); }
+.bidevlink-page .step:last-child { border-bottom: none; }
+.bidevlink-page .step .num {
+  font-family: var(--font-bidevlink-display), sans-serif;
   color: var(--d-brass);
   font-weight: 700;
   font-size: 15px;
   flex-shrink: 0;
   width: 24px;
 }
-.devato-page .step .t { font-weight: 600; margin-bottom: 3px; }
-.devato-page .step .d { color: var(--d-ink-soft); font-size: 14.5px; }
+.bidevlink-page .step .t { font-weight: 600; margin-bottom: 3px; }
+.bidevlink-page .step .d { color: var(--d-ink-soft); font-size: 14.5px; }
 
-.devato-page footer {
+.bidevlink-page footer {
   border-top: 1px solid var(--d-line);
   padding-top: 24px;
   color: var(--d-ink-soft);
@@ -160,18 +160,18 @@ const styles = `
   flex-wrap: wrap;
   gap: 10px;
 }
-.devato-page footer a { color: var(--d-ink); }
+.bidevlink-page footer a { color: var(--d-ink); }
 `;
 
-export default function DevatoPage() {
+export default function BidevlinkPage() {
   return (
-    <div className={`devato-page ${spaceGrotesk.variable} ${ibmPlexSans.variable}`}>
+    <div className={`bidevlink-page ${spaceGrotesk.variable} ${ibmPlexSans.variable}`}>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="wrap">
         <header>
-          <div className="brand">Dev<span>ato</span></div>
+          <div className="brand">Bidev<span>link</span></div>
           <nav>
             <a href="#offers">Services</a>
             <a href="#contact">Contact</a>
@@ -247,7 +247,7 @@ export default function DevatoPage() {
         </section>
 
         <footer id="contact">
-          <span>Devato · built for small exporters</span>
+          <span>Bidevlink · built for small exporters</span>
           <a href="mailto:abhishek.studio.dev@gmail.com">abhishek.studio.dev@gmail.com</a>
         </footer>
       </div>

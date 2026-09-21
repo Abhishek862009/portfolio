@@ -10,12 +10,12 @@ const NAV_LINKS = [
   { href: '/#timeline', label: 'Story' },
   { href: '/#skills', label: 'Skills' },
   { href: '/#projects', label: 'Projects' },
-  { href: '/#devato', label: 'Devato' },
+  { href: '/#bidevlink', label: 'Bidevlink' },
   { href: '/blog', label: 'Blog' },
   { href: '/#contact', label: 'Contact' },
 ];
 
-const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'devato', 'contact'];
+const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'bidevlink', 'contact'];
 
 // Locked behavior (blueprint Section 4): always present, transparent on the
 // hero so it never competes with the reveal, solidifies once the visitor

@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: 'https://www.arvish.xyz/devato',
+      url: 'https://www.arvish.xyz/bidevlink',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,

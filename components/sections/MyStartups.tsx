@@ -6,8 +6,8 @@ import { ViewProjectButton } from '@/components/ui/ViewProjectButton';
 // project's stack-first framing.
 export function MyStartups() {
   return (
-    <section id="devato" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-32">
-      <h2 className="text-3xl font-semibold text-frost md:text-4xl">Devato</h2>
+    <section id="bidevlink" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-32">
+      <h2 className="text-3xl font-semibold text-frost md:text-4xl">Bidevlink</h2>
       <div className="mt-10 grid gap-6 md:grid-cols-2">
         {startups.map((startup) => (
           <div
