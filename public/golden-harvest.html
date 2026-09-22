@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Golden Harvest Exports — Sample Site by Bidevlink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F3EDE1;
+    --ink: #2B2116;
+    --ink-soft: #6B5D48;
+    --card: #FFFFFF;
+    --line: #DED2BA;
+    --clay: #B5602F;
+    --leaf: #4B6B43;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #211B14;
+      --ink: #F0E9DA;
+      --ink-soft: #B7A98E;
+      --card: #2C2419;
+      --line: #47392A;
+      --clay: #D98A57;
+      --leaf: #7FA372;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #211B14; --ink: #F0E9DA; --ink-soft: #B7A98E;
+    --card: #2C2419; --line: #47392A; --clay: #D98A57; --leaf: #7FA372;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Karla', -apple-system, sans-serif;
+    line-height: 1.55;
+  }
+  h1, h2 { font-family: 'Fraunces', serif; margin: 0; }
+  .demo-flag {
+    background: var(--ink);
+    color: var(--bg);
+    text-align: center;
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+  .demo-flag a { color: inherit; }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 40px 20px 70px; }
+
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 56px; }
+  .brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; }
+  nav a { color: var(--ink-soft); text-decoration: none; font-size: 14px; margin-left: 18px; }
+
+  .hero { margin-bottom: 60px; }
+  .hero .kicker { color: var(--clay); font-size: 13px; margin-bottom: 12px; letter-spacing: 0.4px; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(30px, 5.5vw, 46px); font-weight: 600; line-height: 1.15; max-width: 16ch; }
+  .hero p { color: var(--ink-soft); font-size: 16.5px; max-width: 48ch; margin-top: 16px; }
+  .hero-cta { display: inline-block; margin-top: 24px; background: var(--clay); color: #fff; padding: 12px 22px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14.5px; }
+
+  section { margin-bottom: 56px; }
+  .section-label { color: var(--clay); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 10px; }
+  h2 { font-size: 23px; margin-bottom: 24px; }
+
+  .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 620px) { .products { grid-template-columns: 1fr 1fr; } }
+  .product { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--card); }
+  .product .swatch { height: 90px; }
+  .product .label { padding: 10px 12px; font-size: 14px; font-weight: 500; }
+
+  .certs { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cert { border: 1px solid var(--line); border-radius: 20px; padding: 7px 14px; font-size: 13px; color: var(--ink-soft); }
+
+  .about p { color: var(--ink-soft); font-size: 15.5px; max-width: 60ch; }
+
+  form { display: grid; gap: 12px; max-width: 420px; }
+  input, textarea { padding: 11px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--card); color: var(--ink); font: inherit; font-size: 14.5px; }
+  button { background: var(--leaf); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; font-size: 14.5px; cursor: pointer; }
+
+  footer { border-top: 1px solid var(--line); padding-top: 22px; color: var(--ink-soft); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="demo-flag">This is a SAMPLE site by Bidevlink — not a real business. See what your own site could look like: <a href="https://arvish.xyz/bidevlink">arvish.xyz/bidevlink</a></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">Golden Harvest Exports</div>
+    <nav>
+      <a href="#products">Products</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="kicker">Jaggery &amp; Natural Sweeteners</div>
+    <h1>Pure, traditionally made jaggery — exported worldwide.</h1>
+    <p>Sourced from sugarcane farms, processed without chemical additives, and packed for international shipping standards.</p>
+    <a class="hero-cta" href="#contact">Request a Quote</a>
+  </section>
+
+  <section id="products">
+    <div class="section-label">Our Range</div>
+    <h2>Products</h2>
+    <div class="products">
+      <div class="product"><div class="swatch" style="background:#B5602F"></div><div class="label">Jaggery Blocks</div></div>
+      <div class="product"><div class="swatch" style="background:#8C6A3F"></div><div class="label">Jaggery Powder</div></div>
+      <div class="product"><div class="swatch" style="background:#D2A257"></div><div class="label">Organic Jaggery Cubes</div></div>
+    </div>
+  </section>
+
+  <section class="about">
+    <div class="section-label">Certifications</div>
+    <h2>Why buyers trust us</h2>
+    <p>Two decades of sourcing relationships with sugarcane farmers, and export-ready packaging that meets international food-safety norms.</p>
+    <div class="certs">
+      <span class="cert">FSSAI Certified</span>
+      <span class="cert">ISO 22000</span>
+      <span class="cert">Export License Holder</span>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="section-label">Get In Touch</div>
+    <h2>Request a quote</h2>
+    <form onsubmit="return false;">
+      <input type="text" placeholder="Your name">
+      <input type="email" placeholder="Your email">
+      <textarea rows="3" placeholder="What are you looking to order?"></textarea>
+      <button type="submit">Send Inquiry</button>
+    </form>
+  </section>
+
+  <footer>
+    © Golden Harvest Exports — sample content, for demonstration only.
+  </footer>
+</div>
+</body>
+</html>
