@@ -80,7 +80,7 @@ export function Contact() {
           type="submit"
           className="rounded-full bg-glow px-6 py-3 text-sm font-medium text-void transition-opacity hover:opacity-90"
         >
-          Send message
+          Contact me
         </button>
       </form>
     </section>

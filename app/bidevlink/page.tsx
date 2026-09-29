@@ -1,256 +1,82 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, IBM_Plex_Sans } from 'next/font/google';
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-bidevlink-display',
-});
-const ibmPlexSans = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-bidevlink-body',
-});
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Bidevlink — Websites for Indian Exporters, Built in 48 Hours',
-  description:
-    'Bidevlink builds simple, professional websites for Indian exporters and manufacturers — a new one-page site in 48 hours, or a monthly care plan to refresh an outdated one. Built to help overseas buyers trust you before the first call.',
-  keywords: [
-    'website for exporters',
-    'website for manufacturers India',
-    'export company website',
-    'website design India',
-    'small business website 48 hours',
-    'website update service',
-  ],
   alternates: { canonical: '/bidevlink' },
-  openGraph: {
-    type: 'website',
-    title: 'Bidevlink — Websites for Indian Exporters, Built in 48 Hours',
-    description:
-      'A new website or a refreshed one, built for Indian exporters and manufacturers so international buyers trust you faster.',
-    url: '/bidevlink',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'Bidevlink — Websites for Indian Exporters',
-    description:
-      'A new website or a refreshed one, built for Indian exporters and manufacturers so international buyers trust you faster.',
-  },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
-  name: 'Bidevlink',
-  description:
-    'Websites for Indian exporters and manufacturers — new one-page sites built in 48 hours, or a monthly care plan for an existing site.',
-  areaServed: 'IN',
-  email: 'abhishek.studio.dev@gmail.com',
-  makesOffer: [
-    { '@type': 'Offer', name: 'New Website', price: '2999', priceCurrency: 'INR' },
-    { '@type': 'Offer', name: 'Website Care Plan', price: '399', priceCurrency: 'INR' },
-  ],
-};
-
-// All selectors below are scoped under .bidevlink-page so this page's look
-// (its own font pairing and navy/brass palette, distinct from the rest of
-// the site) can't leak into — or be leaked into by — the shared globals.css.
-const styles = `
-.bidevlink-page {
-  --d-bg: #0F2A3D;
-  --d-ink: #EDEAE0;
-  --d-ink-soft: #A9BAC4;
-  --d-brass: #C9973B;
-  --d-brick: #C24A3B;
-  --d-line: #294A5E;
-  --d-card: #14324480;
-
-  background: var(--d-bg);
-  color: var(--d-ink);
-  font-family: var(--font-bidevlink-body), -apple-system, sans-serif;
-  line-height: 1.55;
-  min-height: 100dvh;
-}
-.bidevlink-page h1, .bidevlink-page h2, .bidevlink-page h3 {
-  font-family: var(--font-bidevlink-display), sans-serif;
-  margin: 0;
-}
-.bidevlink-page .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 70px; }
-
-.bidevlink-page header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 60px;
-}
-.bidevlink-page .brand { font-family: var(--font-bidevlink-display), sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 0.3px; }
-.bidevlink-page .brand span { color: var(--d-brass); }
-.bidevlink-page header nav a {
-  color: var(--d-ink-soft);
-  text-decoration: none;
-  font-size: 14px;
-  margin-left: 20px;
-}
-
-.bidevlink-page .hero { margin-bottom: 72px; }
-.bidevlink-page .hero .kicker { color: var(--d-brass); font-size: 14px; margin-bottom: 14px; }
-.bidevlink-page .hero h1 {
-  font-size: clamp(30px, 6vw, 44px);
-  font-weight: 700;
-  line-height: 1.15;
-  max-width: 14ch;
-}
-.bidevlink-page .hero p {
-  color: var(--d-ink-soft);
-  font-size: 17px;
-  max-width: 46ch;
-  margin-top: 18px;
-}
-.bidevlink-page .hero-cta {
-  display: inline-block;
-  margin-top: 26px;
-  background: var(--d-brick);
-  color: #fff;
-  padding: 13px 24px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.bidevlink-page section { margin-bottom: 64px; }
-.bidevlink-page .section-label { color: var(--d-brass); font-size: 13px; margin-bottom: 10px; }
-.bidevlink-page h2 { font-size: 24px; margin-bottom: 26px; max-width: 26ch; }
-
-.bidevlink-page .offers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-@media (max-width: 560px) { .bidevlink-page .offers { grid-template-columns: 1fr; } }
-
-.bidevlink-page .offer { border: 1px solid var(--d-line); border-radius: 6px; padding: 24px; background: var(--d-card); }
-.bidevlink-page .offer.build { border-top: 3px solid var(--d-brick); }
-.bidevlink-page .offer.care { border-top: 3px solid var(--d-brass); }
-.bidevlink-page .offer h3 { font-size: 18px; margin-bottom: 6px; }
-.bidevlink-page .offer .price { font-size: 26px; font-weight: 700; margin: 14px 0 4px; }
-.bidevlink-page .offer .unit { color: var(--d-ink-soft); font-size: 13px; }
-.bidevlink-page .offer ul { padding-left: 18px; margin: 16px 0 0; color: var(--d-ink-soft); font-size: 14.5px; }
-.bidevlink-page .offer li { margin-bottom: 6px; }
-
-.bidevlink-page .steps { counter-reset: step; }
-.bidevlink-page .step { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px dashed var(--d-line); }
-.bidevlink-page .step:last-child { border-bottom: none; }
-.bidevlink-page .step .num {
-  font-family: var(--font-bidevlink-display), sans-serif;
-  color: var(--d-brass);
-  font-weight: 700;
-  font-size: 15px;
-  flex-shrink: 0;
-  width: 24px;
-}
-.bidevlink-page .step .t { font-weight: 600; margin-bottom: 3px; }
-.bidevlink-page .step .d { color: var(--d-ink-soft); font-size: 14.5px; }
-
-.bidevlink-page footer {
-  border-top: 1px solid var(--d-line);
-  padding-top: 24px;
-  color: var(--d-ink-soft);
-  font-size: 13.5px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.bidevlink-page footer a { color: var(--d-ink); }
-`;
-
-export default function BidevlinkPage() {
+export default function BidevlinkHome() {
   return (
-    <div className={`bidevlink-page ${spaceGrotesk.variable} ${ibmPlexSans.variable}`}>
-      <style dangerouslySetInnerHTML={{ __html: styles }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <>
+      <section className="page-head">
+        <div className="kicker">Websites for Indian exporters &amp; manufacturers</div>
+        <h1>Look ready for the next international buyer.</h1>
+        <p className="lead">
+          A clean, working website — built or refreshed in 48 hours — so overseas buyers trust you
+          before the first call.
+        </p>
+        <a className="cta" href="/#contact">Contact Us</a>
+        <Link className="cta ghost" href="/bidevlink/services">See services</Link>
+      </section>
 
-      <div className="wrap">
-        <header>
-          <div className="brand">Bidev<span>link</span></div>
-          <nav>
-            <a href="#offers">Services</a>
-            <a href="#contact">Contact</a>
-          </nav>
-        </header>
-
-        <section className="hero">
-          <div className="kicker">Websites for Indian exporters &amp; manufacturers</div>
-          <h1>Look ready for the next international buyer.</h1>
-          <p>A clean, working website — built or refreshed in 48 hours — so overseas buyers trust you before the first call.</p>
-          <a className="hero-cta" href="mailto:abhishek.studio.dev@gmail.com?subject=Website%20enquiry">
-            Get a quote
-          </a>
-        </section>
-
-        <section id="offers">
-          <div className="section-label">Two ways we work with you</div>
-          <h2>Whether you&apos;re starting from nothing, or just need a refresh</h2>
-          <div className="offers">
-            <div className="offer build">
-              <h3>New Website</h3>
-              <div className="price">₹2,999</div>
-              <div className="unit">one-time · delivered in 48 hours</div>
-              <ul>
-                <li>Product showcase with images</li>
-                <li>Certifications &amp; company details</li>
-                <li>Direct buyer inquiry form</li>
-                <li>Your own domain, ready to share</li>
-              </ul>
-            </div>
-            <div className="offer care">
-              <h3>Website Care Plan</h3>
-              <div className="price">
-                ₹399<span style={{ fontSize: 15, fontWeight: 500 }}>/mo</span>
-              </div>
-              <div className="unit">for sites that already exist, but look outdated</div>
-              <ul>
-                <li>Unlimited text, price &amp; image updates</li>
-                <li>One new product page added monthly</li>
-                <li>Priority email support</li>
-                <li>No long contract — cancel anytime</li>
-              </ul>
-            </div>
+      <section>
+        <div className="section-label">Why it matters</div>
+        <h2>Buyers check your website before they reply to your email</h2>
+        <div className="grid3">
+          <div className="card">
+            <h3>Trust first</h3>
+            <p>A proper website tells a first-time overseas buyer that your business is real and established.</p>
           </div>
-        </section>
-
-        <section>
-          <div className="section-label">How it works</div>
-          <h2>From email to live site in three steps</h2>
-          <div className="steps">
-            <div className="step">
-              <div className="num">1</div>
-              <div>
-                <div className="t">Tell us about your business</div>
-                <div className="d">Products, certifications, and any existing content — over email, five minutes.</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="num">2</div>
-              <div>
-                <div className="t">We build or refresh it</div>
-                <div className="d">Delivered within 48 hours for new sites; care-plan updates go out within a day.</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="num">3</div>
-              <div>
-                <div className="t">You review and go live</div>
-                <div className="d">One round of changes included before it&apos;s ready to share with buyers.</div>
-              </div>
-            </div>
+          <div className="card">
+            <h3>Show your products</h3>
+            <p>Products, certifications and company details in one place, ready to share on any enquiry.</p>
           </div>
-        </section>
+          <div className="card">
+            <h3>Easy to reach</h3>
+            <p>A direct enquiry option, so serious buyers can contact you without hunting for details.</p>
+          </div>
+        </div>
+      </section>
 
-        <footer id="contact">
-          <span>Bidevlink · built for small exporters</span>
-          <a href="mailto:abhishek.studio.dev@gmail.com">abhishek.studio.dev@gmail.com</a>
-        </footer>
-      </div>
-    </div>
+      <section>
+        <div className="section-label">What we do</div>
+        <h2>Whether you&apos;re starting from nothing, or just need a refresh</h2>
+        <div className="grid2">
+          <div className="card build">
+            <h3>New Website</h3>
+            <div className="tag">for exporters without a website</div>
+            <ul>
+              <li>Product showcase with images</li>
+              <li>Certifications &amp; company details</li>
+              <li>Direct buyer enquiry option</li>
+              <li>Delivered in 48 hours</li>
+            </ul>
+          </div>
+          <div className="card care">
+            <h3>Website Care Plan</h3>
+            <div className="tag">for sites that exist, but look outdated</div>
+            <ul>
+              <li>Text, image and product updates</li>
+              <li>New product pages added</li>
+              <li>Priority email support</li>
+              <li>No long contract</li>
+            </ul>
+          </div>
+        </div>
+        <p style={{ marginTop: 18 }}>
+          <Link href="/bidevlink/services" style={{ color: 'var(--d-brass)' }}>
+            Full details on the Services page →
+          </Link>
+        </p>
+      </section>
+
+      <section>
+        <div className="band">
+          <h2>Ready to get started?</h2>
+          <p>Tell us about your business and we&apos;ll take it from there.</p>
+          <a className="cta" href="/#contact">Contact Us</a>
+        </div>
+      </section>
+    </>
   );
 }
