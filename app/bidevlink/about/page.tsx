@@ -22,12 +22,15 @@ export default function AboutPage() {
 
       <section>
         <div className="section-label">Who we are</div>
-        <h2>A focused studio, founded by Abhishek</h2>
+        <h2>A focused studio, based in India</h2>
         <p style={{ color: 'var(--d-ink-soft)', maxWidth: '60ch', margin: 0 }}>
           Many good Indian exporters and manufacturers have no website, or one that looks outdated.
           Overseas buyers often check a company online before replying, and a missing or old site
           can cost that first impression. Bidevlink exists to fix that with clean, working websites
           that are quick to build and simple to maintain.
+        </p>
+        <p style={{ color: 'var(--d-ink-soft)', maxWidth: '60ch', margin: '16px 0 0' }}>
+          <strong style={{ color: 'var(--d-ink)' }}>Founder:</strong> Abhishek (also known as Arvish)
         </p>
       </section>
 
@@ -59,6 +62,31 @@ export default function AboutPage() {
             <li>Businesses whose current site looks outdated</li>
             <li>Manufacturers with a larger catalogue who need a multi-page site</li>
           </ul>
+        </div>
+      </section>
+
+      <section>
+        <div className="section-label">Get in touch</div>
+        <h2>Reach us directly</h2>
+        <div className="grid2">
+          <div className="card">
+            <h3>Email</h3>
+            <p>
+              <a href="mailto:abhishek.studio.dev@gmail.com">abhishek.studio.dev@gmail.com</a>
+              <br />
+              <a href="mailto:arvish2287@gmail.com">arvish2287@gmail.com</a>
+            </p>
+          </div>
+          <div className="card">
+            <h3>Instagram</h3>
+            <p>
+              Bidevlink:{' '}
+              <a href="https://www.instagram.com/bidevlink" target="_blank" rel="noopener noreferrer">@bidevlink</a>
+              <br />
+              Founder:{' '}
+              <a href="https://www.instagram.com/abhi.visible" target="_blank" rel="noopener noreferrer">@abhi.visible</a>
+            </p>
+          </div>
         </div>
       </section>
 

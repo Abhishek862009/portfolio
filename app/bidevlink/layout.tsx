@@ -51,6 +51,8 @@ const jsonLd = {
     'Websites for Indian exporters and manufacturers — new sites built in 48 hours, or a care plan for an existing site.',
   areaServed: 'IN',
   email: 'abhishek.studio.dev@gmail.com',
+  founder: { '@type': 'Person', name: 'Abhishek', alternateName: 'Arvish' },
+  sameAs: ['https://www.instagram.com/bidevlink'],
 };
 
 // Every selector is scoped under .bidevlink-page so this section's own look
@@ -174,12 +176,14 @@ export default function BidevlinkLayout({ children }: { children: React.ReactNod
         {children}
 
         <footer className="site-footer">
-          <span>Bidevlink · built for small exporters</span>
+          <span>Bidevlink · built for small exporters · India</span>
           <nav>
             <Link href="/bidevlink/services">Services</Link>
             <Link href="/bidevlink/process">How it works</Link>
             <Link href="/bidevlink/about">About Us</Link>
             <a href="/#contact">Contact Us</a>
+            <a href="https://www.instagram.com/bidevlink" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="mailto:abhishek.studio.dev@gmail.com">Email</a>
           </nav>
         </footer>
       </div>
