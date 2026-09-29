@@ -164,6 +164,7 @@ export default function BidevlinkLayout({ children }: { children: React.ReactNod
             <Link href="/bidevlink">Home</Link>
             <Link href="/bidevlink/services">Services</Link>
             <Link href="/bidevlink/process">How it works</Link>
+            <Link href="/bidevlink/about">About Us</Link>
             {/* Contact Us takes visitors to the main site's contact section,
                 where the Contact me button lives. */}
             <a href="/#contact" className="nav-cta">Contact Us</a>
@@ -177,6 +178,7 @@ export default function BidevlinkLayout({ children }: { children: React.ReactNod
           <nav>
             <Link href="/bidevlink/services">Services</Link>
             <Link href="/bidevlink/process">How it works</Link>
+            <Link href="/bidevlink/about">About Us</Link>
             <a href="/#contact">Contact Us</a>
           </nav>
         </footer>
