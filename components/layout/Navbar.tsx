@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: '/#timeline', label: 'Story' },
   { href: '/#skills', label: 'Skills' },
   { href: '/#projects', label: 'Projects' },
+  { href: '/apps', label: 'App Store' },
   { href: '/#bidevlink', label: 'Bidevlink' },
   { href: '/blog', label: 'Blog' },
   { href: '/#contact', label: 'Contact' },
@@ -189,7 +190,7 @@ export function Navbar() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-50 bg-void/98 backdrop-blur-md md:hidden"
           >
-            <ul className="flex h-full flex-col items-center justify-center gap-8 text-2xl">
+            <ul className="flex h-full flex-col items-center justify-center gap-6 text-2xl">
               {[
                 { href: '/', label: 'Home' },
                 ...NAV_LINKS,

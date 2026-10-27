@@ -5,6 +5,7 @@ import { Hero } from '@/components/sections/Hero';
 import { Timeline } from '@/components/sections/Timeline';
 import { Skills } from '@/components/sections/Skills';
 import { ProjectsPreview } from '@/components/sections/ProjectsPreview';
+import { AppStorePreview } from '@/components/sections/AppStorePreview';
 import { MyStartups } from '@/components/sections/MyStartups';
 import { Contact } from '@/components/sections/Contact';
 
@@ -43,6 +44,7 @@ export default function Home() {
       <Timeline />
       <Skills />
       <ProjectsPreview />
+      <AppStorePreview />
       <MyStartups />
       <Contact />
     </>
