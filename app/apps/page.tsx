@@ -4,8 +4,8 @@ import { apps, SITE_URL, STORE_NAME, STORE_ALT_NAME, STORE_PATH } from '@/data/a
 import { AppCard } from '@/components/ui/AppCard';
 import { Reveal } from '@/components/ui/Reveal';
 
-const TITLE = `${STORE_NAME} | ${STORE_ALT_NAME} – Android Apps by Abhishek`;
-const DESCRIPTION = `${STORE_NAME} (also called ${STORE_ALT_NAME}): Android apps built by Abhishek (Arvish), available to download as APK. Start with Abhi Gallery, a normal and simple gallery app.`;
+const TITLE = `${STORE_NAME} | ${STORE_ALT_NAME} – Apps by Abhishek`;
+const DESCRIPTION = `${STORE_NAME} (also called ${STORE_ALT_NAME}): apps built by Abhishek (Arvish). Download Android apps as APK, like Abhi Gallery, a normal and simple gallery app, or open web apps like the Hisaab (hisab kitab) app right in your browser.`;
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -78,8 +78,8 @@ export default function AppsPage() {
       <Reveal>
         <h1 className="text-4xl font-semibold text-frost md:text-5xl">{STORE_NAME}</h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-slate">
-          Welcome to the {STORE_ALT_NAME} — Android apps built by Abhishek (Arvish), available to
-          download directly as APK files.
+          Welcome to the {STORE_ALT_NAME} — apps built by Abhishek (Arvish). Android apps download
+          directly as APK files, and web apps open right in your browser.
         </p>
       </Reveal>
 

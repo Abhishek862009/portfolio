@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Images } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import {
   apps,
@@ -11,7 +11,9 @@ import {
   STORE_ALT_NAME,
   STORE_PATH,
 } from '@/data/apps';
+import { AppIcon } from '@/components/ui/AppIcon';
 import { DownloadButton } from '@/components/ui/DownloadButton';
+import { OpenAppButton } from '@/components/ui/OpenAppButton';
 import { Reveal } from '@/components/ui/Reveal';
 
 export function generateStaticParams() {
@@ -22,8 +24,14 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const app = getApp(params.slug);
   if (!app) return {};
 
-  const title = `${app.name} APK Download | ${STORE_NAME}`;
-  const description = `Download ${app.name}, a normal and simple gallery app for Android, from the ${STORE_NAME} (${STORE_ALT_NAME}).`;
+  const isAndroid = app.platform === 'Android';
+  const title = isAndroid
+    ? `${app.name} APK Download | ${STORE_NAME}`
+    : app.seoTitle ?? `${app.name} | ${STORE_NAME}`;
+  const description = isAndroid
+    ? `Download ${app.name}, a normal and simple gallery app for Android, from the ${STORE_NAME} (${STORE_ALT_NAME}).`
+    : app.seoDescription ??
+      `Open ${app.name}, a free web app from the ${STORE_NAME} (${STORE_ALT_NAME}). ${app.tagline}`;
   const path = `${STORE_PATH}/${app.slug}`;
 
   return {
@@ -47,6 +55,38 @@ export default function AppPage({ params }: { params: { slug: string } }) {
   if (!app) notFound();
 
   const url = `${SITE_URL}${STORE_PATH}/${app.slug}`;
+  const author = { '@type': 'Person', name: 'Abhishek', alternateName: 'Arvish', url: SITE_URL };
+  const alt = app.alternateNames ? { alternateName: app.alternateNames } : {};
+  const offers = { '@type': 'Offer', price: '0', priceCurrency: 'INR' };
+
+  const appSchema =
+    app.platform === 'Android'
+      ? {
+          '@type': 'MobileApplication',
+          name: app.name,
+          description: app.description,
+          url,
+          operatingSystem: 'Android',
+          applicationCategory: 'MultimediaApplication',
+          downloadUrl: app.downloadUrl,
+          ...(app.version ? { softwareVersion: app.version } : {}),
+          ...alt,
+          author,
+          offers,
+        }
+      : {
+          '@type': 'WebApplication',
+          name: app.name,
+          description: app.description,
+          url,
+          operatingSystem: 'Any',
+          applicationCategory: 'BusinessApplication',
+          browserRequirements: 'Requires JavaScript',
+          ...(app.version ? { softwareVersion: app.version } : {}),
+          ...alt,
+          author,
+          offers,
+        };
 
   // Deliberately no aggregateRating/review: there are none yet, and making
   // them up would be fake structured data. Google's rich-result display for
@@ -55,18 +95,7 @@ export default function AppPage({ params }: { params: { slug: string } }) {
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'MobileApplication',
-        name: app.name,
-        description: app.description,
-        url,
-        operatingSystem: 'Android',
-        applicationCategory: 'MultimediaApplication',
-        downloadUrl: app.downloadUrl,
-        ...(app.version ? { softwareVersion: app.version } : {}),
-        author: { '@type': 'Person', name: 'Abhishek', url: SITE_URL },
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
-      },
+      appSchema,
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
@@ -80,7 +109,7 @@ export default function AppPage({ params }: { params: { slug: string } }) {
 
   const facts = [
     { label: 'Platform', value: app.platform },
-    { label: 'File type', value: app.fileType },
+    { label: app.platform === 'Android' ? 'File type' : 'Type', value: app.fileType },
     ...(app.sizeLabel ? [{ label: 'Size', value: app.sizeLabel }] : []),
     ...(app.version ? [{ label: 'Version', value: app.version }] : []),
   ];
@@ -106,7 +135,7 @@ export default function AppPage({ params }: { params: { slug: string } }) {
             aria-hidden="true"
             className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-hairline bg-ink/40 text-glow"
           >
-            <Images className="h-8 w-8" />
+            <AppIcon icon={app.icon} className="h-8 w-8" />
           </div>
           <div>
             <h1 className="text-4xl font-semibold text-frost">{app.name}</h1>
@@ -128,16 +157,50 @@ export default function AppPage({ params }: { params: { slug: string } }) {
         </div>
 
         <div className="mt-8">
-          <DownloadButton href={app.downloadUrl} label={`Download ${app.name}`} size="large" />
+          {app.platform === 'Android' ? (
+            <DownloadButton href={app.downloadUrl} label={`Download ${app.name}`} size="large" />
+          ) : (
+            <OpenAppButton href={app.openUrl} label={`Open ${app.name}`} size="large" />
+          )}
         </div>
       </Reveal>
 
+      {app.howItWorks && (
+        <section className="mt-12 max-w-xl">
+          <h2 className="text-xl font-semibold text-frost">How {app.name} works</h2>
+          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-slate">
+            {app.howItWorks.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {app.about && (
+        <section className="mt-10 max-w-xl">
+          <h2 className="text-xl font-semibold text-frost">About the {app.name} app</h2>
+          <p className="mt-4 text-sm leading-relaxed text-slate">{app.about}</p>
+        </section>
+      )}
+
       <div className="mt-12 max-w-xl rounded-xl border border-hairline bg-ink/40 p-4 text-sm text-slate">
-        <p className="font-medium text-frost">Installing the APK</p>
-        <p className="mt-2">
-          This app is installed from a file, not from the Play Store, so Android may ask you to
-          allow installs from your browser or file manager before it can continue.
-        </p>
+        {app.platform === 'Android' ? (
+          <>
+            <p className="font-medium text-frost">Installing the APK</p>
+            <p className="mt-2">
+              This app is installed from a file, not from the Play Store, so Android may ask you to
+              allow installs from your browser or file manager before it can continue.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="font-medium text-frost">Your entries stay on your device</p>
+            <p className="mt-2">
+              This app runs in your browser and saves entries only in that browser on this device.
+              Nothing is sent to a server, and clearing the browser&apos;s site data will erase them.
+            </p>
+          </>
+        )}
       </div>
 
       <div className="mt-16 border-t border-hairline pt-6">

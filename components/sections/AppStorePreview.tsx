@@ -10,7 +10,7 @@ export function AppStorePreview() {
     <section id="apps" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-32">
       <h2 className="text-3xl font-semibold text-frost md:text-4xl">{STORE_NAME}</h2>
       <p className="mt-3 max-w-xl text-sm text-slate">
-        The {STORE_ALT_NAME} — apps built by Abhishek, available to download directly.
+        The {STORE_ALT_NAME} — apps built by Abhishek, available to download or open directly.
       </p>
 
       <div className="mt-10 grid gap-6 md:grid-cols-2">
