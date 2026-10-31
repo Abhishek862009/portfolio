@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { AppEntry } from '@/data/apps';
 import { STORE_PATH } from '@/data/apps';
 import { AppIcon } from '@/components/ui/AppIcon';
+import { ComingSoonBadge } from '@/components/ui/ComingSoonBadge';
 import { DownloadButton } from '@/components/ui/DownloadButton';
 import { OpenAppButton } from '@/components/ui/OpenAppButton';
 
@@ -10,9 +11,12 @@ import { OpenAppButton } from '@/components/ui/OpenAppButton';
 // border, ink/40 surface, glow border on hover.
 export function AppCard({ app }: { app: AppEntry }) {
   const typeLabels = app.platform === 'Android' ? [app.platform, app.fileType] : [app.fileType];
-  const meta = [...typeLabels, app.sizeLabel, app.version && `v${app.version}`].filter(
-    Boolean
-  ) as string[];
+  const meta = [
+    ...typeLabels,
+    app.private && 'Password protected',
+    app.sizeLabel,
+    app.version && `v${app.version}`,
+  ].filter(Boolean) as string[];
 
   return (
     <div className="rounded-2xl border border-hairline bg-ink/40 p-6 transition-colors hover:border-glow/40">
@@ -47,8 +51,10 @@ export function AppCard({ app }: { app: AppEntry }) {
       <div className="mt-5 flex flex-wrap items-center gap-4">
         {app.platform === 'Android' ? (
           <DownloadButton href={app.downloadUrl} />
+        ) : app.comingSoon ? (
+          <ComingSoonBadge />
         ) : (
-          <OpenAppButton href={app.openUrl} />
+          <OpenAppButton href={app.openUrl} external={app.external} />
         )}
         <Link
           href={`${STORE_PATH}/${app.slug}`}

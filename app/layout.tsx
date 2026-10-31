@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import type { Metadata } from 'next';
 
 import { Inter } from 'next/font/google';
@@ -95,6 +98,12 @@ const personSchema = {
     'Coding',
     'Technology',
   ],
+  // The one Person schema for the whole site (app/page.tsx used to add a
+  // second, partly different one).
+  sameAs: [
+    'https://github.com/Abhishek862009',
+    'https://www.linkedin.com/in/abhishek862009',
+  ],
 };
 
 export default function RootLayout({
@@ -102,11 +111,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Same trick as the hero photo: the Resume link appears by itself once
+  // public/resume.pdf exists, instead of pointing at a 404 until then.
+  const hasResume = fs.existsSync(path.join(process.cwd(), 'public', 'resume.pdf'));
+
   return (
     <html lang="en" className={inter.variable}>
       <body>
         <AppShell>
-          <Navbar />
+          <Navbar hasResume={hasResume} />
           <main>{children}</main>
           <Footer />
         </AppShell>

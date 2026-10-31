@@ -12,6 +12,7 @@ import {
   STORE_PATH,
 } from '@/data/apps';
 import { AppIcon } from '@/components/ui/AppIcon';
+import { ComingSoonBadge } from '@/components/ui/ComingSoonBadge';
 import { DownloadButton } from '@/components/ui/DownloadButton';
 import { OpenAppButton } from '@/components/ui/OpenAppButton';
 import { Reveal } from '@/components/ui/Reveal';
@@ -25,19 +26,24 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   if (!app) return {};
 
   const isAndroid = app.platform === 'Android';
-  const title = isAndroid
-    ? `${app.name} APK Download | ${STORE_NAME}`
-    : app.seoTitle ?? `${app.name} | ${STORE_NAME}`;
-  const description = isAndroid
-    ? `Download ${app.name}, a normal and simple gallery app for Android, from the ${STORE_NAME} (${STORE_ALT_NAME}).`
-    : app.seoDescription ??
-      `Open ${app.name}, a free web app from the ${STORE_NAME} (${STORE_ALT_NAME}). ${app.tagline}`;
+  // Per-app text first (seoTitle / seoDescription in data/apps.ts); the
+  // fallbacks are generic so a new app never inherits another app's wording.
+  const title =
+    app.seoTitle ??
+    (isAndroid ? `${app.name} APK Download | ${STORE_NAME}` : `${app.name} | ${STORE_NAME}`);
+  const description =
+    app.seoDescription ??
+    (isAndroid
+      ? `Download ${app.name} for Android from the ${STORE_NAME} (${STORE_ALT_NAME}). ${app.tagline}`
+      : `Open ${app.name}, a free web app from the ${STORE_NAME} (${STORE_ALT_NAME}). ${app.tagline}`);
   const path = `${STORE_PATH}/${app.slug}`;
 
   return {
     title: { absolute: title },
     description,
     keywords: [...app.keywords, STORE_NAME, STORE_ALT_NAME],
+    // Private tools stay out of Google.
+    ...(app.private ? { robots: { index: false, follow: false } } : {}),
     alternates: { canonical: path },
     openGraph: {
       title,
@@ -67,7 +73,7 @@ export default function AppPage({ params }: { params: { slug: string } }) {
           description: app.description,
           url,
           operatingSystem: 'Android',
-          applicationCategory: 'MultimediaApplication',
+          applicationCategory: app.category ?? 'UtilitiesApplication',
           downloadUrl: app.downloadUrl,
           ...(app.version ? { softwareVersion: app.version } : {}),
           ...alt,
@@ -80,7 +86,7 @@ export default function AppPage({ params }: { params: { slug: string } }) {
           description: app.description,
           url,
           operatingSystem: 'Any',
-          applicationCategory: 'BusinessApplication',
+          applicationCategory: app.category ?? 'UtilitiesApplication',
           browserRequirements: 'Requires JavaScript',
           ...(app.version ? { softwareVersion: app.version } : {}),
           ...alt,
@@ -112,14 +118,32 @@ export default function AppPage({ params }: { params: { slug: string } }) {
     { label: app.platform === 'Android' ? 'File type' : 'Type', value: app.fileType },
     ...(app.sizeLabel ? [{ label: 'Size', value: app.sizeLabel }] : []),
     ...(app.version ? [{ label: 'Version', value: app.version }] : []),
+    ...(app.private ? [{ label: 'Access', value: 'Password protected' }] : []),
   ];
+
+  // Shown in the box at the bottom. Each app can bring its own; these are
+  // only the generic defaults per platform.
+  const notice =
+    app.notice ??
+    (app.platform === 'Android'
+      ? {
+          title: 'Installing the APK',
+          body: 'This app is installed from a file, not from the Play Store, so Android may ask you to allow installs from your browser or file manager before it can continue.',
+        }
+      : {
+          title: 'Opens in your browser',
+          body: 'Nothing to install. This app opens as a web page.',
+        });
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-32">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
+      {/* Private tools are noindex, so they get no structured data either. */}
+      {!app.private && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      )}
 
       <Link
         href={STORE_PATH}
@@ -159,8 +183,15 @@ export default function AppPage({ params }: { params: { slug: string } }) {
         <div className="mt-8">
           {app.platform === 'Android' ? (
             <DownloadButton href={app.downloadUrl} label={`Download ${app.name}`} size="large" />
+          ) : app.comingSoon ? (
+            <ComingSoonBadge size="large" />
           ) : (
-            <OpenAppButton href={app.openUrl} label={`Open ${app.name}`} size="large" />
+            <OpenAppButton
+              href={app.openUrl}
+              label={`Open ${app.name}`}
+              size="large"
+              external={app.external}
+            />
           )}
         </div>
       </Reveal>
@@ -184,23 +215,8 @@ export default function AppPage({ params }: { params: { slug: string } }) {
       )}
 
       <div className="mt-12 max-w-xl rounded-xl border border-hairline bg-ink/40 p-4 text-sm text-slate">
-        {app.platform === 'Android' ? (
-          <>
-            <p className="font-medium text-frost">Installing the APK</p>
-            <p className="mt-2">
-              This app is installed from a file, not from the Play Store, so Android may ask you to
-              allow installs from your browser or file manager before it can continue.
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="font-medium text-frost">Your entries stay on your device</p>
-            <p className="mt-2">
-              This app runs in your browser and saves entries only in that browser on this device.
-              Nothing is sent to a server, and clearing the browser&apos;s site data will erase them.
-            </p>
-          </>
-        )}
+        <p className="font-medium text-frost">{notice.title}</p>
+        <p className="mt-2">{notice.body}</p>
       </div>
 
       <div className="mt-16 border-t border-hairline pt-6">
