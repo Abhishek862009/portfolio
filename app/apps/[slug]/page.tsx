@@ -118,7 +118,6 @@ export default function AppPage({ params }: { params: { slug: string } }) {
     { label: app.platform === 'Android' ? 'File type' : 'Type', value: app.fileType },
     ...(app.sizeLabel ? [{ label: 'Size', value: app.sizeLabel }] : []),
     ...(app.version ? [{ label: 'Version', value: app.version }] : []),
-    ...(app.private ? [{ label: 'Access', value: 'Password protected' }] : []),
   ];
 
   // Shown in the box at the bottom. Each app can bring its own; these are

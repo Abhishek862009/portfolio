@@ -11,12 +11,9 @@ import { OpenAppButton } from '@/components/ui/OpenAppButton';
 // border, ink/40 surface, glow border on hover.
 export function AppCard({ app }: { app: AppEntry }) {
   const typeLabels = app.platform === 'Android' ? [app.platform, app.fileType] : [app.fileType];
-  const meta = [
-    ...typeLabels,
-    app.private && 'Password protected',
-    app.sizeLabel,
-    app.version && `v${app.version}`,
-  ].filter(Boolean) as string[];
+  const meta = [...typeLabels, app.sizeLabel, app.version && `v${app.version}`].filter(
+    Boolean
+  ) as string[];
 
   return (
     <div className="rounded-2xl border border-hairline bg-ink/40 p-6 transition-colors hover:border-glow/40">

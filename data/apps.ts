@@ -11,13 +11,13 @@
 // 2. Web apps (platform 'Web'). Two ways to host them:
 //    - Static page: put the app's files in `public/<name>/index.html`, add a
 //      rewrite for `/<name>` in next.config.js, and set `openUrl` to `/<name>`.
-//    - Own server (a Python/Node app that cannot run on this site): host it
-//      somewhere else, set `openUrl` to its full https:// URL and `external: true`.
-//      While there is no URL yet, set `comingSoon: true` and leave `openUrl` empty.
+//    - Own server (a Python/Node app that cannot run on this site): see the
+//      yt-saver entry below. Its code sits in a folder in this repo, it runs on a
+//      server, and a rewrite in next.config.js shows it at /<name>.
+//      (`external: true` is for an app that stays on a completely different address.)
 //
-// Private tools (`private: true`) still show in the store, but their details
-// page is hidden from Google and they are left out of the sitemap and the
-// structured data.
+// Apps with `private: true` still show in the store, but their details page is
+// hidden from Google and they are left out of the sitemap and the structured data.
 //
 // The Android / Web toggle on the store is built from `platform`, so nothing
 // else needs to change when an app is added.
@@ -55,7 +55,7 @@ interface AppBase {
   howItWorks?: string[];
   /** schema.org applicationCategory for the structured data. Defaults to UtilitiesApplication. */
   category?: string;
-  /** Password-protected / personal tool: hidden from Google and the sitemap. */
+  /** Keep this app's details page out of Google, the sitemap and the structured data. */
   private?: boolean;
   /** Replaces the default info box at the bottom of the details page. */
   notice?: { title: string; body: string };
@@ -154,30 +154,32 @@ export const apps: AppEntry[] = [
     ],
   },
   {
-    // A Python (Flask + ffmpeg) server app: it cannot run inside this Next.js
-    // site, so it is hosted separately. When it is live, paste its URL into
-    // `openUrl` and delete the `comingSoon` line.
+    // The code lives in /yt-saver (a Python app: Flask + ffmpeg). It cannot run
+    // inside this Next.js site, so it runs on a server and the site forwards
+    // /yt-saver to it. Set YT_SAVER_URL in the site's environment variables to
+    // switch it on (see next.config.js and yt-saver/README.md). Until then the
+    // card shows "Coming soon". Everything here is read when the site is built,
+    // so redeploy after changing the variable.
     slug: 'yt-saver',
     name: 'YT Saver',
-    tagline: 'A private tool to save a video in the quality you pick.',
+    tagline: 'Save a video in the quality you pick.',
     description:
-      'YT Saver saves a video, or a whole playlist, from a link, with a quality list from highest to lowest. It is a private, password-protected tool that runs on its own server, so it opens in a separate tab.',
+      'YT Saver saves a video from a YouTube link, with a quality list from highest to lowest. Free to use, with fair-use limits on how many videos you can save per hour, how long they can be and how big the file is.',
     platform: 'Web',
     fileType: 'Web app',
-    openUrl: '',
-    external: true,
-    comingSoon: true,
-    private: true,
+    openUrl: '/yt-saver',
+    comingSoon: !process.env.YT_SAVER_URL,
+    private: true, // keep the tool's own page out of Google
     icon: 'video',
     category: 'MultimediaApplication',
     howItWorks: [
-      'Log in with the password.',
-      'Paste a link and press "Find qualities".',
+      'Paste a YouTube link and press "Find qualities".',
       'Pick a quality and press "Save video".',
+      'Wait for the file to finish, then save it.',
     ],
     notice: {
-      title: 'Private tool',
-      body: 'YT Saver is password-protected and kept for personal use. Only save videos you own, that are licensed for reuse, or that you have permission to download.',
+      title: 'Use it fairly',
+      body: 'Only save videos you own, that are licensed for reuse, or that you have permission to download. Downloading other people\'s videos may break YouTube\'s Terms of Service or copyright law. Limits apply per visitor, and the service can stop working if YouTube blocks it.',
     },
     keywords: [],
   },
