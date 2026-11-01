@@ -28,7 +28,7 @@ const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'bidevlink', 'con
 // /projects/[slug] had zero navigation at all. That was the real bug behind
 // "add a Home button" — the button alone wouldn't have helped if the whole
 // navbar wasn't there to hold it.
-export function Navbar() {
+export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
   const pathname = usePathname();
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
@@ -138,16 +138,22 @@ export function Navbar() {
             })}
           </ul>
 
-          <div className="hidden md:block">
-            <Magnetic strength={6}>
-              <Link
-                href="/resume.pdf"
-                className="rounded-full border border-hairline px-4 py-1.5 text-sm text-frost transition-colors hover:border-glow/60"
-              >
-                Resume
-              </Link>
-            </Magnetic>
-          </div>
+          {/* Plain <a>: the resume is a file, not a Next route. Hidden until
+              public/resume.pdf exists (see app/layout.tsx). */}
+          {hasResume && (
+            <div className="hidden md:block">
+              <Magnetic strength={6}>
+                <a
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-hairline px-4 py-1.5 text-sm text-frost transition-colors hover:border-glow/60"
+                >
+                  Resume
+                </a>
+              </Magnetic>
+            </div>
+          )}
 
           {/* Mobile menu toggle — this is the fix: nav is now reachable on mobile at all */}
           <button
@@ -194,7 +200,7 @@ export function Navbar() {
               {[
                 { href: '/', label: 'Home' },
                 ...NAV_LINKS,
-                { href: '/resume.pdf', label: 'Resume' },
+                ...(hasResume ? [{ href: '/resume.pdf', label: 'Resume' }] : []),
               ].map((link, i) => (
                 <motion.li
                   key={link.href}
@@ -202,9 +208,21 @@ export function Navbar() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <Link href={link.href} onClick={() => setOpen(false)} className="text-frost">
-                    {link.label}
-                  </Link>
+                  {link.href.endsWith('.pdf') ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setOpen(false)}
+                      className="text-frost"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link href={link.href} onClick={() => setOpen(false)} className="text-frost">
+                      {link.label}
+                    </Link>
+                  )}
                 </motion.li>
               ))}
             </ul>

@@ -8,9 +8,19 @@
 //    25 MiB, but a Release asset can be up to 2 GiB). Then paste that
 //    Release's download URL into `downloadUrl`.
 //
-// 2. Web apps (platform 'Web'). These open in the browser instead of being
-//    downloaded. Put the app's files in `public/<name>/index.html`, add a
-//    rewrite for `/<name>` in next.config.js, and set `openUrl` to `/<name>`.
+// 2. Web apps (platform 'Web'). Two ways to host them:
+//    - Static page: put the app's files in `public/<name>/index.html`, add a
+//      rewrite for `/<name>` in next.config.js, and set `openUrl` to `/<name>`.
+//    - Own server (a Python/Node app that cannot run on this site): see the
+//      yt-saver entry below. Its code sits in a folder in this repo, it runs on a
+//      server, and a rewrite in next.config.js shows it at /<name>.
+//      (`external: true` is for an app that stays on a completely different address.)
+//
+// Apps with `private: true` still show in the store, but their details page is
+// hidden from Google and they are left out of the sitemap and the structured data.
+//
+// The Android / Web toggle on the store is built from `platform`, so nothing
+// else needs to change when an app is added.
 //
 // Pages, sitemap and SEO schema all update from this list.
 
@@ -32,7 +42,7 @@ interface AppBase {
   /** Shown as-is, e.g. "1.0". Left out until the real version is known. */
   version?: string;
   /** Card icon. Defaults to the gallery icon. */
-  icon?: 'images' | 'calculator';
+  icon?: 'images' | 'calculator' | 'video';
   /** Other spellings people search for. Goes into the page's structured data. */
   alternateNames?: string[];
   /** Details-page <title>. Keep it under about 60 characters. */
@@ -43,6 +53,12 @@ interface AppBase {
   about?: string;
   /** Short numbered steps shown on the details page. */
   howItWorks?: string[];
+  /** schema.org applicationCategory for the structured data. Defaults to UtilitiesApplication. */
+  category?: string;
+  /** Keep this app's details page out of Google, the sitemap and the structured data. */
+  private?: boolean;
+  /** Replaces the default info box at the bottom of the details page. */
+  notice?: { title: string; body: string };
   keywords: string[];
 }
 
@@ -56,8 +72,12 @@ export interface AndroidApp extends AppBase {
 export interface WebApp extends AppBase {
   platform: 'Web';
   fileType: 'Web app';
-  /** Where the app opens. A same-site path such as '/hisaab'. */
+  /** Where the app opens: a same-site path such as '/hisaab', or a full https:// URL. */
   openUrl: string;
+  /** True when `openUrl` is on another site: opens in a new tab. */
+  external?: boolean;
+  /** True until the app is hosted. Shows "Coming soon" instead of an Open button. */
+  comingSoon?: boolean;
 }
 
 export type AppEntry = AndroidApp | WebApp;
@@ -73,6 +93,8 @@ export const apps: AppEntry[] = [
     fileType: 'APK',
     sizeLabel: '~64 MB',
     downloadUrl: `${RELEASE_BASE}/abhi-gallery-v1/abhi-gallery.apk`,
+    category: 'MultimediaApplication',
+    seoDescription: `Download Abhi Gallery, a normal and simple gallery app for Android, from the ${STORE_NAME} (${STORE_ALT_NAME}).`,
     keywords: [
       'Abhi Gallery',
       'Abhi Gallery app',
@@ -92,6 +114,7 @@ export const apps: AppEntry[] = [
     fileType: 'Web app',
     openUrl: '/hisaab',
     icon: 'calculator',
+    category: 'BusinessApplication',
     alternateNames: [
       'Hisab',
       'Hisaab App',
@@ -110,6 +133,10 @@ export const apps: AppEntry[] = [
       'Type the rate (RS) and press Enter.',
       'The line total is added to the grand total and the next line opens.',
     ],
+    notice: {
+      title: 'Your entries stay on your device',
+      body: "This app runs in your browser and saves entries only in that browser on this device. Nothing is sent to a server, and clearing the browser's site data will erase them.",
+    },
     keywords: [
       'Hisaab',
       'Hisab',
@@ -126,7 +153,40 @@ export const apps: AppEntry[] = [
       'piece rate calculator',
     ],
   },
+  {
+    // The code lives in /yt-saver (a Python app: Flask + ffmpeg). It cannot run
+    // inside this Next.js site, so it runs on a server and the site forwards
+    // /yt-saver to it. Set YT_SAVER_URL in the site's environment variables to
+    // switch it on (see next.config.js and yt-saver/README.md). Until then the
+    // card shows "Coming soon". Everything here is read when the site is built,
+    // so redeploy after changing the variable.
+    slug: 'yt-saver',
+    name: 'YT Saver',
+    tagline: 'Save a video in the quality you pick.',
+    description:
+      'YT Saver saves a video from a YouTube link, with a quality list from highest to lowest. Free to use, with fair-use limits on how many videos you can save per hour, how long they can be and how big the file is.',
+    platform: 'Web',
+    fileType: 'Web app',
+    openUrl: '/yt-saver',
+    comingSoon: !process.env.YT_SAVER_URL,
+    private: true, // keep the tool's own page out of Google
+    icon: 'video',
+    category: 'MultimediaApplication',
+    howItWorks: [
+      'Paste a YouTube link and press "Find qualities".',
+      'Pick a quality and press "Save video".',
+      'Wait for the file to finish, then save it.',
+    ],
+    notice: {
+      title: 'Use it fairly',
+      body: 'Only save videos you own, that are licensed for reuse, or that you have permission to download. Downloading other people\'s videos may break YouTube\'s Terms of Service or copyright law. Limits apply per visitor, and the service can stop working if YouTube blocks it.',
+    },
+    keywords: [],
+  },
 ];
+
+/** Apps that may appear in Google, the sitemap and structured data. */
+export const publicApps = apps.filter((a) => !a.private);
 
 export function getApp(slug: string) {
   return apps.find((a) => a.slug === slug);

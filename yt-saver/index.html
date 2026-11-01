@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Video Saver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:#E9EDF2; --card:#FFFFFF; --ink:#101828; --muted:#5B6677; --rule:#C7CFDA;
+    --cobalt:#1F3DFF; --cobalt-soft:#DCE2FF; --error:#B42318; --ok:#067647;
+    box-sizing:border-box;
+  }
+  *, *::before, *::after { box-sizing:inherit; }
+  html { background:var(--paper); }
+  body { margin:0; color:var(--ink); line-height:1.5; min-height:100vh;
+    font-family:"Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:620px; margin:0 auto; padding:48px 20px 80px; }
+  h1 { font-size:clamp(2.2rem,7vw,3.4rem); line-height:1.02; letter-spacing:-0.03em; font-weight:800; margin:0 0 12px; }
+  .lead { color:var(--muted); margin:0 0 32px; max-width:46ch; }
+  .field { display:flex; gap:8px; }
+  input[type="url"] { flex:1; min-width:0; font:inherit; padding:14px 16px; border:2px solid var(--ink);
+    border-radius:10px; background:var(--card); color:var(--ink); }
+  button { font:inherit; cursor:pointer; }
+  .btn { border:2px solid var(--ink); background:var(--ink); color:#fff; padding:14px 20px; border-radius:10px; font-weight:600; }
+  .btn:disabled { opacity:.55; cursor:wait; }
+  .btn.ghost { background:transparent; color:var(--ink); }
+  :focus-visible { outline:3px solid var(--cobalt); outline-offset:2px; }
+  .msg { margin:14px 0 0; min-height:1.5em; color:var(--muted); }
+  .msg.error { color:var(--error); font-weight:600; }
+  [hidden] { display:none !important; }
+
+  /* skeleton loading */
+  .skel { display:grid; gap:10px; margin-top:28px; }
+  .skel div { height:52px; border-radius:10px; background:linear-gradient(90deg,#dde2ea 25%,#eef1f5 50%,#dde2ea 75%);
+    background-size:200% 100%; animation:shimmer 1.2s linear infinite; }
+  .skel div:first-child { height:72px; }
+  @keyframes shimmer { to { background-position:-200% 0; } }
+
+  #result { margin-top:28px; }
+  .video { display:flex; gap:14px; align-items:center; margin-bottom:24px; }
+  .video img { width:128px; aspect-ratio:16/9; object-fit:cover; border-radius:8px; background:var(--rule); flex:none; }
+  .video h2 { font-size:1.05rem; line-height:1.3; margin:0 0 4px; font-weight:600; }
+  .video p { margin:0; color:var(--muted); font-size:.9rem; }
+
+  .ladder-title { font-weight:600; margin:0 0 10px; }
+  .ladder { display:grid; gap:8px; }
+  .rung { display:grid; grid-template-columns:5.2rem 1fr auto; gap:14px; align-items:center; width:100%; text-align:left;
+    padding:12px 14px; border-radius:10px; background:var(--card); border:2px solid transparent; color:var(--ink); }
+  .rung:hover { border-color:var(--rule); }
+  .rung[aria-checked="true"] { border-color:var(--cobalt); background:var(--cobalt-soft); }
+  .rung .res { font-weight:800; font-size:1.15rem; letter-spacing:-0.01em; }
+  .rung .res small { font-weight:600; color:var(--cobalt); font-size:.72rem; margin-left:4px; }
+  .bar { height:8px; border-radius:4px; background:var(--rule); overflow:hidden; }
+  .bar i { display:block; height:100%; background:var(--cobalt); border-radius:4px; }
+  .rung .size { color:var(--muted); font-size:.85rem; min-width:4.5rem; text-align:right; }
+  .rung.audio { margin-top:8px; }
+  .rung.audio .bar { visibility:hidden; }
+  .hint { font-size:.82rem; color:var(--muted); margin:10px 0 0; }
+
+  #save { width:100%; margin-top:20px; background:var(--cobalt); border-color:var(--cobalt); font-size:1.05rem; }
+
+  /* progress card */
+  .prog { margin-top:20px; background:var(--card); border-radius:14px; padding:18px; }
+  .prog .state { font-weight:800; font-size:1.15rem; margin:0 0 12px; }
+  .track { height:12px; border-radius:6px; background:var(--rule); overflow:hidden; position:relative; }
+  .track i { display:block; height:100%; width:0; background:var(--cobalt); border-radius:6px; transition:width .5s ease; }
+  .track.wait i { width:35%; animation:slide 1.1s ease-in-out infinite alternate; }
+  @keyframes slide { from { margin-left:0; } to { margin-left:65%; } }
+  .prog .detail { margin:10px 0 0; color:var(--muted); font-size:.9rem; min-height:1.4em; }
+  .prog .row { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .prog .row .btn { flex:1; padding:12px 16px; text-align:center; text-decoration:none; }
+  .prog.done .state { color:var(--ok); }
+  .prog.fail .state { color:var(--error); }
+  a.btn { display:inline-block; }
+
+  /* playlist */
+  #plist { margin-top:28px; }
+  .phead h2 { font-size:1.15rem; margin:0 0 4px; font-weight:800; }
+  .phead p { margin:0 0 16px; color:var(--muted); font-size:.9rem; }
+  .bulk { display:flex; flex-wrap:wrap; gap:8px; align-items:center; background:var(--card); border-radius:12px; padding:12px; margin-bottom:12px; }
+  .bulk label { font-weight:600; font-size:.9rem; display:flex; gap:8px; align-items:center; flex:1 1 220px; }
+  .bulk select { flex:1; }
+  select { font:inherit; padding:9px 10px; border:2px solid var(--ink); border-radius:8px; background:var(--card); color:var(--ink); min-width:0; }
+  .btn.small { padding:9px 14px; font-size:.9rem; }
+  .plrows { display:grid; gap:8px; max-height:60vh; overflow:auto; padding-right:2px; }
+  .pl-row { display:grid; grid-template-columns:auto 84px 1fr; gap:10px; align-items:center; background:var(--card); border-radius:10px; padding:10px; }
+  .pl-row img { width:84px; aspect-ratio:16/9; object-fit:cover; border-radius:6px; background:var(--rule); }
+  .pl-row input[type=checkbox] { width:20px; height:20px; accent-color:var(--cobalt); }
+  .pl-title { font-weight:600; font-size:.92rem; line-height:1.3; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .pl-sub { color:var(--muted); font-size:.8rem; margin-top:2px; }
+  .pl-ctl { grid-column:2 / 4; display:flex; gap:8px; align-items:center; }
+  .pl-ctl select { flex:1; }
+  .pl-ctl a.btn { padding:9px 14px; font-size:.9rem; text-decoration:none; }
+  .track.mini { height:6px; margin-top:6px; }
+  .pl-row.done .pl-sub { color:var(--ok); font-weight:600; }
+  .pl-row.error .pl-sub { color:var(--error); font-weight:600; }
+  #pdl { width:100%; margin-top:16px; background:var(--cobalt); border-color:var(--cobalt); font-size:1.05rem; }
+  .linkbtn { background:none; border:0; padding:0; color:var(--cobalt); font:inherit; font-weight:600; text-decoration:underline; }
+  .logout { position:fixed; top:14px; right:16px; background:none; border:0; color:var(--muted); font-weight:600; padding:8px; }
+  .note { margin-top:36px; font-size:.82rem; color:var(--muted); max-width:60ch; }
+  @media (max-width:480px) {
+    .field { flex-direction:column; }
+    .video { flex-direction:column; align-items:flex-start; }
+    .video img { width:100%; }
+    .rung { grid-template-columns:4.6rem 1fr auto; gap:10px; }
+  }
+  @media (prefers-reduced-motion:reduce) { .skel div, .track.wait i { animation:none; } .track i { transition:none; } }
+</style>
+</head>
+<body>
+<button id="logout" class="logout">Log out</button>
+<main>
+  <h1>Save a video.<br>Pick the quality.</h1>
+  <p class="lead">Paste a YouTube link, choose a resolution from highest to lowest, and save it to your device.</p>
+
+  <div class="field">
+    <input id="url" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" aria-label="YouTube link">
+    <button id="check" class="btn">Find qualities</button>
+  </div>
+  <p id="msg" class="msg" role="status"></p>
+
+  <div id="skel" class="skel" hidden><div></div><div></div><div></div><div></div></div>
+
+  <section id="result" hidden>
+    <div class="video">
+      <img id="thumb" alt="">
+      <div><h2 id="title"></h2><p id="meta"></p></div>
+    </div>
+
+    <p class="ladder-title">Quality (highest first)</p>
+    <div id="ladder" class="ladder" role="radiogroup" aria-label="Video quality"></div>
+    <p id="hint" class="hint" hidden>1440p and 4K use a newer format that some older phones can't play. Pick 1080p for the widest compatibility.</p>
+
+    <p id="plhint" class="hint" hidden>This link is also part of a playlist. <button id="loadpl" class="linkbtn" type="button">Load the full playlist</button></p>
+
+    <button id="save" class="btn">Save video</button>
+
+    <div id="prog" class="prog" hidden>
+      <p id="pstate" class="state">Starting…</p>
+      <div id="track" class="track wait"><i id="pbar"></i></div>
+      <p id="pdetail" class="detail"></p>
+      <div class="row">
+        <button id="cancel" class="btn ghost">Cancel</button>
+        <a id="again" class="btn" hidden>Save file</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="plist" hidden>
+    <div class="phead"><h2 id="ptitle"></h2><p id="pmeta"></p></div>
+
+    <div class="bulk">
+      <label>Same quality for all <select id="allq" aria-label="Quality to apply to all videos"></select></label>
+      <button id="applyall" class="btn ghost small" type="button">Apply to all</button>
+      <button id="togglesel" class="btn ghost small" type="button">Select none</button>
+    </div>
+
+    <div id="plrows" class="plrows"></div>
+    <button id="pdl" class="btn">Download selected</button>
+
+    <div id="bprog" class="prog" hidden>
+      <p id="bstate" class="state">Starting…</p>
+      <div id="btrack" class="track wait"><i id="bbar"></i></div>
+      <p id="bdetail" class="detail"></p>
+      <div class="row">
+        <button id="bcancel" class="btn ghost">Cancel</button>
+        <button id="bsaveall" class="btn" hidden>Save all finished</button>
+      </div>
+    </div>
+  </section>
+
+  <p id="limits" class="note" hidden></p>
+  <p class="note">Only save videos you own, that are licensed for reuse, or that you have permission to download. Downloading others' videos may break YouTube's Terms of Service or copyright law.</p>
+</main>
+
+<script>
+  const BASE = (location.pathname === "/yt-saver" || location.pathname.startsWith("/yt-saver/")) ? "/yt-saver" : "";  // served at arvish.xyz/yt-saver, or at / when run on its own
+  const $ = (id) => document.getElementById(id);
+  const urlInput = $("url"), checkBtn = $("check"), saveBtn = $("save"), msg = $("msg");
+  let currentUrl = "", selected = null, expected = {}, jobId = null, polling = false, publicMode = false;
+
+  const say = (t, err = false) => { msg.textContent = t; msg.className = "msg" + (err ? " error" : ""); };
+  const fmtSize = (b) => !b ? "—" : (b / 1048576 >= 1024 ? (b / 1073741824).toFixed(1) + " GB" : Math.round(b / 1048576) + " MB");
+  const fmtTime = (s) => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+    return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(x).padStart(2, "0"); };
+  const tag = (h) => h >= 2160 ? "4K" : h >= 1440 ? "2K" : h >= 720 ? "HD" : "";
+  const toLogin = () => { location.href = BASE + "/login"; };
+
+  function select(value) {
+    selected = value;
+    document.querySelectorAll(".rung").forEach((el) => el.setAttribute("aria-checked", el.dataset.value === String(value)));
+    $("hint").hidden = !(value !== "audio" && Number(value) > 1080);
+  }
+
+  function rung(value, label, small, size, pct, cls = "") {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "rung " + cls; b.dataset.value = value;
+    b.setAttribute("role", "radio");
+    b.innerHTML = `<span class="res">${label}<small>${small}</small></span>
+      <span class="bar"><i style="width:${pct}%"></i></span><span class="size">${fmtSize(size)}</span>`;
+    b.addEventListener("click", () => select(value));
+    return b;
+  }
+
+  async function findQualities() {
+    const url = urlInput.value.trim();
+    if (!url) return say("Paste a YouTube link first.", true);
+    let u = null; try { u = new URL(url); } catch (e) {}
+    if (u && u.pathname.startsWith("/playlist")) {   // a pure playlist link
+      return publicMode ? say("Playlists are not available in the free version. Paste a single video link.", true) : loadPlaylist(url);
+    }
+    $("plist").hidden = true; $("plhint").hidden = true;
+    checkBtn.disabled = true; $("result").hidden = true; $("skel").hidden = false;
+    say("Reading video…");
+    try {
+      const r = await fetch(BASE + "/api/info", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
+      if (r.status === 401) return toLogin();
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Something went wrong.");
+
+      currentUrl = url; expected = {};
+      $("thumb").src = d.thumbnail; $("title").textContent = d.title;
+      $("meta").textContent = [d.channel, d.duration ? fmtTime(d.duration) : ""].filter(Boolean).join(" · ");
+
+      const ladder = $("ladder"); ladder.innerHTML = "";
+      const top = d.qualities.length ? d.qualities[0].height : 1;
+      d.qualities.forEach((q) => { expected[q.height] = q.size;
+        ladder.appendChild(rung(q.height, q.height + "p", tag(q.height), q.size, Math.max(8, q.height / top * 100))); });
+      expected.audio = d.audio_size;
+      ladder.appendChild(rung("audio", "Audio", "M4A", d.audio_size, 0, "audio"));
+
+      select(d.qualities.length ? d.qualities[0].height : "audio");
+      resetProgress();
+      $("plhint").hidden = publicMode || !(u && u.searchParams.get("list"));   // video link that also has a playlist
+      $("result").hidden = false; say("");
+    } catch (e) { say(e.message, true); }
+    finally { checkBtn.disabled = false; $("skel").hidden = true; }
+  }
+
+  /* ---------- download with live progress ---------- */
+  function resetProgress() { $("prog").hidden = true; $("prog").className = "prog"; saveBtn.hidden = false; saveBtn.disabled = false; jobId = null; polling = false; }
+
+  function setProgress(state, pct, detail) {
+    $("pstate").textContent = state; $("pdetail").textContent = detail || "";
+    const wait = !pct;
+    $("track").className = "track" + (wait ? " wait" : "");
+    $("pbar").style.width = wait ? "" : pct + "%";
+  }
+
+  async function save() {
+    if (!currentUrl || selected === null) return;
+    saveBtn.hidden = true; $("prog").hidden = false; $("prog").className = "prog";
+    $("again").hidden = true; $("cancel").hidden = false; $("cancel").disabled = false;
+    setProgress("Starting…", 0, "Getting things ready");
+    try {
+      const r = await fetch(BASE + "/api/start", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: currentUrl, quality: String(selected), expected: expected[selected] || 0 }) });
+      if (r.status === 401) return toLogin();
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Could not start.");
+      jobId = d.id; polling = true; poll(0);
+    } catch (e) { fail(e.message); }
+  }
+
+  function fail(text) {
+    polling = false; $("prog").className = "prog fail"; $("cancel").hidden = true;
+    setProgress("Failed", 100, text); $("track").className = "track";
+    saveBtn.hidden = false; saveBtn.textContent = "Try again";
+  }
+
+  async function poll(errors) {
+    if (!polling || !jobId) return;
+    try {
+      const r = await fetch(BASE + "/api/status/" + jobId);
+      if (r.status === 401) return toLogin();
+      const s = await r.json();
+      if (!r.ok) return fail(s.error || "Job expired. Start again.");
+
+      if (s.state === "queued" || (s.state === "downloading" && !s.percent)) {
+        setProgress("Starting…", 0, "Connecting to YouTube");
+      } else if (s.state === "downloading") {
+        const sp = s.speed ? (s.speed / 1048576).toFixed(1) + " MB/s" : "";
+        const eta = s.eta != null ? fmtTime(s.eta) + " left" : "";
+        setProgress("Downloading " + Math.round(s.percent) + "%", s.percent, [sp, eta].filter(Boolean).join(" · "));
+      } else if (s.state === "merging") {
+        setProgress("Finishing up…", 99.5, "Joining video and audio");
+      } else if (s.state === "done") {
+        polling = false; $("prog").className = "prog done"; $("cancel").hidden = true;
+        setProgress("Ready", 100, s.filename);
+        const a = $("again"); a.href = BASE + "/api/file/" + jobId; a.hidden = false;
+        saveBtn.hidden = false; saveBtn.textContent = "Save another quality";
+        a.click(); // starts the browser download (streams from the server, no memory use)
+        return;
+      } else if (s.state === "cancelled") {
+        polling = false; resetProgress(); saveBtn.textContent = "Save video"; say("Cancelled."); return;
+      } else if (s.state === "error") {
+        return fail(s.error || "Download failed.");
+      }
+      setTimeout(() => poll(0), 800);
+    } catch (e) {
+      if (errors >= 6) return fail("Lost connection to the server.");
+      setTimeout(() => poll(errors + 1), 1500);
+    }
+  }
+
+  /* ---------- playlists ---------- */
+  const PL_QUALITIES = [["2160", "Best (up to 4K)"], ["1440", "1440p"], ["1080", "1080p"], ["720", "720p"],
+    ["480", "480p"], ["360", "360p"], ["240", "240p"], ["144", "144p"], ["audio", "Audio only (M4A)"]];
+  let plVideos = [], batchId = null, bpolling = false, saved = new Set(), saveQueue = [], draining = false;
+
+  function qSelect(cls, value) {
+    const sel = document.createElement("select"); if (cls) sel.className = cls;
+    PL_QUALITIES.forEach(([v, label]) => { const o = document.createElement("option"); o.value = v; o.textContent = label; sel.appendChild(o); });
+    sel.value = value; return sel;
+  }
+  const rows = () => Array.from(document.querySelectorAll(".pl-row"));
+  function updateCount() {
+    const n = rows().filter((r) => r.querySelector("input").checked).length;
+    $("pdl").textContent = "Download selected (" + n + ")"; $("pdl").disabled = !n || bpolling;
+    $("togglesel").textContent = n === rows().length ? "Select none" : "Select all";
+  }
+  function setBusy(b) {
+    rows().forEach((r) => { r.querySelector("input").disabled = b; r.querySelector("select").disabled = b; });
+    ["applyall", "togglesel", "allq"].forEach((id) => { $(id).disabled = b; });
+  }
+
+  async function loadPlaylist(url) {
+    checkBtn.disabled = true; $("result").hidden = true; $("plist").hidden = true; $("skel").hidden = false;
+    say("Reading playlist…");
+    try {
+      const r = await fetch(BASE + "/api/playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
+      if (r.status === 401) return toLogin();
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Something went wrong.");
+      plVideos = d.videos; batchId = null; bpolling = false; saved = new Set(); saveQueue = [];
+      $("ptitle").textContent = d.title;
+      $("pmeta").textContent = [d.channel, d.videos.length + " videos" + (d.truncated ? " (first " + d.videos.length + " of " + d.total + ")" : "")].filter(Boolean).join(" · ");
+
+      const allq = $("allq"); allq.innerHTML = "";
+      PL_QUALITIES.forEach(([v, label]) => { const o = document.createElement("option"); o.value = v; o.textContent = label; allq.appendChild(o); });
+      allq.value = "1080";
+
+      const box = $("plrows"); box.innerHTML = "";
+      d.videos.forEach((v, i) => {
+        const row = document.createElement("div"); row.className = "pl-row"; row.dataset.idx = i;
+        const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = true; cb.setAttribute("aria-label", "Include " + v.title);
+        cb.addEventListener("change", updateCount);
+        const img = document.createElement("img"); img.src = v.thumb; img.alt = ""; img.loading = "lazy";
+        const info = document.createElement("div");
+        const t = document.createElement("div"); t.className = "pl-title"; t.textContent = (i + 1) + ". " + v.title;
+        const sub = document.createElement("div"); sub.className = "pl-sub"; sub.textContent = v.duration ? fmtTime(v.duration) : "";
+        sub.dataset.base = sub.textContent;
+        const tr = document.createElement("div"); tr.className = "track mini"; tr.hidden = true; tr.innerHTML = "<i></i>";
+        info.append(t, sub, tr);
+        const ctl = document.createElement("div"); ctl.className = "pl-ctl";
+        const save = document.createElement("a"); save.className = "btn"; save.textContent = "Save"; save.hidden = true;
+        ctl.append(qSelect("", "1080"), save);
+        row.append(cb, img, info, ctl);
+        box.appendChild(row);
+      });
+      $("bprog").hidden = true; $("pdl").hidden = false; setBusy(false); updateCount();
+      $("plist").hidden = false; say("");
+    } catch (e) { say(e.message, true); }
+    finally { checkBtn.disabled = false; $("skel").hidden = true; }
+  }
+
+  function applyAll() { const v = $("allq").value; rows().forEach((r) => { r.querySelector("select").value = v; }); }
+  function toggleSel() {
+    const all = rows().every((r) => r.querySelector("input").checked);
+    rows().forEach((r) => { r.querySelector("input").checked = !all; }); updateCount();
+  }
+
+  async function startBatch() {
+    const items = rows().filter((r) => r.querySelector("input").checked).map((r) => {
+      const v = plVideos[Number(r.dataset.idx)];
+      return { id: v.id, title: v.title, quality: r.querySelector("select").value, _row: r };
+    });
+    if (!items.length) return say("Select at least one video.", true);
+    say("");
+    try {
+      const r = await fetch(BASE + "/api/batch/start", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: items.map(({ id, title, quality }) => ({ id, title, quality })) }) });
+      if (r.status === 401) return toLogin();
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Could not start.");
+      batchId = d.id; bpolling = true; saved = new Set(); saveQueue = [];
+      batchRows = items.map((it) => it._row);
+      rows().forEach((row) => { const a = row.querySelector("a.btn"); a.hidden = true; row.className = "pl-row"; });
+      setBusy(true); updateCount();
+      $("bprog").hidden = false; $("bprog").className = "prog"; $("bcancel").hidden = false; $("bcancel").disabled = false; $("bsaveall").hidden = true;
+      pollBatch(0);
+    } catch (e) { say(e.message, true); }
+  }
+  let batchRows = [];
+
+  function triggerSave(jid) {
+    const a = document.createElement("a"); a.href = BASE + "/api/file/" + jid; a.download = ""; a.style.display = "none";
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  function drainSaves() {
+    if (draining) return; draining = true;
+    const next = () => { const jid = saveQueue.shift(); if (!jid) { draining = false; return; } triggerSave(jid); setTimeout(next, 900); };
+    next();
+  }
+
+  const sstr = (s) => s.speed ? (s.speed / 1048576).toFixed(1) + " MB/s" : "";
+  async function pollBatch(errors) {
+    if (!bpolling || !batchId) return;
+    try {
+      const r = await fetch(BASE + "/api/batch/" + batchId);
+      if (r.status === 401) return toLogin();
+      const d = await r.json();
+      if (!r.ok) { bpolling = false; setBusy(false); updateCount(); $("bprog").className = "prog fail"; return setBatchProgress("Failed", 100, d.error || "Batch expired."); }
+
+      let done = 0, failed = 0, current = null, curPct = 0;
+      d.items.forEach((it, i) => {
+        const row = batchRows[i]; if (!row) return;
+        const sub = row.querySelector(".pl-sub"), tr = row.querySelector(".track"), bar = tr.firstChild, a = row.querySelector("a.btn");
+        row.className = "pl-row";
+        if (it.state === "downloading" || it.state === "queued") {
+          current = current || it; curPct = it.percent; tr.hidden = false; bar.style.width = it.percent + "%";
+          sub.textContent = it.percent ? "Downloading " + Math.round(it.percent) + "%" + (sstr(it) ? " · " + sstr(it) : "") : "Starting…";
+        } else if (it.state === "merging") {
+          current = current || it; curPct = 99; tr.hidden = false; bar.style.width = "99.5%"; sub.textContent = "Finishing up…";
+        } else if (it.state === "done") {
+          done++; tr.hidden = true; row.classList.add("done"); sub.textContent = "Ready ✓";
+          a.href = BASE + "/api/file/" + it.jid; a.hidden = false;
+          if (!saved.has(it.jid)) { saved.add(it.jid); saveQueue.push(it.jid); drainSaves(); }
+        } else if (it.state === "error") {
+          failed++; tr.hidden = true; row.classList.add("error"); sub.textContent = "Failed: " + (it.error || "download error");
+        } else if (it.state === "cancelled") { tr.hidden = true; sub.textContent = "Cancelled"; }
+        else if (it.state === "expired") { tr.hidden = true; sub.textContent = "File expired (30 min). Download again."; }
+        else { tr.hidden = true; sub.textContent = "Waiting…"; }
+      });
+
+      const total = d.items.length;
+      $("bsaveall").hidden = done === 0;
+      if (d.state === "running") {
+        const idx = d.items.indexOf(current) + 1;
+        setBatchProgress("Downloading " + Math.max(idx, done + 1) + " of " + total, ((done + failed + curPct / 100) / total) * 100,
+          done + " done" + (failed ? " · " + failed + " failed" : "") + (current ? " · " + (current.title || "") : ""));
+        setTimeout(() => pollBatch(0), 1000);
+      } else {
+        bpolling = false; setBusy(false); updateCount(); $("bcancel").hidden = true;
+        $("bprog").className = "prog " + (failed && !done ? "fail" : "done");
+        setBatchProgress(d.state === "cancelled" ? "Cancelled" : "Finished", 100,
+          done + " of " + total + " saved" + (failed ? " · " + failed + " failed" : ""));
+        $("btrack").className = "track";
+        $("pdl").textContent = "Download selected again";
+      }
+    } catch (e) {
+      if (errors >= 6) { bpolling = false; setBusy(false); updateCount(); $("bprog").className = "prog fail"; return setBatchProgress("Failed", 100, "Lost connection to the server."); }
+      setTimeout(() => pollBatch(errors + 1), 1500);
+    }
+  }
+  function setBatchProgress(state, pct, detail) {
+    $("bstate").textContent = state; $("bdetail").textContent = detail || "";
+    const wait = !pct; $("btrack").className = "track" + (wait ? " wait" : ""); $("bbar").style.width = wait ? "" : pct + "%";
+  }
+
+  $("applyall").addEventListener("click", applyAll);
+  $("togglesel").addEventListener("click", toggleSel);
+  $("pdl").addEventListener("click", startBatch);
+  $("loadpl").addEventListener("click", () => loadPlaylist(urlInput.value.trim()));
+  $("bcancel").addEventListener("click", async () => {
+    $("bcancel").disabled = true; setBatchProgress("Cancelling…", 0, "");
+    if (batchId) await fetch(BASE + "/api/batch/" + batchId + "/cancel", { method: "POST" });
+  });
+  $("bsaveall").addEventListener("click", () => {
+    document.querySelectorAll(".pl-row a.btn:not([hidden])").forEach((a) => { const jid = a.getAttribute("href").split("/").pop(); saveQueue.push(jid); });
+    drainSaves();
+  });
+
+  // Ask the server how it is set up. In the free/public version there is no login,
+  // so hide Log out and show the limits. When a login is needed this just returns 401 and is ignored.
+  fetch(BASE + "/api/config").then((r) => (r.ok ? r.json() : null)).then((c) => {
+    if (!c || !c.public) return;
+    publicMode = true; $("logout").hidden = true;
+    $("limits").textContent = "Free to use, with limits: " + c.per_hour + " saves per hour, videos up to " + c.max_minutes +
+      " minutes and " + c.max_file_mb + " MB, up to " + c.max_height + "p. Playlists are not available.";
+    $("limits").hidden = false;
+  }).catch(() => {});
+
+  checkBtn.addEventListener("click", findQualities);
+  urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") findQualities(); });
+  saveBtn.addEventListener("click", () => { saveBtn.textContent = "Save video"; save(); });
+  $("cancel").addEventListener("click", async () => {
+    $("cancel").disabled = true; setProgress("Cancelling…", 0, "");
+    if (jobId) await fetch(BASE + "/api/cancel/" + jobId, { method: "POST" });
+  });
+  $("logout").addEventListener("click", async () => { await fetch(BASE + "/logout", { method: "POST" }); toLogin(); });
+</script>
+</body>
+</html>

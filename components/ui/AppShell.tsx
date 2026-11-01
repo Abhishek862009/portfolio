@@ -32,16 +32,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Render nothing for one tick rather than flashing content before we
-  // know whether the loader should show.
-  if (loading === null) return null;
-
+  // The page is always rendered, including on the server, so Google, link
+  // previews and no-JS visitors get real HTML. (This used to `return null`
+  // until the effect above ran, which sent every page to the server as an
+  // empty body.)
+  //
+  // The wrapper stays invisible until we know whether the loader should show,
+  // so first-time visitors never see a flash of the page before the loader.
+  // `key` remounts the page when the loader finishes, so Hero's mount
+  // animation starts at exactly that moment, as before.
   return (
     <>
       <AnimatePresence mode="wait">
         {loading && <LoadingScreen key="loader" />}
       </AnimatePresence>
-      {!loading && children}
+      <div
+        key={loading ? 'loading' : 'ready'}
+        data-shell={loading === false ? 'ready' : 'pending'}
+        style={loading === false ? undefined : { visibility: 'hidden' }}
+      >
+        {children}
+      </div>
+      {/* Without JavaScript the effect never runs, so show the page. */}
+      <noscript>
+        <style dangerouslySetInnerHTML={{ __html: '[data-shell=pending]{visibility:visible!important}' }} />
+      </noscript>
       <CustomCursor />
     </>
   );

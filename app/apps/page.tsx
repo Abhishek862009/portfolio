@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-import { apps, SITE_URL, STORE_NAME, STORE_ALT_NAME, STORE_PATH } from '@/data/apps';
-import { AppCard } from '@/components/ui/AppCard';
+import { apps, publicApps, SITE_URL, STORE_NAME, STORE_ALT_NAME, STORE_PATH } from '@/data/apps';
+import { AppFilter } from '@/components/ui/AppFilter';
 import { Reveal } from '@/components/ui/Reveal';
 
 const TITLE = `${STORE_NAME} | ${STORE_ALT_NAME} – Apps by Abhishek`;
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'Abhishek Android apps',
     'Arvish APK',
     'Abhishek APK',
-    ...apps.flatMap((a) => a.keywords),
+    ...publicApps.flatMap((a) => a.keywords),
   ],
   alternates: { canonical: STORE_PATH },
   openGraph: {
@@ -49,7 +49,7 @@ const schema = {
       isPartOf: { '@type': 'WebSite', name: 'Abhishek', url: SITE_URL },
       mainEntity: {
         '@type': 'ItemList',
-        itemListElement: apps.map((app, i) => ({
+        itemListElement: publicApps.map((app, i) => ({
           '@type': 'ListItem',
           position: i + 1,
           url: `${SITE_URL}${STORE_PATH}/${app.slug}`,
@@ -83,13 +83,9 @@ export default function AppsPage() {
         </p>
       </Reveal>
 
-      <div className="mt-12 grid gap-6 md:grid-cols-2">
-        {apps.map((app, i) => (
-          <Reveal key={app.slug} delay={0.08 * i}>
-            <AppCard app={app} />
-          </Reveal>
-        ))}
-      </div>
+      <Reveal delay={0.08} className="mt-12">
+        <AppFilter apps={apps} />
+      </Reveal>
     </div>
   );
 }

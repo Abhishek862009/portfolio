@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { AppEntry } from '@/data/apps';
 import { STORE_PATH } from '@/data/apps';
 import { AppIcon } from '@/components/ui/AppIcon';
+import { ComingSoonBadge } from '@/components/ui/ComingSoonBadge';
 import { DownloadButton } from '@/components/ui/DownloadButton';
 import { OpenAppButton } from '@/components/ui/OpenAppButton';
 
@@ -47,8 +48,10 @@ export function AppCard({ app }: { app: AppEntry }) {
       <div className="mt-5 flex flex-wrap items-center gap-4">
         {app.platform === 'Android' ? (
           <DownloadButton href={app.downloadUrl} />
+        ) : app.comingSoon ? (
+          <ComingSoonBadge />
         ) : (
-          <OpenAppButton href={app.openUrl} />
+          <OpenAppButton href={app.openUrl} external={app.external} />
         )}
         <Link
           href={`${STORE_PATH}/${app.slug}`}

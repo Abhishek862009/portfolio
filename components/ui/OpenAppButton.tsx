@@ -5,6 +5,8 @@ interface OpenAppButtonProps {
   href: string;
   label?: string;
   size?: 'default' | 'large';
+  /** The app lives on another site: open it in a new tab. */
+  external?: boolean;
 }
 
 /**
@@ -13,13 +15,19 @@ interface OpenAppButtonProps {
  * page outside the Next router, so it needs a full page load, not client
  * navigation.
  */
-export function OpenAppButton({ href, label = 'Open app', size = 'default' }: OpenAppButtonProps) {
+export function OpenAppButton({
+  href,
+  label = 'Open app',
+  size = 'default',
+  external = false,
+}: OpenAppButtonProps) {
   const sizeClasses = size === 'large' ? 'px-6 py-3 text-base' : 'px-4 py-2 text-sm';
 
   return (
     <Magnetic strength={size === 'large' ? 6 : 4}>
       <a
         href={href}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className={`group inline-flex items-center gap-1.5 rounded-full border border-glow/40 bg-glow/10 font-medium text-frost transition-colors hover:border-glow/60 hover:bg-glow/20 ${sizeClasses}`}
       >
         {label}

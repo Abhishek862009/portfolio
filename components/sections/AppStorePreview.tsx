@@ -1,10 +1,10 @@
 import Link from 'next/link';
 
 import { apps, STORE_NAME, STORE_ALT_NAME, STORE_PATH } from '@/data/apps';
-import { AppCard } from '@/components/ui/AppCard';
+import { AppFilter } from '@/components/ui/AppFilter';
 
 // Homepage teaser for the /apps page. Same section rhythm as Projects and
-// Bidevlink (max-w-5xl, py-32, card grid).
+// Bidevlink (max-w-5xl, py-32, card grid), with the All / Android / Web toggle on top.
 export function AppStorePreview() {
   return (
     <section id="apps" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-32">
@@ -13,10 +13,8 @@ export function AppStorePreview() {
         The {STORE_ALT_NAME} — apps built by Abhishek, available to download or open directly.
       </p>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
-        {apps.map((app) => (
-          <AppCard key={app.slug} app={app} />
-        ))}
+      <div className="mt-10">
+        <AppFilter apps={apps} />
       </div>
 
       <Link

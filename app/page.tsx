@@ -9,20 +9,9 @@ import { AppStorePreview } from '@/components/sections/AppStorePreview';
 import { MyStartups } from '@/components/sections/MyStartups';
 import { Contact } from '@/components/sections/Contact';
 
-const personSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Abhishek',
-  url: 'https://www.arvish.xyz',
-  jobTitle: 'Software Developer',
-  sameAs: [
-    'https://github.com/Abhishek862009',
-    'https://www.linkedin.com/in/abhishek862009',
-  ],
-};
-
 // Navbar/main/Footer now live in app/layout.tsx so every route gets them —
-// this page only supplies the homepage's section content.
+// this page only supplies the homepage's section content. The Person
+// structured data lives in app/layout.tsx too (one copy for the whole site).
 export default function Home() {
   // Server-side check: the moment the real portrait lands at this exact
   // path, Hero switches from placeholder to photo automatically — no code
@@ -33,13 +22,6 @@ export default function Home() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(personSchema),
-        }}
-      />
-
       <Hero hasPhoto={hasPhoto} />
       <Timeline />
       <Skills />

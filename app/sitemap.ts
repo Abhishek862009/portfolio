@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 import { getAllPosts } from '@/lib/blog';
-import { apps } from '@/data/apps';
+import { publicApps } from '@/data/apps';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.9,
     },
-    ...apps.map((app) => ({
+    ...publicApps.map((app) => ({
       url: `https://www.arvish.xyz/apps/${app.slug}`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
