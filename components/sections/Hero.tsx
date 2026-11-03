@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { T } from '@/components/i18n/T';
 import { motion, useReducedMotion } from 'framer-motion';
 
 // Locked reveal sequence (blueprint Section 3):
@@ -138,7 +139,7 @@ export function Hero({ hasPhoto = false }: HeroProps) {
             variants={leadInVariant}
             className="block text-xs font-medium uppercase tracking-[0.4em] text-glow sm:text-sm"
           >
-            I am
+            <T en="I am" hi="मैं हूँ" />
           </motion.span>
 
           <motion.h1
@@ -152,18 +153,18 @@ export function Hero({ hasPhoto = false }: HeroProps) {
             variants={fadeUp}
             className="mt-3 text-sm font-medium tracking-wide text-glow/90"
           >
-            Also known as Arvish.
+            <T en="Also known as Arvish." hi="Arvish के नाम से भी जाना जाता हूँ।" />
           </motion.p>
 
           <motion.p
             variants={fadeUp}
             className="mt-6 text-xl font-medium text-frost/90"
           >
-            Curious by nature. Builder by choice.
+            <T en="Curious by nature. Builder by choice." hi="स्वभाव से जिज्ञासु। पसंद से बिल्डर।" />
           </motion.p>
 
           <motion.p variants={fadeUp} className="mt-3 text-base text-slate">
-            Software developer exploring the edges of AI.
+            <T en="Software developer exploring the edges of AI." hi="सॉफ़्टवेयर डेवलपर, जो AI की सीमाओं को खंगाल रहा है।" />
           </motion.p>
         </div>
       </motion.div>

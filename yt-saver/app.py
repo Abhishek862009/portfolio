@@ -30,26 +30,29 @@ PUBLIC_MODE = os.environ.get("PUBLIC_MODE", "0") == "1"
 _prefix = os.environ.get("URL_PREFIX", "").strip().strip("/")
 URL_PREFIX = "/" + _prefix if _prefix else ""
 
-# ---- Password (private mode) ----
-# Set APP_PASSWORD as an environment variable. Never put the real password in
-# this file: the GitHub repo is public, so anyone could read it.
-#
-# Only for running on your own phone/PC (Termux, 127.0.0.1) there is a
-# fallback so `bash start.sh` still works without any setup. On a server
-# (BEHIND_PROXY=1 or HOST other than 127.0.0.1) the app refuses to start
-# without a real APP_PASSWORD, so a public default can never be live.
-_LOCAL_ONLY_DEFAULT = "Abhishek862009"
+# ---- Password / local mode ----
+# Three ways to run it:
+#   local mode   (the normal way: your own phone/PC, nothing set): no login. The app only
+#                listens on 127.0.0.1, so only this device can open it (see local_guard below).
+#   private mode (APP_PASSWORD set): one shared password. This is REQUIRED as soon as the app
+#                can be reached from outside (HOST other than 127.0.0.1, or BEHIND_PROXY=1).
+#   public mode  (PUBLIC_MODE=1): no login, but every visitor has limits.
+# Set APP_PASSWORD as an environment variable. Never put a real password in this file: the
+# GitHub repo is public, so anyone could read it.
+_OLD_DEFAULT_PASSWORD = "Abhishek862009"  # the old built-in default; it is in the public repo, so it is never accepted
 APP_PASSWORD = os.environ.get("APP_PASSWORD", "").strip()
 _is_local = os.environ.get("BEHIND_PROXY") != "1" and os.environ.get("HOST", "127.0.0.1") in ("127.0.0.1", "localhost")
+LOCAL_MODE = False
+if APP_PASSWORD == _OLD_DEFAULT_PASSWORD:
+    sys.exit("APP_PASSWORD is the old default that is visible in the public repo. Choose a new one.")
 if PUBLIC_MODE:
     APP_PASSWORD = APP_PASSWORD or secrets.token_urlsafe(24)  # no login in public mode; only seeds the cookie key
 elif not APP_PASSWORD:
     if not _is_local:
         sys.exit("APP_PASSWORD is not set. Set it as an environment variable (a long, new password) and start again.")
-    APP_PASSWORD = _LOCAL_ONLY_DEFAULT
-    print("WARNING: using the built-in local password. Set APP_PASSWORD to choose your own.", flush=True)
-elif APP_PASSWORD == _LOCAL_ONLY_DEFAULT and not _is_local:
-    sys.exit("APP_PASSWORD is the old default that is visible in the public repo. Choose a new one.")
+    LOCAL_MODE = True
+    APP_PASSWORD = secrets.token_urlsafe(24)  # nobody logs in; only seeds the cookie key
+NO_LOGIN = PUBLIC_MODE or LOCAL_MODE
 
 app = Flask(__name__, static_folder=None)
 # Optional SECRET_KEY signs the login cookie. Without it, the key is derived
@@ -157,11 +160,31 @@ def login_required(api=False):
     def deco(fn):
         @wraps(fn)
         def wrapper(*a, **kw):
-            if not PUBLIC_MODE and not session.get("ok"):
+            if not NO_LOGIN and not session.get("ok"):
                 return (jsonify(error="Please log in."), 401) if api else redirect(URL_PREFIX + "/login")
             return fn(*a, **kw)
         return wrapper
     return deco
+
+
+# Local mode has no login, so these two checks are what stop a web page open in your browser
+# from talking to the app behind your back:
+#  - Host check: only 127.0.0.1 / localhost / ::1 are accepted ("DNS rebinding" protection).
+#  - Origin check: a POST that comes from another website is refused.
+_LOCAL_HOSTS = {"127.0.0.1", "localhost", "::1"}
+
+
+@app.before_request
+def local_guard():
+    if not LOCAL_MODE:
+        return None
+    host = urlparse("//" + (request.host or "")).hostname
+    if host not in _LOCAL_HOSTS:
+        return jsonify(error="Open this app at http://127.0.0.1:" + os.environ.get("PORT", "5000")), 400
+    origin = request.headers.get("Origin")
+    if request.method not in ("GET", "HEAD", "OPTIONS") and origin and urlparse(origin).netloc != request.host:
+        return jsonify(error="Blocked: this request came from another website."), 403
+    return None
 
 
 @app.after_request
@@ -191,14 +214,14 @@ def is_valid(url):
 # ---------------- Auth ----------------
 @app.get("/login")
 def login_page():
-    if PUBLIC_MODE or session.get("ok"):
+    if NO_LOGIN or session.get("ok"):
         return redirect(URL_PREFIX + "/")
     return send_from_directory(BASE, "login.html")
 
 
 @app.post("/login")
 def login():
-    if PUBLIC_MODE:
+    if NO_LOGIN:
         return jsonify(error="No login is needed."), 404
     ip = request.remote_addr or "unknown"
     wait = locked_for(ip)
@@ -332,10 +355,15 @@ def explain_error(e):
         if COOKIES_TEXT:
             return ("YouTube still asks to sign in, so the saved cookies look expired. "
                     "Export fresh cookies (README, step 'Cookies') and update YT_COOKIES.")
+        if LOCAL_MODE:
+            return ("YouTube is asking this network to prove it is not a bot. Wait a few minutes and try again, "
+                    "or switch network (for example your phone's mobile hotspot instead of shared Wi-Fi). "
+                    "If it keeps happening, add cookies (see README.md).")
         return ("YouTube is blocking this server's IP (it asks to prove you're not a bot). "
                 "Fix: add cookies (YT_COOKIES), use a proxy (YT_PROXY), or run this app on your phone/PC. See README.md.")
     if "ffmpeg" in t or "ffprobe" in t:
-        return "ffmpeg is missing. In Termux run: pkg install ffmpeg"
+        return ("ffmpeg is missing (it joins the video and audio). Install it, then restart this app. "
+                "Steps for your device: https://www.arvish.xyz/apps/yt-saver")
     if "429" in t or "too many requests" in t:
         return "YouTube is rate-limiting this server. Wait a few minutes and try again."
     if "failed to resolve" in t or "name or service not known" in t or "timed out" in t or "connection refused" in t:
@@ -690,7 +718,7 @@ def batch_cancel(bid):
 @login_required(api=True)
 def config():
     """What the page needs to know to show the right buttons and limits."""
-    return jsonify(public=PUBLIC_MODE, max_height=MAX_HEIGHT, max_minutes=MAX_MINUTES,
+    return jsonify(public=PUBLIC_MODE, login=not NO_LOGIN, max_height=MAX_HEIGHT, max_minutes=MAX_MINUTES,
                    max_file_mb=MAX_FILE_MB, per_hour=PER_HOUR)
 
 
@@ -704,7 +732,7 @@ def health():
     if PUBLIC_MODE and not (admin_key and hmac.compare_digest(request.args.get("key", ""), admin_key)):
         return jsonify(error="Not found."), 404
     return jsonify(
-        mode="public" if PUBLIC_MODE else "private",
+        mode="public" if PUBLIC_MODE else ("local" if LOCAL_MODE else "private"),
         yt_dlp=yt_dlp.version.__version__,
         js_runtimes=sorted(_runtimes),
         ffmpeg=bool(shutil.which("ffmpeg")),
@@ -762,5 +790,7 @@ def janitor():
 threading.Thread(target=janitor, daemon=True).start()
 
 if __name__ == "__main__":
-    app.run(host=os.environ.get("HOST", "127.0.0.1"), port=int(os.environ.get("PORT", "5000")),
-            debug=False, threaded=True)
+    _host, _port = os.environ.get("HOST", "127.0.0.1"), int(os.environ.get("PORT", "5000"))
+    print(f"\nYT Saver is running. Open this in your browser:  http://127.0.0.1:{_port}\n"
+          "(Press Ctrl+C in this window to stop it.)\n", flush=True)
+    app.run(host=_host, port=_port, debug=False, threaded=True)

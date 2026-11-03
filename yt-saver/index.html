@@ -478,8 +478,10 @@
   // Ask the server how it is set up. In the free/public version there is no login,
   // so hide Log out and show the limits. When a login is needed this just returns 401 and is ignored.
   fetch(BASE + "/api/config").then((r) => (r.ok ? r.json() : null)).then((c) => {
-    if (!c || !c.public) return;
-    publicMode = true; $("logout").hidden = true;
+    if (!c) return;
+    if (c.login === false) $("logout").hidden = true;   // local or public mode: there is no login, so no Log out
+    if (!c.public) return;
+    publicMode = true;
     $("limits").textContent = "Free to use, with limits: " + c.per_hour + " saves per hour, videos up to " + c.max_minutes +
       " minutes and " + c.max_file_mb + " MB, up to " + c.max_height + "p. Playlists are not available.";
     $("limits").hidden = false;

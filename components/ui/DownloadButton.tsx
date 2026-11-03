@@ -1,9 +1,12 @@
+import type { ReactNode } from 'react';
 import { Download } from 'lucide-react';
+
+import { T } from '@/components/i18n/T';
 import { Magnetic } from './Magnetic';
 
 interface DownloadButtonProps {
   href: string;
-  label?: string;
+  label?: ReactNode;
   size?: 'default' | 'large';
 }
 
@@ -14,7 +17,7 @@ interface DownloadButtonProps {
  */
 export function DownloadButton({
   href,
-  label = 'Download APK',
+  label = <T en="Download APK" hi="APK डाउनलोड करें" />,
   size = 'default',
 }: DownloadButtonProps) {
   const sizeClasses = size === 'large' ? 'px-6 py-3 text-base' : 'px-4 py-2 text-sm';

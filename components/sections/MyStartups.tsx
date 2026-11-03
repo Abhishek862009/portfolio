@@ -1,4 +1,5 @@
 import { startups } from '@/data/startups';
+import { T } from '@/components/i18n/T';
 import { ViewProjectButton } from '@/components/ui/ViewProjectButton';
 
 // Mirrors ProjectsPreview's card layout so the two sections read as one
@@ -15,9 +16,13 @@ export function MyStartups() {
             className="rounded-2xl border border-hairline bg-ink/40 p-6 transition-colors hover:border-glow/40"
           >
             <h3 className="text-lg font-medium text-frost">{startup.name}</h3>
-            <p className="mt-1 text-sm text-slate/80 italic">{startup.tagline}</p>
+            <p className="mt-1 text-sm text-slate/80 italic">
+              <T en={startup.tagline} hi={startup.hi?.tagline} />
+            </p>
 
-            <p className="mt-3 text-sm text-slate">{startup.description}</p>
+            <p className="mt-3 text-sm text-slate">
+              <T en={startup.description} hi={startup.hi?.description} />
+            </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {startup.stack.map((tech) => (

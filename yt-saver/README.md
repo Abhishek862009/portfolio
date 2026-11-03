@@ -1,102 +1,108 @@
-# yt-saver
+# YT Saver
 
-Paste a YouTube link, pick a quality, save the file. A small Flask app (Python + ffmpeg + yt-dlp).
+Paste a YouTube link, pick a quality from highest to lowest, save the file. A small Flask app
+(Python + ffmpeg + yt-dlp) that **runs on your own device**: Windows, Android (Termux), Linux or Mac.
 
-It lives in this repo so the code stays in one place, but it **cannot run on Vercel together with the
-Next.js site**: it needs ffmpeg and downloads that last minutes, while Vercel Functions are capped at
-300 s (Hobby) and 4.5 MB per request/response
-([Vercel limits](https://vercel.com/docs/functions/limitations)). So it runs on a server, and the
-site shows it at `https://www.arvish.xyz/yt-saver` by forwarding that path to the server.
-
-```
-browser ── arvish.xyz/yt-saver ──(Next.js rewrite)──> your yt-saver server  ──> YouTube
-```
+**Step-by-step setup for each device, in English and Hindi:**
+<https://www.arvish.xyz/apps/yt-saver>  
+The same guide as plain text (easy to paste into an AI assistant):
+<https://www.arvish.xyz/guides/yt-saver/en> · <https://www.arvish.xyz/guides/yt-saver/hi>
 
 Only save videos you own, that are licensed for reuse, or that you have permission to download.
+Downloading other people's videos may break YouTube's Terms of Service or copyright law.
 
-## Switch it on in the site
+## Why it runs on your device
 
-1. Run this app on a server (below) and note its address, e.g. `https://yt.example.com`.
-2. In the Vercel project of the site add the environment variable `YT_SAVER_URL=https://yt.example.com`
-   (no trailing slash) and **redeploy** (it is read at build time).
-3. On the server set `URL_PREFIX=/yt-saver`.
+YouTube often blocks the servers websites run on. I tried it from Vercel's servers: 1 of 7 different
+videos worked, the other 6 were refused with "Sign in to confirm you're not a bot". On your own device it
+uses your own home or mobile connection, which is rarely blocked. (Vercel Functions are also capped at
+300 s and 4.5 MB per request/response, see [Vercel limits](https://vercel.com/docs/functions/limitations),
+and have no ffmpeg.)
 
-The App Store card changes from "Coming soon" to "Open app" by itself.
+## Quick start (if you already have the tools)
 
-## Two modes
+You need Python 3.11+, ffmpeg and a JavaScript engine (Node.js 22+ or Deno 2.3+; yt-dlp needs one for
+YouTube, see the [yt-dlp EJS wiki](https://github.com/yt-dlp/yt-dlp/wiki/EJS)).
 
-| | Private (default) | Public (`PUBLIC_MODE=1`) |
-|---|---|---|
-| Login | one shared password (`APP_PASSWORD`) | none |
-| Limits | none | per visitor: `PER_HOUR` saves/hour (6), `INFO_PER_HOUR` look-ups/hour (40), one download at a time, videos up to `MAX_MINUTES` (30), files up to `MAX_FILE_MB` (700), up to `MAX_HEIGHT` p (1080) |
-| Playlists | yes | no |
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt     # Windows: .\.venv\Scripts\python.exe
+.venv/bin/python app.py                                  # then open http://127.0.0.1:5000
+```
 
-For "other users can use it", use public mode. The limits are kept in memory, so a restart resets them.
+## Modes
+
+| Mode | When | Login | Reachable from |
+|---|---|---|---|
+| **Local** (default) | you run it on your own device and set nothing | none | only that device (`127.0.0.1`) |
+| **Private** | `APP_PASSWORD` is set | one shared password | wherever you expose it |
+| **Public** | `PUBLIC_MODE=1` | none, per-visitor limits | wherever you expose it |
+
+In local mode the app listens on `127.0.0.1` only, answers only requests whose `Host` is `127.0.0.1` /
+`localhost`, and refuses cross-site requests (a web page you visit cannot make it download things).
 
 ### Environment variables
 
 | Variable | Used for |
 |---|---|
-| `PUBLIC_MODE` | `1` = public mode (above) |
-| `APP_PASSWORD` | private mode only. Required on a server. Must be a new password, never one that was in this repo |
-| `URL_PREFIX` | `/yt-saver` when served through the site |
-| `PROXY_HOPS` | how many proxies are in front of the app (default 1). **Check it**, see below |
+| `PORT` | port to listen on (default 5000) |
+| `HOST` | address to listen on (default `127.0.0.1`; only change it if you know why) |
+| `APP_PASSWORD` | private mode. Required if the app is not local. Must be a new password, never one that was in this repo |
+| `PUBLIC_MODE` | `1` = public mode |
+| `URL_PREFIX` | serve the app under a path such as `/yt-saver` |
+| `BEHIND_PROXY`, `PROXY_HOPS` | set `BEHIND_PROXY=1` behind a real proxy; `PROXY_HOPS` = how many proxies (default 1) |
 | `ADMIN_KEY` | lets you open `/api/health?key=...` in public mode |
-| `YT_COOKIES` / `YT_COOKIES_FILE`, `YT_PROXY` | getting past YouTube blocking a server's IP, see below |
+| `YT_COOKIES` / `YT_COOKIES_FILE`, `YT_PROXY` | see "When YouTube says 'confirm you're not a bot'" |
 | `SECRET_KEY` | optional, signs the login cookie (private mode) |
-| `MAX_HEIGHT`, `MAX_MINUTES`, `MAX_FILE_MB`, `PER_HOUR`, `INFO_PER_HOUR` | public-mode limits |
+| `MAX_HEIGHT`, `MAX_MINUTES`, `MAX_FILE_MB`, `PER_HOUR`, `INFO_PER_HOUR` | public-mode limits (defaults 1080 p, 30 min, 700 MB, 6 saves/hour, 40 look-ups/hour) |
 
-### Check `PROXY_HOPS` (important in public mode)
+## Keeping it working
 
-The per-visitor limits are keyed on the visitor's address. Behind the site's rewrite (and maybe a tunnel)
-the app only sees the address that the proxies pass on. After deploying, open
-`https://www.arvish.xyz/yt-saver/api/health?key=<ADMIN_KEY>` and look at `your_ip`:
+YouTube changes often, and an old yt-dlp is the most common reason saving breaks. Update it:
 
-- It is **your own** public address: correct.
-- It is an address that is not yours (the same for every device): `PROXY_HOPS` is too low, so all
-  visitors would share one limit. Raise it by one and check again.
+```bash
+.venv/bin/python -m pip install -U -r requirements.txt   # Windows: .\.venv\Scripts\python.exe -m pip ...
+```
 
-I could not test this against Vercel's real proxy from where this was written, so please verify it once.
+## When YouTube says "confirm you're not a bot"
 
-## Run on a server
+On your own home or mobile connection this is uncommon. If it happens, in order of effort:
+
+1. Wait a while, try another network (mobile data instead of Wi-Fi, or the reverse), update yt-dlp (above).
+2. Cookies (`YT_COOKIES_FILE` or `YT_COOKIES`). Export them as described in the yt-dlp wiki ([FAQ](https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp)):
+   open a new private/incognito window, log in to YouTube, open `https://www.youtube.com/robots.txt` in
+   that same tab, export the `youtube.com` cookies with a cookies.txt extension, then close the window.
+   The wiki warns that using an account with yt-dlp can get it banned, so **never use your main
+   account**, and never share or commit `cookies.txt`.
+3. `YT_PROXY=http://user:pass@host:port`, a proxy with a home-type address (usually paid).
+
+None of this is guaranteed.
+
+## Advanced: hosting it for other people
+
+Not recommended, and not what the website does. If you still want to:
 
 ```bash
 docker build -t yt-saver .
-docker run -p 5000:5000 -e PUBLIC_MODE=1 -e URL_PREFIX=/yt-saver -e ADMIN_KEY=<random> yt-saver
+docker run -p 5000:5000 -e PUBLIC_MODE=1 -e ADMIN_KEY=<random> yt-saver
 ```
 
-On a phone/PC (Termux) use `bash start.sh`; it opens `http://127.0.0.1:5000` in private mode. Running at
-home is also the best protection against YouTube blocking server IPs (below); to reach it from outside
-you need a tunnel (for example Cloudflare Tunnel or Tailscale Funnel).
-
-## When YouTube blocks the server ("confirm you're not a bot")
-
-YouTube often refuses requests from server/datacenter IPs. In order of how well it tends to work:
-
-1. **Run it at home** (phone/PC) behind a tunnel. A home IP is rarely blocked. Not great for many visitors
-   (your bandwidth, and the app is off when the device is off).
-2. **Cookies** (`YT_COOKIES` / `YT_COOKIES_FILE`). Export them as described in the yt-dlp wiki: open a new
-   private/incognito window, log in to YouTube, open `https://www.youtube.com/robots.txt` in that same tab,
-   export the `youtube.com` cookies with a cookies.txt extension, then close the window. Guides:
-   [yt-dlp wiki, YouTube](https://github.com/yt-dlp/yt-dlp/wiki/extractors),
-   [FAQ](https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp).
-   Put the text, or its base64 (`base64 -w0 cookies.txt`), in `YT_COOKIES`.
-   - The yt-dlp wiki warns that using an account with yt-dlp can get it banned (temporarily or
-     permanently) and suggests a throwaway account. **Never use your main account**, especially in
-     public mode where many visitors share the same login.
-   - **Never commit cookies.txt.** `.gitignore` lists it.
-   - Cookies expire; re-export when the error says so.
-3. **A proxy with a home-type IP** (`YT_PROXY=http://user:pass@host:port`). Usually paid, and the video
-   traffic goes through it too.
-
-None of this is guaranteed: YouTube changes its checks often, and a public service that many people use
-from one address is more likely to get limited. The Docker image fetches the newest yt-dlp every time it
-starts. `/api/health` shows what the server picked up.
-
-## Things to know before making it public
-
-- Downloading videos can break YouTube's Terms of Service and copyright law; the visitor is told this on
-  the page, but a public service is also your responsibility. The tool's page is hidden from search engines
-  (`noindex`, `robots.txt`).
+- Server IP addresses are often blocked by YouTube (see above), so expect it to fail for some videos.
 - Every download goes through your server's bandwidth and disk. Check the plan and terms of whoever hosts it.
-- Visitors on the same network (a hostel or college Wi-Fi) share one address, so they share the limits.
+- The public-mode limits are per visitor address and kept in memory (a restart resets them). Behind a
+  proxy, open `/api/health?key=<ADMIN_KEY>` and check `your_ip` is **your** address; if it is the same
+  for every device, raise `PROXY_HOPS`.
+- You are responsible for what visitors download.
+
+## Files
+
+| File | What it is |
+|---|---|
+| `app.py` | the Flask app |
+| `index.html`, `login.html` | the page you see in the browser |
+| `requirements.txt` | Python libraries (`yt-dlp[default]` includes the JavaScript helper yt-dlp needs) |
+| `Dockerfile` | only for hosting it (above) |
+| `start.sh` | an older one-command helper for Termux; the website guide uses explicit steps instead |
+
+The ZIP people download from the website is built by `scripts/make-yt-saver-zip.py` (in the repo root).
+Run it again after changing anything here.

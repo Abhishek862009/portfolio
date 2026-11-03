@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google';
 
 import { AppShell } from '@/components/ui/AppShell';
 
+import { LanguageProvider } from '@/components/i18n/LanguageProvider';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 
@@ -106,6 +107,9 @@ const personSchema = {
   ],
 };
 
+const LANG_SCRIPT =
+  "try{var l=localStorage.getItem('ab-lang');if(l==='hi'||l==='en')document.documentElement.setAttribute('data-lang',l)}catch(e){}";
+
 export default function RootLayout({
   children,
 }: {
@@ -116,13 +120,21 @@ export default function RootLayout({
   const hasResume = fs.existsSync(path.join(process.cwd(), 'public', 'resume.pdf'));
 
   return (
-    <html lang="en" className={inter.variable}>
+    // data-lang is set again by the script below before anything is painted, so the
+    // server's value (English) and the browser's can differ on purpose.
+    <html lang="en" data-lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        {/* Applies the saved English/Hindi choice before the first paint (no flash). */}
+        <script dangerouslySetInnerHTML={{ __html: LANG_SCRIPT }} />
+      </head>
       <body>
-        <AppShell>
-          <Navbar hasResume={hasResume} />
-          <main>{children}</main>
-          <Footer />
-        </AppShell>
+        <LanguageProvider>
+          <AppShell>
+            <Navbar hasResume={hasResume} />
+            <main>{children}</main>
+            <Footer />
+          </AppShell>
+        </LanguageProvider>
 
         <script
           type="application/ld+json"
