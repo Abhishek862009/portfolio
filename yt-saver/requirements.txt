@@ -1,4 +1,0 @@
-flask
-yt-dlp[default]
-# gunicorn is only for running on a Linux server (Dockerfile); it does not run on Windows
-gunicorn; platform_system != "Windows"

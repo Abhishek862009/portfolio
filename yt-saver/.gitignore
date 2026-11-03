@@ -1,9 +1,0 @@
-__pycache__/
-*.pyc
-.venv/
-venv/
-.env
-# Cookies are a login to your Google account. NEVER commit them (this repo is public).
-cookies.txt
-*.cookies
-cookies*.txt

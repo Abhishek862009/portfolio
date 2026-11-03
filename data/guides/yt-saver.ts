@@ -1,12 +1,12 @@
 import type { AppGuide, Bi } from './types';
 
-// Install guide for YT Saver (the app lives in /yt-saver in this repo).
+// Install guide for YT Saver (the app lives in its own repo, github.com/Abhishek862009/yt-saver).
 //
 // Facts this guide depends on, and where they come from:
 //  - yt-dlp needs Python 3.11+ and a JavaScript engine for YouTube: Deno 2.3+ or Node.js 22+
 //    (yt-dlp pyproject.toml "requires-python"; yt-dlp wiki "EJS" page).
 //  - winget IDs Python.Python.3.13, Gyan.FFmpeg, OpenJS.NodeJS.LTS, Git.Git exist (microsoft/winget-pkgs).
-//  - The app is fetched with "git clone --depth 1" from the portfolio repo; it lives in the yt-saver folder.
+//  - The app is fetched with "git clone" from its own repo, Abhishek862009/yt-saver (only the app, not this website).
 //  - Homebrew formulas python@3.13, ffmpeg, node exist (formulae.brew.sh).
 //  - Termux packages python, python-pip, ffmpeg, nodejs exist (termux/termux-packages); Termux is
 //    installed from F-Droid or GitHub, the Google Play build is deprecated (Termux announcement #4000).
@@ -14,7 +14,7 @@ import type { AppGuide, Bi } from './types';
 // If a version changes (for example the nvm tag), update it here and the page, the Markdown copy
 // and the AI-readable files all follow.
 
-const REPO = 'https://github.com/Abhishek862009/portfolio.git';
+const REPO = 'https://github.com/Abhishek862009/yt-saver.git';
 const URL_LOCAL = 'http://127.0.0.1:5000';
 
 const b = (en: string, hi: string): Bi => ({ en, hi });
@@ -93,13 +93,13 @@ export const ytSaverGuide: AppGuide = {
         },
         {
           title: b('Get the app', 'ऐप का कोड लें'),
-          text: b('This downloads the code from GitHub into a folder called portfolio in your user folder. The app is in its yt-saver subfolder.', 'यह GitHub से कोड आपके यूज़र फ़ोल्डर के portfolio नाम के फ़ोल्डर में उतारता है। ऐप उसके yt-saver सबफ़ोल्डर में है।'),
+          text: b('This downloads the app from GitHub into a folder called yt-saver in your user folder, and goes into it.', 'यह GitHub से ऐप को आपके यूज़र फ़ोल्डर में yt-saver नाम के फ़ोल्डर में उतारता है और उसके अंदर चला जाता है।'),
           blocks: [
             {
               lines: [
                 'cd $HOME',
-                `git clone --depth 1 ${REPO}`,
-                'cd portfolio\\yt-saver',
+                `git clone ${REPO}`,
+                'cd yt-saver',
               ],
             },
           ],
@@ -117,7 +117,7 @@ export const ytSaverGuide: AppGuide = {
         {
           title: b('Next time', 'अगली बार'),
           text: b('You do not need to install anything again. Open PowerShell and run:', 'कुछ दोबारा इंस्टॉल नहीं करना। PowerShell खोलकर ये चलाएँ:'),
-          blocks: [{ lines: ['cd $HOME\\portfolio\\yt-saver', '.\\.venv\\Scripts\\python.exe app.py'] }],
+          blocks: [{ lines: ['cd $HOME\\yt-saver', '.\\.venv\\Scripts\\python.exe app.py'] }],
           after: b('To stop the app, click the PowerShell window and press Ctrl+C.', 'ऐप बंद करने के लिए PowerShell विंडो पर क्लिक करके Ctrl+C दबाएँ।'),
         },
         {
@@ -188,7 +188,7 @@ export const ytSaverGuide: AppGuide = {
           title: b('Get the app', 'ऐप का कोड लें'),
           blocks: [
             {
-              lines: ['cd ~', `git clone --depth 1 ${REPO}`, 'cd portfolio/yt-saver'],
+              lines: ['cd ~', `git clone ${REPO}`, 'cd yt-saver'],
             },
           ],
         },
@@ -210,7 +210,7 @@ export const ytSaverGuide: AppGuide = {
         },
         {
           title: b('Next time', 'अगली बार'),
-          blocks: [{ lines: ['cd ~/portfolio/yt-saver', 'python app.py'] }],
+          blocks: [{ lines: ['cd ~/yt-saver', 'python app.py'] }],
           after: b('To stop the app, press Ctrl+C in Termux (or swipe Termux away).', 'ऐप बंद करने के लिए Termux में Ctrl+C दबाएँ (या Termux को स्वाइप करके हटा दें)।'),
         },
         {
@@ -291,7 +291,7 @@ export const ytSaverGuide: AppGuide = {
         {
           title: b('Get the app', 'ऐप का कोड लें'),
           blocks: [
-            { lines: ['cd ~', `git clone --depth 1 ${REPO}`, 'cd portfolio/yt-saver'] },
+            { lines: ['cd ~', `git clone ${REPO}`, 'cd yt-saver'] },
           ],
         },
         {
@@ -306,7 +306,7 @@ export const ytSaverGuide: AppGuide = {
         },
         {
           title: b('Next time', 'अगली बार'),
-          blocks: [{ lines: ['cd ~/portfolio/yt-saver', '.venv/bin/python app.py'] }],
+          blocks: [{ lines: ['cd ~/yt-saver', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the terminal and press Ctrl+C.', 'ऐप बंद करने के लिए टर्मिनल पर क्लिक करके Ctrl+C दबाएँ।'),
         },
         {
@@ -377,7 +377,7 @@ export const ytSaverGuide: AppGuide = {
         {
           title: b('Get the app', 'ऐप का कोड लें'),
           blocks: [
-            { lines: ['cd ~', `git clone --depth 1 ${REPO}`, 'cd portfolio/yt-saver'] },
+            { lines: ['cd ~', `git clone ${REPO}`, 'cd yt-saver'] },
           ],
         },
         {
@@ -392,7 +392,7 @@ export const ytSaverGuide: AppGuide = {
         },
         {
           title: b('Next time', 'अगली बार'),
-          blocks: [{ lines: ['cd ~/portfolio/yt-saver', '.venv/bin/python app.py'] }],
+          blocks: [{ lines: ['cd ~/yt-saver', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the Terminal window and press Control+C.', 'ऐप बंद करने के लिए Terminal विंडो पर क्लिक करके Control+C दबाएँ।'),
         },
         {
@@ -445,8 +445,8 @@ export const ytSaverGuide: AppGuide = {
       'आपके डाउनलोड का कुछ भी arvish.xyz से होकर नहीं जाता। आप ऐप का कोड एक बार GitHub से लेते हैं; उसके बाद ऐप आपके डिवाइस से सीधे YouTube से बात करता है।'
     ),
     b(
-      'The app is open source. The code is in the “yt-saver” folder of the portfolio repository on GitHub.',
-      'ऐप ओपन सोर्स है। कोड GitHub पर portfolio रिपॉज़िटरी के “yt-saver” फ़ोल्डर में है।'
+      'The app is open source. The code is in its own repository on GitHub: Abhishek862009/yt-saver.',
+      'ऐप ओपन सोर्स है। कोड GitHub पर अपनी अलग रिपॉज़िटरी में है: Abhishek862009/yt-saver।'
     ),
   ],
 };

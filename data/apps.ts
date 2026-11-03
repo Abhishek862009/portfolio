@@ -206,7 +206,7 @@ export const apps: AppEntry[] = [
   {
     // A program the visitor runs on their own device. YouTube blocks most servers, so a
     // hosted version does not hold up; on the visitor's own connection it does. The code is
-    // in /yt-saver in this repo; people get it with `git clone` (see data/guides/yt-saver.ts).
+    // in its own repo, Abhishek862009/yt-saver; people get it with `git clone` (see data/guides/yt-saver.ts).
     // `private`: the page is readable by anyone with the link, but kept out of Google and
     // the sitemap. Remove that line to let Google list it.
     slug: 'yt-saver',
@@ -216,8 +216,8 @@ export const apps: AppEntry[] = [
       'YT Saver is a small app that runs on your own computer or phone. Paste a YouTube link, pick a quality from highest to lowest, and save the file. It runs in a terminal on Windows, Android (Termux), Linux and Mac, and this page walks you through the setup step by step.',
     platform: 'Terminal',
     fileType: 'Terminal app',
-    repoUrl: 'https://github.com/Abhishek862009/portfolio.git',
-    sourceUrl: 'https://github.com/Abhishek862009/portfolio/tree/main/yt-saver',
+    repoUrl: 'https://github.com/Abhishek862009/yt-saver.git',
+    sourceUrl: 'https://github.com/Abhishek862009/yt-saver',
     guide: ytSaverGuide,
     private: true,
     icon: 'video',
