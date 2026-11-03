@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { T } from '@/components/i18n/T';
 import { projects } from '@/data/projects';
 import { ViewProjectButton } from '@/components/ui/ViewProjectButton';
 
@@ -11,7 +12,9 @@ import { ViewProjectButton } from '@/components/ui/ViewProjectButton';
 export function ProjectsPreview() {
   return (
     <section id="projects" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-32">
-      <h2 className="text-3xl font-semibold text-frost md:text-4xl">Projects</h2>
+      <h2 className="text-3xl font-semibold text-frost md:text-4xl">
+        <T en="Projects" hi="प्रोजेक्ट्स" />
+      </h2>
       <div className="mt-10 grid gap-6 md:grid-cols-2">
         {projects.map((project) => (
           <div
@@ -26,12 +29,14 @@ export function ProjectsPreview() {
               </Link>
               {project.status === 'not-live' && (
                 <span className="shrink-0 rounded-full border border-hairline px-2 py-0.5 text-[11px] uppercase tracking-wide text-slate">
-                  Not live
+                  <T en="Not live" hi="लाइव नहीं" />
                 </span>
               )}
             </div>
 
-            <p className="mt-2 text-sm text-slate">{project.description}</p>
+            <p className="mt-2 text-sm text-slate">
+              <T en={project.description} hi={project.descriptionHi} />
+            </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {project.stack.map((tech) => (
@@ -44,7 +49,7 @@ export function ProjectsPreview() {
             <div className="mt-5">
               {project.status === 'not-live' ? (
                 <p className="text-sm italic text-slate/80">
-                  This project is currently not available online.
+                  <T en="This project is currently not available online." hi="यह प्रोजेक्ट अभी ऑनलाइन उपलब्ध नहीं है।" />
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-2">
@@ -59,7 +64,7 @@ export function ProjectsPreview() {
               href={`/projects/${project.slug}`}
               className="mt-4 inline-block text-xs text-slate underline-offset-4 transition-colors hover:text-frost hover:underline"
             >
-              Project details →
+              <T en="Project details →" hi="प्रोजेक्ट की जानकारी →" />
             </Link>
           </div>
         ))}

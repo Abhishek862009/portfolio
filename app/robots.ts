@@ -5,8 +5,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      // The tool itself (not its /apps/yt-saver description page).
-      disallow: '/yt-saver',
     },
     sitemap: 'https://www.arvish.xyz/sitemap.xml',
   };

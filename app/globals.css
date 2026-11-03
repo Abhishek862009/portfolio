@@ -42,3 +42,12 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* English / Hindi (see components/i18n/T.tsx). Both languages are in the HTML;
+   <html data-lang="..."> decides which one is shown. No attribute = English,
+   so the page is complete even with JavaScript off. */
+html[data-lang='hi'] [data-l='en'],
+html:not([data-lang='hi']) [data-l='hi'] {
+  display: none;
+}

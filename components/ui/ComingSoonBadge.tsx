@@ -1,5 +1,7 @@
 import { Clock } from 'lucide-react';
 
+import { T } from '@/components/i18n/T';
+
 /**
  * Stands in for the Open button on a web app that is not hosted yet. Same
  * size and shape as OpenAppButton so cards keep their rhythm, but muted and
@@ -13,7 +15,7 @@ export function ComingSoonBadge({ size = 'default' }: { size?: 'default' | 'larg
       className={`inline-flex items-center gap-1.5 rounded-full border border-hairline font-medium text-slate ${sizeClasses}`}
     >
       <Clock className="h-4 w-4" aria-hidden="true" />
-      Coming soon
+      <T en="Coming soon" hi="जल्द आ रहा है" />
     </span>
   );
 }

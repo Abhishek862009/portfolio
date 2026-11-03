@@ -4,16 +4,19 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { T } from '@/components/i18n/T';
+import { LanguageToggle } from '@/components/i18n/LanguageToggle';
+import { useT } from '@/components/i18n/LanguageProvider';
 import { Magnetic } from '@/components/ui/Magnetic';
 
 const NAV_LINKS = [
-  { href: '/#timeline', label: 'Story' },
-  { href: '/#skills', label: 'Skills' },
-  { href: '/#projects', label: 'Projects' },
-  { href: '/apps', label: 'App Store' },
-  { href: '/#bidevlink', label: 'Bidevlink' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/#timeline', en: 'Story', hi: 'कहानी' },
+  { href: '/#skills', en: 'Skills', hi: 'स्किल्स' },
+  { href: '/#projects', en: 'Projects', hi: 'प्रोजेक्ट्स' },
+  { href: '/apps', en: 'App Store', hi: 'ऐप स्टोर' },
+  { href: '/#bidevlink', en: 'Bidevlink', hi: 'Bidevlink' },
+  { href: '/blog', en: 'Blog', hi: 'ब्लॉग' },
+  { href: '/#contact', en: 'Contact', hi: 'संपर्क' },
 ];
 
 const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'bidevlink', 'contact'];
@@ -30,6 +33,7 @@ const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'bidevlink', 'con
 // navbar wasn't there to hold it.
 export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
   const pathname = usePathname();
+  const t = useT();
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('hero');
@@ -103,7 +107,7 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
                   isHomeActive ? 'text-frost' : ''
                 }`}
               >
-                Home
+                <T en="Home" hi="होम" />
               </Link>
               {isHomeActive && (
                 <motion.span
@@ -124,7 +128,7 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
                       isActive ? 'text-frost' : ''
                     }`}
                   >
-                    {link.label}
+                    <T en={link.en} hi={link.hi} />
                   </Link>
                   {isActive && (
                     <motion.span
@@ -138,46 +142,51 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
             })}
           </ul>
 
-          {/* Plain <a>: the resume is a file, not a Next route. Hidden until
-              public/resume.pdf exists (see app/layout.tsx). */}
-          {hasResume && (
-            <div className="hidden md:block">
-              <Magnetic strength={6}>
-                <a
-                  href="/resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-hairline px-4 py-1.5 text-sm text-frost transition-colors hover:border-glow/60"
-                >
-                  Resume
-                </a>
-              </Magnetic>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {/* English / Hindi, visible on every screen size so it is always at the top. */}
+            <LanguageToggle />
 
-          {/* Mobile menu toggle — this is the fix: nav is now reachable on mobile at all */}
-          <button
-            type="button"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="relative z-[60] flex h-10 w-10 items-center justify-center md:hidden"
-          >
-            <span className="relative block h-4 w-5">
-              <motion.span
-                animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-                className="absolute left-0 top-0 h-px w-5 bg-frost"
-              />
-              <motion.span
-                animate={open ? { opacity: 0 } : { opacity: 1 }}
-                className="absolute left-0 top-[7px] h-px w-5 bg-frost"
-              />
-              <motion.span
-                animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-                className="absolute left-0 top-[14px] h-px w-5 bg-frost"
-              />
-            </span>
-          </button>
+            {/* Plain <a>: the resume is a file, not a Next route. Hidden until
+                public/resume.pdf exists (see app/layout.tsx). */}
+            {hasResume && (
+              <div className="hidden md:block">
+                <Magnetic strength={6}>
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-hairline px-4 py-1.5 text-sm text-frost transition-colors hover:border-glow/60"
+                  >
+                    <T en="Resume" hi="रिज्यूमे" />
+                  </a>
+                </Magnetic>
+              </div>
+            )}
+
+            {/* Mobile menu toggle — this is the fix: nav is now reachable on mobile at all */}
+            <button
+              type="button"
+              aria-label={open ? t('Close menu', 'मेन्यू बंद करें') : t('Open menu', 'मेन्यू खोलें')}
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+              className="relative z-[60] flex h-10 w-10 items-center justify-center md:hidden"
+            >
+              <span className="relative block h-4 w-5">
+                <motion.span
+                  animate={open ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+                  className="absolute left-0 top-0 h-px w-5 bg-frost"
+                />
+                <motion.span
+                  animate={open ? { opacity: 0 } : { opacity: 1 }}
+                  className="absolute left-0 top-[7px] h-px w-5 bg-frost"
+                />
+                <motion.span
+                  animate={open ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+                  className="absolute left-0 top-[14px] h-px w-5 bg-frost"
+                />
+              </span>
+            </button>
+          </div>
         </nav>
       </motion.header>
 
@@ -198,9 +207,9 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
           >
             <ul className="flex h-full flex-col items-center justify-center gap-6 text-2xl">
               {[
-                { href: '/', label: 'Home' },
+                { href: '/', en: 'Home', hi: 'होम' },
                 ...NAV_LINKS,
-                ...(hasResume ? [{ href: '/resume.pdf', label: 'Resume' }] : []),
+                ...(hasResume ? [{ href: '/resume.pdf', en: 'Resume', hi: 'रिज्यूमे' }] : []),
               ].map((link, i) => (
                 <motion.li
                   key={link.href}
@@ -216,11 +225,11 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
                       onClick={() => setOpen(false)}
                       className="text-frost"
                     >
-                      {link.label}
+                      <T en={link.en} hi={link.hi} />
                     </a>
                   ) : (
                     <Link href={link.href} onClick={() => setOpen(false)} className="text-frost">
-                      {link.label}
+                      <T en={link.en} hi={link.hi} />
                     </Link>
                   )}
                 </motion.li>

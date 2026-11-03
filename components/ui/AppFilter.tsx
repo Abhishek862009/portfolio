@@ -4,18 +4,23 @@ import { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 import type { AppEntry } from '@/data/apps';
+import { T } from '@/components/i18n/T';
+import { useT } from '@/components/i18n/LanguageProvider';
 import { AppCard } from '@/components/ui/AppCard';
 
 type Filter = 'all' | AppEntry['platform'];
 
-const OPTIONS: { value: Filter; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'Android', label: 'Android' },
-  { value: 'Web', label: 'Web' },
+// Order of the toggle. "Terminal" is the short name for apps you run in a terminal
+// (Termux on Android, or the command line on Windows, Linux and Mac).
+const OPTIONS: { value: Filter; en: string; hi: string }[] = [
+  { value: 'all', en: 'All', hi: 'सभी' },
+  { value: 'Android', en: 'Android', hi: 'Android' },
+  { value: 'Web', en: 'Web', hi: 'Web' },
+  { value: 'Terminal', en: 'Terminal', hi: 'Terminal' },
 ];
 
 /**
- * The App Store grid with an All / Android / Web toggle on top. Used by both
+ * The App Store grid with an All / Android / Web / Terminal toggle on top. Used by both
  * the homepage section and the /apps page, so the two always behave the same.
  * Filtering is by `platform`, so a newly added app shows up under the right
  * tab without touching this file.
@@ -23,6 +28,7 @@ const OPTIONS: { value: Filter; label: string }[] = [
 export function AppFilter({ apps }: { apps: AppEntry[] }) {
   const [filter, setFilter] = useState<Filter>('all');
   const reduceMotion = useReducedMotion();
+  const t = useT();
 
   const countFor = (value: Filter) =>
     value === 'all' ? apps.length : apps.filter((a) => a.platform === value).length;
@@ -32,8 +38,8 @@ export function AppFilter({ apps }: { apps: AppEntry[] }) {
     <div>
       <div
         role="group"
-        aria-label="Filter apps by platform"
-        className="inline-flex rounded-full border border-hairline bg-ink/40 p-1"
+        aria-label={t('Filter apps by platform', 'प्लेटफ़ॉर्म के हिसाब से ऐप्स छाँटें')}
+        className="inline-flex flex-wrap rounded-3xl border border-hairline bg-ink/40 p-1"
       >
         {OPTIONS.map((option) => {
           const active = filter === option.value;
@@ -43,13 +49,16 @@ export function AppFilter({ apps }: { apps: AppEntry[] }) {
               key={option.value}
               type="button"
               aria-pressed={active}
-              aria-label={`${option.label}, ${count} ${count === 1 ? 'app' : 'apps'}`}
+              aria-label={t(
+                `${option.en}, ${count} ${count === 1 ? 'app' : 'apps'}`,
+                `${option.hi}, ${count} ऐप${count === 1 ? '' : '्स'}`
+              )}
               onClick={() => setFilter(option.value)}
               className={`rounded-full px-4 py-1.5 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow ${
                 active ? 'bg-glow/15 text-frost' : 'text-slate hover:text-frost'
               }`}
             >
-              {option.label}
+              <T en={option.en} hi={option.hi} />
               <span className="ml-1.5 text-xs text-slate/70" aria-hidden="true">
                 {count}
               </span>
@@ -76,7 +85,12 @@ export function AppFilter({ apps }: { apps: AppEntry[] }) {
       </div>
 
       {visible.length === 0 && (
-        <p className="mt-8 text-sm text-slate">No {filter === 'all' ? '' : `${filter} `}apps yet.</p>
+        <p className="mt-8 text-sm text-slate">
+          <T
+            en={`No ${filter === 'all' ? '' : `${filter} `}apps yet.`}
+            hi={`अभी कोई ${filter === 'all' ? '' : `${filter} `}ऐप नहीं है।`}
+          />
+        </p>
       )}
     </div>
   );

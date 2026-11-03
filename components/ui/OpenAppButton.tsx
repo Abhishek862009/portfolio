@@ -1,9 +1,12 @@
+import type { ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+
+import { T } from '@/components/i18n/T';
 import { Magnetic } from './Magnetic';
 
 interface OpenAppButtonProps {
   href: string;
-  label?: string;
+  label?: ReactNode;
   size?: 'default' | 'large';
   /** The app lives on another site: open it in a new tab. */
   external?: boolean;
@@ -17,7 +20,7 @@ interface OpenAppButtonProps {
  */
 export function OpenAppButton({
   href,
-  label = 'Open app',
+  label = <T en="Open app" hi="ऐप खोलें" />,
   size = 'default',
   external = false,
 }: OpenAppButtonProps) {
