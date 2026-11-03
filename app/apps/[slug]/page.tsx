@@ -12,6 +12,7 @@ import {
   STORE_PATH,
 } from '@/data/apps';
 import { T } from '@/components/i18n/T';
+import { LanguageToggle } from '@/components/i18n/LanguageToggle';
 import { GuideView } from '@/components/guide/GuideView';
 import type { Bi } from '@/data/guides/types';
 import { AppIcon } from '@/components/ui/AppIcon';
@@ -212,13 +213,17 @@ export default function AppPage({ params }: { params: { slug: string } }) {
         />
       )}
 
-      <Link
-        href={STORE_PATH}
-        className="inline-flex items-center gap-2 text-sm text-slate transition-colors hover:text-frost"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        <T en={`Back to ${STORE_NAME}`} hi={`${STORE_NAME} पर वापस`} />
-      </Link>
+      <div className="flex items-center justify-between gap-4">
+        <Link
+          href={STORE_PATH}
+          className="inline-flex items-center gap-2 text-sm text-slate transition-colors hover:text-frost"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          <T en={`Back to ${STORE_NAME}`} hi={`${STORE_NAME} पर वापस`} />
+        </Link>
+        {/* English / Hindi: only on the apps that have a setup guide. */}
+        {app.platform === 'Terminal' && <LanguageToggle className="shrink-0" />}
+      </div>
 
       <Reveal>
         <div className="mt-8 flex items-center gap-4">

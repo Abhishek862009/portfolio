@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 
 export type Lang = 'en' | 'hi';
 export const LANG_STORAGE_KEY = 'ab-lang';
@@ -14,25 +15,41 @@ interface LangContextValue {
 const LangContext = createContext<LangContextValue>({ lang: 'en', setLang: () => {} });
 
 /**
- * Keeps the chosen language. The visible text is switched by CSS through the
- * `data-lang` attribute on <html> (see <T> and the inline script in app/layout.tsx,
- * which sets it before the first paint). This context only exists for text that CSS
- * cannot switch: placeholders, aria-labels, alert() messages.
+ * Keeps the chosen language, but only for the pages that have an English/Hindi switch
+ * (`guidePaths`: the setup-guide pages of the Terminal apps, built in app/layout.tsx).
+ * Every other page is always English, so a choice made in a guide never changes the rest
+ * of the website.
+ *
+ * The visible text is switched by CSS through the `data-lang` attribute on <html> (see <T>
+ * and the inline script in app/layout.tsx, which sets it before the first paint on a guide
+ * page). This context also serves text that CSS cannot switch: placeholders, aria-labels.
  */
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('en');
+export function LanguageProvider({ children, guidePaths }: { children: ReactNode; guidePaths: string[] }) {
+  const pathname = usePathname();
+  const [stored, setStored] = useState<Lang>('en');
+  const bilingual = guidePaths.includes((pathname || '').replace(/\/+$/, ''));
+  const lang: Lang = bilingual ? stored : 'en';
 
+  // The saved choice from an earlier visit.
   useEffect(() => {
-    if (document.documentElement.getAttribute('data-lang') === 'hi') setLangState('hi');
+    try {
+      if (localStorage.getItem(LANG_STORAGE_KEY) === 'hi') setStored('hi');
+    } catch {
+      /* storage blocked: the choice just lasts until reload */
+    }
   }, []);
 
+  // Keeps <html data-lang> right when moving between pages without a reload.
+  useEffect(() => {
+    document.documentElement.setAttribute('data-lang', lang);
+  }, [lang]);
+
   const setLang = useCallback((next: Lang) => {
-    setLangState(next);
-    document.documentElement.setAttribute('data-lang', next);
+    setStored(next);
     try {
       localStorage.setItem(LANG_STORAGE_KEY, next);
     } catch {
-      /* private window or blocked storage: the choice just lasts until reload */
+      /* private window or blocked storage */
     }
   }, []);
 

@@ -8,7 +8,7 @@ const OPTIONS: { value: Lang; label: string; aria: string }[] = [
   { value: 'hi', label: 'हिं', aria: 'हिन्दी (Hindi)' },
 ];
 
-/** English / Hindi switch, shown at the top of every page (in the navbar). */
+/** English / Hindi switch. Only the setup-guide pages have it (see LanguageProvider). */
 export function LanguageToggle({ className = '' }: { className?: string }) {
   const { lang, setLang } = useLang();
 

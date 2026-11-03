@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { T } from '@/components/i18n/T';
-import { LanguageToggle } from '@/components/i18n/LanguageToggle';
 import { useT } from '@/components/i18n/LanguageProvider';
 import { Magnetic } from '@/components/ui/Magnetic';
 
@@ -143,9 +142,6 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
           </ul>
 
           <div className="flex items-center gap-3">
-            {/* English / Hindi, visible on every screen size so it is always at the top. */}
-            <LanguageToggle />
-
             {/* Plain <a>: the resume is a file, not a Next route. Hidden until
                 public/resume.pdf exists (see app/layout.tsx). */}
             {hasResume && (
