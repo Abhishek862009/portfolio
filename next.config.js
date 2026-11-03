@@ -1,7 +1,6 @@
 // YT Saver is a Python app that people run on their own device (Windows, Android with Termux,
-// Linux, Mac). The site only hosts its page (/apps/yt-saver), the setup guide and the download
-// (public/downloads/yt-saver.zip, built by scripts/make-yt-saver-zip.py), so nothing here has
-// to forward to a server.
+// Linux, Mac). Its code lives in its own repo (github.com/Abhishek862009/yt-saver). The site only
+// hosts its page (/apps/yt-saver) and the setup guide, so nothing here has to forward to a server.
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

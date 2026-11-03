@@ -16,7 +16,7 @@
 // 3. Terminal apps (platform 'Terminal'). Programs the visitor runs on their own device
 //    (Windows, Android with Termux, Linux, Mac). The details page shows a device picker and
 //    a full step-by-step guide in English and Hindi, written in data/guides/<app>.ts.
-//    The app's files are zipped into public/downloads/<app>.zip (see scripts/make-yt-saver-zip.py).
+//    There is no ZIP and no password: the guide tells people to `git clone` the repo (`repoUrl`).
 //
 // Hindi text for a card/page goes in the optional `hi` object of each app.
 //
@@ -101,9 +101,9 @@ export interface WebApp extends AppBase {
 export interface TerminalApp extends AppBase {
   platform: 'Terminal';
   fileType: 'Terminal app';
-  /** The app's files as a ZIP, served from /public (same-site path or full URL). */
-  downloadUrl: string;
-  /** Where the source code is, shown on the details page. */
+  /** What `git clone` downloads (the guide uses this same address). */
+  repoUrl: string;
+  /** The app's folder on GitHub, shown on the details page. */
   sourceUrl?: string;
   /** Step-by-step install guide (device picker + English/Hindi). */
   guide: AppGuide;
@@ -206,7 +206,7 @@ export const apps: AppEntry[] = [
   {
     // A program the visitor runs on their own device. YouTube blocks most servers, so a
     // hosted version does not hold up; on the visitor's own connection it does. The code is
-    // in /yt-saver in this repo, zipped to public/downloads/yt-saver.zip for download.
+    // in its own repo, Abhishek862009/yt-saver; people get it with `git clone` (see data/guides/yt-saver.ts).
     // `private`: the page is readable by anyone with the link, but kept out of Google and
     // the sitemap. Remove that line to let Google list it.
     slug: 'yt-saver',
@@ -216,8 +216,8 @@ export const apps: AppEntry[] = [
       'YT Saver is a small app that runs on your own computer or phone. Paste a YouTube link, pick a quality from highest to lowest, and save the file. It runs in a terminal on Windows, Android (Termux), Linux and Mac, and this page walks you through the setup step by step.',
     platform: 'Terminal',
     fileType: 'Terminal app',
-    downloadUrl: '/downloads/yt-saver.zip',
-    sourceUrl: 'https://github.com/Abhishek862009/portfolio/tree/main/yt-saver',
+    repoUrl: 'https://github.com/Abhishek862009/yt-saver.git',
+    sourceUrl: 'https://github.com/Abhishek862009/yt-saver',
     guide: ytSaverGuide,
     private: true,
     icon: 'video',

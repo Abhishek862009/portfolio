@@ -24,7 +24,7 @@ export function GET(_req: Request, { params }: { params: { slug: string; lang: s
     name: app.name,
     tagline: { en: app.tagline, hi: app.hi?.tagline ?? app.tagline },
     pageUrl: `${SITE_URL}${STORE_PATH}/${app.slug}`,
-    zipUrl: `${SITE_URL}${app.downloadUrl}`,
+    repoUrl: app.repoUrl,
     sourceUrl: app.sourceUrl,
     guide: app.guide,
     lang,
