@@ -112,7 +112,6 @@ export default function AppPage({ params }: { params: { slug: string } }) {
             url,
             operatingSystem: 'Windows, Android (Termux), Linux, macOS',
             applicationCategory: app.category ?? 'UtilitiesApplication',
-            downloadUrl: `${SITE_URL}${app.downloadUrl}`,
             ...(app.version ? { softwareVersion: app.version } : {}),
             ...alt,
             author,
@@ -260,18 +259,11 @@ export default function AppPage({ params }: { params: { slug: string } }) {
               size="large"
             />
           ) : app.platform === 'Terminal' ? (
-            <>
-              <GuideButton
-                href="#setup"
-                label={<T en="Choose your device" hi="अपना डिवाइस चुनें" />}
-                size="large"
-              />
-              <DownloadButton
-                href={app.downloadUrl}
-                label={<T en={`Download ${app.name} (ZIP)`} hi={`${app.name} डाउनलोड करें (ZIP)`} />}
-                size="large"
-              />
-            </>
+            <GuideButton
+              href="#setup"
+              label={<T en="Choose your device" hi="अपना डिवाइस चुनें" />}
+              size="large"
+            />
           ) : app.comingSoon ? (
             <ComingSoonBadge size="large" />
           ) : (
@@ -287,8 +279,8 @@ export default function AppPage({ params }: { params: { slug: string } }) {
         {app.platform === 'Terminal' && (
           <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate/80">
             <T
-              en="The ZIP is only the app's files. You still need to set up Python, ffmpeg and a JavaScript engine; the guide below does that for your device, step by step."
-              hi="ZIP में सिर्फ़ ऐप की फ़ाइलें हैं। Python, ffmpeg और JavaScript इंजन का सेटअप अभी बाकी रहता है; नीचे की गाइड आपके डिवाइस के लिए वह स्टेप-बाय-स्टेप कर देती है।"
+              en="There is nothing to download here. The guide below installs what is needed and then gets the app with git clone, step by step, for your device."
+              hi="यहाँ से कुछ डाउनलोड नहीं करना। नीचे की गाइड आपके डिवाइस के लिए ज़रूरी चीज़ें इंस्टॉल करती है और फिर git clone से ऐप ले आती है, स्टेप-बाय-स्टेप।"
             />
             {app.sourceUrl && (
               <>

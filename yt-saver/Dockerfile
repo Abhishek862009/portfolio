@@ -6,10 +6,10 @@ COPY --from=node:22-slim /usr/local/bin/node /usr/local/bin/node
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY app.py index.html login.html ./
+COPY app.py index.html ./
 RUN useradd -m appuser && chown -R appuser /app
 USER appuser
-ENV COOKIE_SECURE=1 BEHIND_PROXY=1
+ENV BEHIND_PROXY=1 PUBLIC_MODE=1
 # YouTube changes often and an old yt-dlp is the most common reason downloads
 # break, so fetch the newest one every time the container starts. If that fails
 # (no network), the version baked into the image above is used.

@@ -5,7 +5,8 @@ import type { AppGuide, Bi } from './types';
 // Facts this guide depends on, and where they come from:
 //  - yt-dlp needs Python 3.11+ and a JavaScript engine for YouTube: Deno 2.3+ or Node.js 22+
 //    (yt-dlp pyproject.toml "requires-python"; yt-dlp wiki "EJS" page).
-//  - winget IDs Python.Python.3.13, Gyan.FFmpeg, OpenJS.NodeJS.LTS exist (microsoft/winget-pkgs).
+//  - winget IDs Python.Python.3.13, Gyan.FFmpeg, OpenJS.NodeJS.LTS, Git.Git exist (microsoft/winget-pkgs).
+//  - The app is fetched with "git clone --depth 1" from the portfolio repo; it lives in the yt-saver folder.
 //  - Homebrew formulas python@3.13, ffmpeg, node exist (formulae.brew.sh).
 //  - Termux packages python, python-pip, ffmpeg, nodejs exist (termux/termux-packages); Termux is
 //    installed from F-Droid or GitHub, the Google Play build is deprecated (Termux announcement #4000).
@@ -13,7 +14,7 @@ import type { AppGuide, Bi } from './types';
 // If a version changes (for example the nvm tag), update it here and the page, the Markdown copy
 // and the AI-readable files all follow.
 
-const ZIP = 'https://www.arvish.xyz/downloads/yt-saver.zip';
+const REPO = 'https://github.com/Abhishek862009/portfolio.git';
 const URL_LOCAL = 'http://127.0.0.1:5000';
 
 const b = (en: string, hi: string): Bi => ({ en, hi });
@@ -36,6 +37,7 @@ export const ytSaverGuide: AppGuide = {
   needsTitle: b('What you need', 'आपको क्या चाहिए'),
   needs: [
     b('A Windows PC, Mac, Linux computer or an Android phone, with internet. iPhone and iPad are not supported.', 'इंटरनेट के साथ Windows PC, Mac, Linux कंप्यूटर या Android फ़ोन। iPhone और iPad सपोर्टेड नहीं हैं।'),
+    b('Git, which downloads the app from GitHub. The steps below install it.', 'Git, जो ऐप को GitHub से डाउनलोड करता है। नीचे के स्टेप्स इसे इंस्टॉल करते हैं।'),
     b('Python 3.11 or newer. The steps below install it.', 'Python 3.11 या नया। नीचे के स्टेप्स इसे इंस्टॉल करते हैं।'),
     b('ffmpeg, which joins the video and the audio into one file. The steps install it.', 'ffmpeg, जो वीडियो और ऑडियो को जोड़कर एक फ़ाइल बनाता है। स्टेप्स इसे इंस्टॉल करते हैं।'),
     b('A JavaScript engine that YouTube needs: Node.js 22 or newer, or Deno 2.3 or newer. The steps install one of them.', 'YouTube के लिए एक JavaScript इंजन: Node.js 22 या नया, या Deno 2.3 या नया। स्टेप्स इनमें से एक इंस्टॉल करते हैं।'),
@@ -64,11 +66,12 @@ export const ytSaverGuide: AppGuide = {
           ),
         },
         {
-          title: b('Install Python, ffmpeg and Node.js', 'Python, ffmpeg और Node.js इंस्टॉल करें'),
-          text: b('Run these three lines one by one (copy a line, paste it, press Enter, wait until it finishes).', 'ये तीन लाइनें एक-एक करके चलाएँ (एक लाइन कॉपी करें, पेस्ट करें, Enter दबाएँ, खत्म होने तक रुकें)।'),
+          title: b('Install Git, Python, ffmpeg and Node.js', 'Git, Python, ffmpeg और Node.js इंस्टॉल करें'),
+          text: b('Run these four lines one by one (copy a line, paste it, press Enter, wait until it finishes).', 'ये चार लाइनें एक-एक करके चलाएँ (एक लाइन कॉपी करें, पेस्ट करें, Enter दबाएँ, खत्म होने तक रुकें)।'),
           blocks: [
             {
               lines: [
+                'winget install -e --id Git.Git',
                 'winget install -e --id Python.Python.3.13',
                 'winget install -e --id Gyan.FFmpeg',
                 'winget install -e --id OpenJS.NodeJS.LTS',
@@ -76,28 +79,27 @@ export const ytSaverGuide: AppGuide = {
             },
           ],
           after: b(
-            'If it asks you to agree to terms, type Y and press Enter. When all three are done, close PowerShell and open it again. Windows needs this to find the new programs.',
-            'अगर यह शर्तें मानने को कहे, तो Y लिखकर Enter दबाएँ। तीनों हो जाएँ तो PowerShell बंद करके दोबारा खोलें। नए प्रोग्राम ढूँढने के लिए Windows को यह चाहिए।'
+            'If it asks you to agree to terms, type Y and press Enter. When all four are done, close PowerShell and open it again. Windows needs this to find the new programs.',
+            'अगर यह शर्तें मानने को कहे, तो Y लिखकर Enter दबाएँ। चारों हो जाएँ तो PowerShell बंद करके दोबारा खोलें। नए प्रोग्राम ढूँढने के लिए Windows को यह चाहिए।'
           ),
         },
         {
           title: b('Check that they installed', 'जाँचें कि इंस्टॉल हो गए'),
-          blocks: [{ lines: ['py --version', 'ffmpeg -version', 'node --version'] }],
+          blocks: [{ lines: ['git --version', 'py --version', 'ffmpeg -version', 'node --version'] }],
           after: b(
-            'py should show Python 3.11 or higher (for example 3.13), and node should show v22 or higher. ffmpeg should print a few lines starting with “ffmpeg version”.',
-            'py में Python 3.11 या ऊपर दिखना चाहिए (जैसे 3.13), और node में v22 या ऊपर। ffmpeg को “ffmpeg version” से शुरू होने वाली कुछ लाइनें दिखानी चाहिए।'
+            'git should show a version number. py should show Python 3.11 or higher (for example 3.13), and node should show v22 or higher. ffmpeg should print a few lines starting with “ffmpeg version”.',
+            'git को वर्शन नंबर दिखाना चाहिए। py में Python 3.11 या ऊपर दिखना चाहिए (जैसे 3.13), और node में v22 या ऊपर। ffmpeg को “ffmpeg version” से शुरू होने वाली कुछ लाइनें दिखानी चाहिए।'
           ),
         },
         {
-          title: b('Download YT Saver', 'YT Saver डाउनलोड करें'),
-          text: b('This saves it in your Downloads folder and opens the folder.', 'यह इसे आपके Downloads फ़ोल्डर में सेव करके फ़ोल्डर के अंदर पहुँचा देता है।'),
+          title: b('Get the app', 'ऐप का कोड लें'),
+          text: b('This downloads the code from GitHub into a folder called portfolio in your user folder. The app is in its yt-saver subfolder.', 'यह GitHub से कोड आपके यूज़र फ़ोल्डर के portfolio नाम के फ़ोल्डर में उतारता है। ऐप उसके yt-saver सबफ़ोल्डर में है।'),
           blocks: [
             {
               lines: [
-                'cd $HOME\\Downloads',
-                `Invoke-WebRequest ${ZIP} -OutFile yt-saver.zip`,
-                'Expand-Archive yt-saver.zip -DestinationPath yt-saver -Force',
-                'cd yt-saver',
+                'cd $HOME',
+                `git clone --depth 1 ${REPO}`,
+                'cd portfolio\\yt-saver',
               ],
             },
           ],
@@ -115,31 +117,31 @@ export const ytSaverGuide: AppGuide = {
         {
           title: b('Next time', 'अगली बार'),
           text: b('You do not need to install anything again. Open PowerShell and run:', 'कुछ दोबारा इंस्टॉल नहीं करना। PowerShell खोलकर ये चलाएँ:'),
-          blocks: [{ lines: ['cd $HOME\\Downloads\\yt-saver', '.\\.venv\\Scripts\\python.exe app.py'] }],
+          blocks: [{ lines: ['cd $HOME\\portfolio\\yt-saver', '.\\.venv\\Scripts\\python.exe app.py'] }],
           after: b('To stop the app, click the PowerShell window and press Ctrl+C.', 'ऐप बंद करने के लिए PowerShell विंडो पर क्लिक करके Ctrl+C दबाएँ।'),
         },
         {
           title: b('Keep it updated', 'इसे अपडेट रखें'),
           text: b(
-            'YouTube changes often. If saving suddenly stops working, update the downloader library:',
-            'YouTube अक्सर बदलता रहता है। अगर सेव करना अचानक बंद हो जाए, तो डाउनलोडर लाइब्रेरी अपडेट करें:'
+            'YouTube changes often. If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):',
+            'YouTube अक्सर बदलता रहता है। अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'
           ),
-          blocks: [{ lines: ['.\\.venv\\Scripts\\python.exe -m pip install -U -r requirements.txt'] }],
+          blocks: [{ lines: ['git pull', '.\\.venv\\Scripts\\python.exe -m pip install -U -r requirements.txt'] }],
         },
       ],
       fixes: [
         {
-          problem: b('“py is not recognized” or “ffmpeg is not recognized”', '“py is not recognized” या “ffmpeg is not recognized”'),
+          problem: b('“git is not recognized”, “py is not recognized” or “ffmpeg is not recognized”', '“git is not recognized”, “py is not recognized” या “ffmpeg is not recognized”'),
           fix: b(
-            'Close PowerShell and open it again. If it still fails, install the program by hand from its official site: python.org (tick “Add python.exe to PATH” in the installer), ffmpeg.org (Windows builds) and nodejs.org.',
-            'PowerShell बंद करके दोबारा खोलें। फिर भी न चले, तो प्रोग्राम को उसकी आधिकारिक साइट से हाथ से इंस्टॉल करें: python.org (इंस्टॉलर में “Add python.exe to PATH” पर टिक करें), ffmpeg.org (Windows builds) और nodejs.org।'
+            'Close PowerShell and open it again. If it still fails, install the program by hand from its official site: git-scm.com, python.org (tick “Add python.exe to PATH” in the installer), ffmpeg.org (Windows builds) and nodejs.org.',
+            'PowerShell बंद करके दोबारा खोलें। फिर भी न चले, तो प्रोग्राम को उसकी आधिकारिक साइट से हाथ से इंस्टॉल करें: git-scm.com, python.org (इंस्टॉलर में “Add python.exe to PATH” पर टिक करें), ffmpeg.org (Windows builds) और nodejs.org।'
           ),
         },
         {
           problem: b('“winget is not recognized”', '“winget is not recognized”'),
           fix: b(
-            'Update “App Installer” in the Microsoft Store, or install Python, ffmpeg and Node.js by hand from the sites above.',
-            'Microsoft Store में “App Installer” अपडेट करें, या ऊपर की साइटों से Python, ffmpeg और Node.js हाथ से इंस्टॉल करें।'
+            'Update “App Installer” in the Microsoft Store, or install Git, Python, ffmpeg and Node.js by hand from the sites above.',
+            'Microsoft Store में “App Installer” अपडेट करें, या ऊपर की साइटों से Git, Python, ffmpeg और Node.js हाथ से इंस्टॉल करें।'
           ),
         },
         {
@@ -179,14 +181,14 @@ export const ytSaverGuide: AppGuide = {
           after: b('If it asks a question, press Enter (or type Y and press Enter).', 'कोई सवाल पूछे तो Enter दबाएँ (या Y लिखकर Enter)।'),
         },
         {
-          title: b('Install Python, ffmpeg and Node.js', 'Python, ffmpeg और Node.js इंस्टॉल करें'),
-          blocks: [{ lines: ['pkg install -y python python-pip ffmpeg nodejs curl unzip'] }],
+          title: b('Install Python, ffmpeg, Node.js and Git', 'Python, ffmpeg, Node.js और Git इंस्टॉल करें'),
+          blocks: [{ lines: ['pkg install -y python python-pip ffmpeg nodejs git'] }],
         },
         {
-          title: b('Download YT Saver', 'YT Saver डाउनलोड करें'),
+          title: b('Get the app', 'ऐप का कोड लें'),
           blocks: [
             {
-              lines: ['cd ~', `curl -L -o yt-saver.zip ${ZIP}`, 'unzip -o yt-saver.zip -d yt-saver', 'cd yt-saver'],
+              lines: ['cd ~', `git clone --depth 1 ${REPO}`, 'cd portfolio/yt-saver'],
             },
           ],
         },
@@ -208,13 +210,13 @@ export const ytSaverGuide: AppGuide = {
         },
         {
           title: b('Next time', 'अगली बार'),
-          blocks: [{ lines: ['cd ~/yt-saver', 'python app.py'] }],
+          blocks: [{ lines: ['cd ~/portfolio/yt-saver', 'python app.py'] }],
           after: b('To stop the app, press Ctrl+C in Termux (or swipe Termux away).', 'ऐप बंद करने के लिए Termux में Ctrl+C दबाएँ (या Termux को स्वाइप करके हटा दें)।'),
         },
         {
           title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: b('If saving suddenly stops working, update the downloader library:', 'अगर सेव करना अचानक बंद हो जाए, तो डाउनलोडर लाइब्रेरी अपडेट करें:'),
-          blocks: [{ lines: ['pip install -U -r requirements.txt'] }],
+          text: b('If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):', 'अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'),
+          blocks: [{ lines: ['git pull', 'pip install -U -r requirements.txt'] }],
         },
       ],
       fixes: [
@@ -246,8 +248,8 @@ export const ytSaverGuide: AppGuide = {
       summary: b('Uses the terminal. The commands for Ubuntu and Debian are shown first.', 'टर्मिनल इस्तेमाल होता है। Ubuntu और Debian की कमांड पहले दी गई हैं।'),
       tested: true,
       testedNote: b(
-        'The download, set-up and start steps were run on Ubuntu 24.04. The package-install lines (apt, dnf, pacman) and the Deno / nvm installers were not run by the author; they are the official ones from each project.',
-        'डाउनलोड, सेटअप और स्टार्ट वाले स्टेप्स Ubuntu 24.04 पर चलाकर देखे गए हैं। पैकेज इंस्टॉल की लाइनें (apt, dnf, pacman) और Deno / nvm इंस्टॉलर लेखक ने नहीं चलाए; ये हर प्रोजेक्ट की आधिकारिक कमांड हैं।'
+        'The git clone, set-up and start steps were run on Ubuntu 24.04. The package-install lines (apt, dnf, pacman) and the Deno / nvm installers were not run by the author; they are the official ones from each project.',
+        'git clone, सेटअप और स्टार्ट वाले स्टेप्स Ubuntu 24.04 पर चलाकर देखे गए हैं। पैकेज इंस्टॉल की लाइनें (apt, dnf, pacman) और Deno / nvm इंस्टॉलर लेखक ने नहीं चलाए; ये हर प्रोजेक्ट की आधिकारिक कमांड हैं।'
       ),
       steps: [
         {
@@ -255,12 +257,12 @@ export const ytSaverGuide: AppGuide = {
           text: b('On most systems the shortcut is Ctrl+Alt+T. Otherwise search for “Terminal” in your applications.', 'ज़्यादातर सिस्टम में शॉर्टकट Ctrl+Alt+T है। नहीं तो अपने एप्लिकेशन में “Terminal” खोजें।'),
         },
         {
-          title: b('Install Python, ffmpeg, curl and unzip', 'Python, ffmpeg, curl और unzip इंस्टॉल करें'),
+          title: b('Install Git, Python, ffmpeg and curl', 'Git, Python, ffmpeg और curl इंस्टॉल करें'),
           text: b('Use the lines for your Linux:', 'अपने Linux की लाइनें इस्तेमाल करें:'),
           blocks: [
-            { label: b('Ubuntu / Debian / Linux Mint', 'Ubuntu / Debian / Linux Mint'), lines: ['sudo apt update', 'sudo apt install -y python3 python3-venv ffmpeg curl unzip'] },
-            { label: b('Fedora', 'Fedora'), lines: ['sudo dnf install -y python3 ffmpeg-free curl unzip'] },
-            { label: b('Arch / Manjaro', 'Arch / Manjaro'), lines: ['sudo pacman -S --needed python ffmpeg curl unzip'] },
+            { label: b('Ubuntu / Debian / Linux Mint', 'Ubuntu / Debian / Linux Mint'), lines: ['sudo apt update', 'sudo apt install -y python3 python3-venv ffmpeg curl git'] },
+            { label: b('Fedora', 'Fedora'), lines: ['sudo dnf install -y python3 ffmpeg-free curl git'] },
+            { label: b('Arch / Manjaro', 'Arch / Manjaro'), lines: ['sudo pacman -S --needed python ffmpeg curl git'] },
           ],
         },
         {
@@ -287,9 +289,9 @@ export const ytSaverGuide: AppGuide = {
           ),
         },
         {
-          title: b('Download YT Saver', 'YT Saver डाउनलोड करें'),
+          title: b('Get the app', 'ऐप का कोड लें'),
           blocks: [
-            { lines: ['cd ~/Downloads', `curl -L -o yt-saver.zip ${ZIP}`, 'unzip -o yt-saver.zip -d yt-saver', 'cd yt-saver'] },
+            { lines: ['cd ~', `git clone --depth 1 ${REPO}`, 'cd portfolio/yt-saver'] },
           ],
         },
         {
@@ -304,13 +306,13 @@ export const ytSaverGuide: AppGuide = {
         },
         {
           title: b('Next time', 'अगली बार'),
-          blocks: [{ lines: ['cd ~/Downloads/yt-saver', '.venv/bin/python app.py'] }],
+          blocks: [{ lines: ['cd ~/portfolio/yt-saver', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the terminal and press Ctrl+C.', 'ऐप बंद करने के लिए टर्मिनल पर क्लिक करके Ctrl+C दबाएँ।'),
         },
         {
           title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: b('If saving suddenly stops working, update the downloader library:', 'अगर सेव करना अचानक बंद हो जाए, तो डाउनलोडर लाइब्रेरी अपडेट करें:'),
-          blocks: [{ lines: ['.venv/bin/python -m pip install -U -r requirements.txt'] }],
+          text: b('If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):', 'अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'),
+          blocks: [{ lines: ['git pull', '.venv/bin/python -m pip install -U -r requirements.txt'] }],
         },
       ],
       fixes: [
@@ -369,13 +371,13 @@ export const ytSaverGuide: AppGuide = {
           links: [{ label: b('Homebrew', 'Homebrew'), href: 'https://brew.sh/' }],
         },
         {
-          title: b('Install Python, ffmpeg and Node.js', 'Python, ffmpeg और Node.js इंस्टॉल करें'),
-          blocks: [{ lines: ['brew install python@3.13 ffmpeg node'] }],
+          title: b('Install Git, Python, ffmpeg and Node.js', 'Git, Python, ffmpeg और Node.js इंस्टॉल करें'),
+          blocks: [{ lines: ['brew install git python@3.13 ffmpeg node'] }],
         },
         {
-          title: b('Download YT Saver', 'YT Saver डाउनलोड करें'),
+          title: b('Get the app', 'ऐप का कोड लें'),
           blocks: [
-            { lines: ['cd ~/Downloads', `curl -L -o yt-saver.zip ${ZIP}`, 'unzip -o yt-saver.zip -d yt-saver', 'cd yt-saver'] },
+            { lines: ['cd ~', `git clone --depth 1 ${REPO}`, 'cd portfolio/yt-saver'] },
           ],
         },
         {
@@ -390,13 +392,13 @@ export const ytSaverGuide: AppGuide = {
         },
         {
           title: b('Next time', 'अगली बार'),
-          blocks: [{ lines: ['cd ~/Downloads/yt-saver', '.venv/bin/python app.py'] }],
+          blocks: [{ lines: ['cd ~/portfolio/yt-saver', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the Terminal window and press Control+C.', 'ऐप बंद करने के लिए Terminal विंडो पर क्लिक करके Control+C दबाएँ।'),
         },
         {
           title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: b('If saving suddenly stops working, update the downloader library:', 'अगर सेव करना अचानक बंद हो जाए, तो डाउनलोडर लाइब्रेरी अपडेट करें:'),
-          blocks: [{ lines: ['.venv/bin/python -m pip install -U -r requirements.txt'] }],
+          text: b('If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):', 'अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'),
+          blocks: [{ lines: ['git pull', '.venv/bin/python -m pip install -U -r requirements.txt'] }],
         },
       ],
       fixes: [
@@ -439,8 +441,8 @@ export const ytSaverGuide: AppGuide = {
       'अगर YouTube कहे कि आपको बॉट न होने का सबूत देना होगा, तो कुछ मिनट रुककर फिर कोशिश करें, या नेटवर्क बदलें (जैसे साझा Wi-Fi की जगह फ़ोन का हॉटस्पॉट)। हॉस्टल या कॉलेज का साझा Wi-Fi सीमित होने की संभावना ज़्यादा रखता है।'
     ),
     b(
-      'Nothing about your downloads goes through arvish.xyz. You download the app once from this site; after that the app talks to YouTube directly from your device.',
-      'आपके डाउनलोड का कुछ भी arvish.xyz से होकर नहीं जाता। आप ऐप एक बार इस साइट से डाउनलोड करते हैं; उसके बाद ऐप आपके डिवाइस से सीधे YouTube से बात करता है।'
+      'Nothing about your downloads goes through arvish.xyz. You get the app’s code from GitHub once; after that the app talks to YouTube directly from your device.',
+      'आपके डाउनलोड का कुछ भी arvish.xyz से होकर नहीं जाता। आप ऐप का कोड एक बार GitHub से लेते हैं; उसके बाद ऐप आपके डिवाइस से सीधे YouTube से बात करता है।'
     ),
     b(
       'The app is open source. The code is in the “yt-saver” folder of the portfolio repository on GitHub.',

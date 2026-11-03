@@ -3,7 +3,7 @@
 Paste a YouTube link, pick a quality from highest to lowest, save the file. A small Flask app
 (Python + ffmpeg + yt-dlp) that **runs on your own device**: Windows, Android (Termux), Linux or Mac.
 
-**Step-by-step setup for each device, in English and Hindi:**
+**Step-by-step setup for each device (Windows, Android/Termux, Linux, Mac), in English and Hindi:**
 <https://www.arvish.xyz/apps/yt-saver>  
 The same guide as plain text (easy to paste into an AI assistant):
 <https://www.arvish.xyz/guides/yt-saver/en> · <https://www.arvish.xyz/guides/yt-saver/hi>
@@ -21,25 +21,28 @@ and have no ffmpeg.)
 
 ## Quick start (if you already have the tools)
 
-You need Python 3.11+, ffmpeg and a JavaScript engine (Node.js 22+ or Deno 2.3+; yt-dlp needs one for
-YouTube, see the [yt-dlp EJS wiki](https://github.com/yt-dlp/yt-dlp/wiki/EJS)).
+You need Git, Python 3.11+, ffmpeg and a JavaScript engine (Node.js 22+ or Deno 2.3+; yt-dlp needs one
+for YouTube, see the [yt-dlp EJS wiki](https://github.com/yt-dlp/yt-dlp/wiki/EJS)).
 
 ```bash
+git clone --depth 1 https://github.com/Abhishek862009/portfolio.git
+cd portfolio/yt-saver
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt     # Windows: .\.venv\Scripts\python.exe
 .venv/bin/python app.py                                  # then open http://127.0.0.1:5000
 ```
 
-## Modes
+## Modes (there is no password)
 
-| Mode | When | Login | Reachable from |
-|---|---|---|---|
-| **Local** (default) | you run it on your own device and set nothing | none | only that device (`127.0.0.1`) |
-| **Private** | `APP_PASSWORD` is set | one shared password | wherever you expose it |
-| **Public** | `PUBLIC_MODE=1` | none, per-visitor limits | wherever you expose it |
+| Mode | When | Reachable from |
+|---|---|---|
+| **Local** (default) | you run it on your own device and set nothing | only that device (`127.0.0.1`) |
+| **Public** | `PUBLIC_MODE=1` (for hosting it for others) | wherever you expose it, with per-visitor limits |
 
 In local mode the app listens on `127.0.0.1` only, answers only requests whose `Host` is `127.0.0.1` /
 `localhost`, and refuses cross-site requests (a web page you visit cannot make it download things).
+Making the app reachable from outside (`HOST` other than `127.0.0.1`, or `BEHIND_PROXY=1`) without
+`PUBLIC_MODE=1` is refused.
 
 ### Environment variables
 
@@ -47,20 +50,19 @@ In local mode the app listens on `127.0.0.1` only, answers only requests whose `
 |---|---|
 | `PORT` | port to listen on (default 5000) |
 | `HOST` | address to listen on (default `127.0.0.1`; only change it if you know why) |
-| `APP_PASSWORD` | private mode. Required if the app is not local. Must be a new password, never one that was in this repo |
 | `PUBLIC_MODE` | `1` = public mode |
-| `URL_PREFIX` | serve the app under a path such as `/yt-saver` |
 | `BEHIND_PROXY`, `PROXY_HOPS` | set `BEHIND_PROXY=1` behind a real proxy; `PROXY_HOPS` = how many proxies (default 1) |
 | `ADMIN_KEY` | lets you open `/api/health?key=...` in public mode |
 | `YT_COOKIES` / `YT_COOKIES_FILE`, `YT_PROXY` | see "When YouTube says 'confirm you're not a bot'" |
-| `SECRET_KEY` | optional, signs the login cookie (private mode) |
 | `MAX_HEIGHT`, `MAX_MINUTES`, `MAX_FILE_MB`, `PER_HOUR`, `INFO_PER_HOUR` | public-mode limits (defaults 1080 p, 30 min, 700 MB, 6 saves/hour, 40 look-ups/hour) |
 
 ## Keeping it working
 
-YouTube changes often, and an old yt-dlp is the most common reason saving breaks. Update it:
+YouTube changes often, and an old yt-dlp is the most common reason saving breaks. Inside the `yt-saver`
+folder, get the newest app and update the library:
 
 ```bash
+git pull
 .venv/bin/python -m pip install -U -r requirements.txt   # Windows: .\.venv\Scripts\python.exe -m pip ...
 ```
 
@@ -99,10 +101,7 @@ docker run -p 5000:5000 -e PUBLIC_MODE=1 -e ADMIN_KEY=<random> yt-saver
 | File | What it is |
 |---|---|
 | `app.py` | the Flask app |
-| `index.html`, `login.html` | the page you see in the browser |
+| `index.html` | the page you see in the browser |
 | `requirements.txt` | Python libraries (`yt-dlp[default]` includes the JavaScript helper yt-dlp needs) |
 | `Dockerfile` | only for hosting it (above) |
 | `start.sh` | an older one-command helper for Termux; the website guide uses explicit steps instead |
-
-The ZIP people download from the website is built by `scripts/make-yt-saver-zip.py` (in the repo root).
-Run it again after changing anything here.

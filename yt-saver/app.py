@@ -1,7 +1,6 @@
 import base64
 import contextlib
 import glob
-import hashlib
 import hmac
 import os
 import re
@@ -11,62 +10,35 @@ import sys
 import tempfile
 import threading
 import time
-from datetime import timedelta
-from functools import wraps
 from urllib.parse import parse_qs, urlparse
 
 import yt_dlp
-from flask import Flask, jsonify, redirect, request, send_file, send_from_directory, session
+from flask import Flask, jsonify, request, send_file, send_from_directory
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
 # ---- Mode ----
-# PUBLIC_MODE=1 : anyone can use it, no login, but every visitor has limits (see "Limits" below).
-# default (off) : private. One shared password (APP_PASSWORD).
-PUBLIC_MODE = os.environ.get("PUBLIC_MODE", "0") == "1"
-# When the site serves this app at arvish.xyz/yt-saver, the site removes "/yt-saver" before the
-# request reaches this app, so redirects have to add it back. Set URL_PREFIX=/yt-saver then.
-_prefix = os.environ.get("URL_PREFIX", "").strip().strip("/")
-URL_PREFIX = "/" + _prefix if _prefix else ""
-
-# ---- Password / local mode ----
-# Three ways to run it:
-#   local mode   (the normal way: your own phone/PC, nothing set): no login. The app only
+# There is no password and no login. Two ways to run it:
+#   local mode   (the normal way, nothing set): you run it on your own phone/PC. The app only
 #                listens on 127.0.0.1, so only this device can open it (see local_guard below).
-#   private mode (APP_PASSWORD set): one shared password. This is REQUIRED as soon as the app
-#                can be reached from outside (HOST other than 127.0.0.1, or BEHIND_PROXY=1).
-#   public mode  (PUBLIC_MODE=1): no login, but every visitor has limits.
-# Set APP_PASSWORD as an environment variable. Never put a real password in this file: the
-# GitHub repo is public, so anyone could read it.
-_OLD_DEFAULT_PASSWORD = "Abhishek862009"  # the old built-in default; it is in the public repo, so it is never accepted
-APP_PASSWORD = os.environ.get("APP_PASSWORD", "").strip()
+#   public mode  (PUBLIC_MODE=1): for hosting it for other people. Every visitor has limits
+#                (see "Limits" below).
+# Making the app reachable from outside (HOST other than 127.0.0.1, or BEHIND_PROXY=1) without
+# PUBLIC_MODE=1 is refused: an open downloader without limits is a bad idea.
+PUBLIC_MODE = os.environ.get("PUBLIC_MODE", "0") == "1"
 _is_local = os.environ.get("BEHIND_PROXY") != "1" and os.environ.get("HOST", "127.0.0.1") in ("127.0.0.1", "localhost")
-LOCAL_MODE = False
-if APP_PASSWORD == _OLD_DEFAULT_PASSWORD:
-    sys.exit("APP_PASSWORD is the old default that is visible in the public repo. Choose a new one.")
-if PUBLIC_MODE:
-    APP_PASSWORD = APP_PASSWORD or secrets.token_urlsafe(24)  # no login in public mode; only seeds the cookie key
-elif not APP_PASSWORD:
-    if not _is_local:
-        sys.exit("APP_PASSWORD is not set. Set it as an environment variable (a long, new password) and start again.")
-    LOCAL_MODE = True
-    APP_PASSWORD = secrets.token_urlsafe(24)  # nobody logs in; only seeds the cookie key
-NO_LOGIN = PUBLIC_MODE or LOCAL_MODE
+LOCAL_MODE = not PUBLIC_MODE
+if LOCAL_MODE and not _is_local:
+    sys.exit("This app is set up to be reachable from outside, which needs PUBLIC_MODE=1 (it adds limits per visitor). "
+             "To use it only on this device, do not set HOST or BEHIND_PROXY.")
 
 app = Flask(__name__, static_folder=None)
-# Optional SECRET_KEY signs the login cookie. Without it, the key is derived
-# from the password, so login survives restarts (changing the password logs everyone out).
-app.secret_key = hashlib.sha256(
-    ("ytsaver-v2:" + os.environ.get("SECRET_KEY", "") + ":" + APP_PASSWORD).encode()
-).digest()
 app.config.update(
-    SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE="Strict",
-    SESSION_COOKIE_SECURE=os.environ.get("COOKIE_SECURE", "0") == "1",
-    PERMANENT_SESSION_LIFETIME=timedelta(days=30),
     MAX_CONTENT_LENGTH=64 * 1024,  # room for a playlist batch request
 )
+
+
 def _env_int(name, default):
     try:
         return max(1, int(os.environ.get(name, default)))
@@ -84,7 +56,7 @@ if os.environ.get("BEHIND_PROXY") == "1":  # only trust X-Forwarded-For behind a
 
 ALLOWED_HOSTS = {"youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com", "youtu.be"}
 
-# ---- Limits (public mode only; 0 means "no limit" in private mode) ----
+# ---- Limits (public mode only; 0 means "no limit" in local mode) ----
 if PUBLIC_MODE:
     MAX_HEIGHT = _env_int("MAX_HEIGHT", 1080)       # highest quality offered
     MAX_MINUTES = _env_int("MAX_MINUTES", 30)       # longest video
@@ -133,41 +105,8 @@ def ip_release(ip):
         with _hits_lock:
             _active_ips.discard(ip)
 
-# ---- Brute-force lockout (memory only, no database) ----
-MAX_FAILS, LOCK_SECONDS = 5, 15 * 60
-_fails, _fails_lock = {}, threading.Lock()
 
-
-def locked_for(ip):
-    with _fails_lock:
-        rec = _fails.get(ip)
-        if rec and rec["until"] > time.time():
-            return int(rec["until"] - time.time())
-        if rec and rec["until"]:
-            _fails.pop(ip, None)
-    return 0
-
-
-def record_fail(ip):
-    with _fails_lock:
-        rec = _fails.setdefault(ip, {"count": 0, "until": 0})
-        rec["count"] += 1
-        if rec["count"] >= MAX_FAILS:
-            rec["until"], rec["count"] = time.time() + LOCK_SECONDS, 0
-
-
-def login_required(api=False):
-    def deco(fn):
-        @wraps(fn)
-        def wrapper(*a, **kw):
-            if not NO_LOGIN and not session.get("ok"):
-                return (jsonify(error="Please log in."), 401) if api else redirect(URL_PREFIX + "/login")
-            return fn(*a, **kw)
-        return wrapper
-    return deco
-
-
-# Local mode has no login, so these two checks are what stop a web page open in your browser
+# Local mode has no password, so these two checks are what stop a web page open in your browser
 # from talking to the app behind your back:
 #  - Host check: only 127.0.0.1 / localhost / ::1 are accepted ("DNS rebinding" protection).
 #  - Origin check: a POST that comes from another website is refused.
@@ -211,43 +150,7 @@ def is_valid(url):
     return p.scheme in ("http", "https") and p.hostname in ALLOWED_HOSTS
 
 
-# ---------------- Auth ----------------
-@app.get("/login")
-def login_page():
-    if NO_LOGIN or session.get("ok"):
-        return redirect(URL_PREFIX + "/")
-    return send_from_directory(BASE, "login.html")
-
-
-@app.post("/login")
-def login():
-    if NO_LOGIN:
-        return jsonify(error="No login is needed."), 404
-    ip = request.remote_addr or "unknown"
-    wait = locked_for(ip)
-    if wait:
-        return jsonify(error=f"Too many attempts. Try again in {wait // 60 + 1} min."), 429
-    given = str((request.get_json(silent=True) or {}).get("password", ""))
-    if hmac.compare_digest(given.encode(), APP_PASSWORD.encode()):
-        with _fails_lock:
-            _fails.pop(ip, None)
-        session.clear()
-        session.permanent = True
-        session["ok"] = True
-        return jsonify(ok=True)
-    record_fail(ip)
-    time.sleep(1)
-    return jsonify(error="Wrong password."), 401
-
-
-@app.post("/logout")
-def logout():
-    session.clear()
-    return jsonify(ok=True)
-
-
 @app.get("/")
-@login_required()
 def home():
     return send_from_directory(BASE, "index.html")
 
@@ -381,7 +284,6 @@ def size_of(f):
 
 
 @app.post("/api/info")
-@login_required(api=True)
 def info():
     url = (request.get_json(silent=True) or {}).get("url", "").strip()
     if not is_valid(url):
@@ -542,7 +444,6 @@ def make_job(url, quality, expected=0, ip=""):
 
 
 @app.post("/api/start")
-@login_required(api=True)
 def start():
     body = request.get_json(silent=True) or {}
     url, quality = str(body.get("url", "")).strip(), str(body.get("quality", ""))
@@ -585,7 +486,6 @@ _pl_cache, _pl_lock = {}, threading.Lock()
 
 
 @app.post("/api/playlist")
-@login_required(api=True)
 def playlist():
     if PUBLIC_MODE:
         return jsonify(error="Playlists are not available in the free version."), 403
@@ -656,7 +556,6 @@ def run_batch(batch):
 
 
 @app.post("/api/batch/start")
-@login_required(api=True)
 def batch_start():
     if PUBLIC_MODE:
         return jsonify(error="Playlists are not available in the free version."), 403
@@ -681,7 +580,6 @@ def batch_start():
 
 
 @app.get("/api/batch/<bid>")
-@login_required(api=True)
 def batch_status(bid):
     batch = BATCHES.get(bid)
     if not batch:
@@ -702,7 +600,6 @@ def batch_status(bid):
 
 
 @app.post("/api/batch/<bid>/cancel")
-@login_required(api=True)
 def batch_cancel(bid):
     batch = BATCHES.get(bid)
     if batch:
@@ -715,24 +612,22 @@ def batch_cancel(bid):
 
 
 @app.get("/api/config")
-@login_required(api=True)
 def config():
     """What the page needs to know to show the right buttons and limits."""
-    return jsonify(public=PUBLIC_MODE, login=not NO_LOGIN, max_height=MAX_HEIGHT, max_minutes=MAX_MINUTES,
+    return jsonify(public=PUBLIC_MODE, max_height=MAX_HEIGHT, max_minutes=MAX_MINUTES,
                    max_file_mb=MAX_FILE_MB, per_hour=PER_HOUR)
 
 
 @app.get("/api/health")
-@login_required(api=True)
 def health():
-    """How the server is set up (no secrets, only on/off). In private mode: log in, then open it.
+    """How the server is set up (no secrets, only on/off).
     In public mode it is hidden unless ADMIN_KEY is set and given as /api/health?key=...
     `your_ip` is the address the app thinks you have. If it is not your real address, PROXY_HOPS is wrong."""
     admin_key = os.environ.get("ADMIN_KEY", "")
     if PUBLIC_MODE and not (admin_key and hmac.compare_digest(request.args.get("key", ""), admin_key)):
         return jsonify(error="Not found."), 404
     return jsonify(
-        mode="public" if PUBLIC_MODE else ("local" if LOCAL_MODE else "private"),
+        mode="public" if PUBLIC_MODE else "local",
         yt_dlp=yt_dlp.version.__version__,
         js_runtimes=sorted(_runtimes),
         ffmpeg=bool(shutil.which("ffmpeg")),
@@ -744,7 +639,6 @@ def health():
 
 
 @app.get("/api/status/<jid>")
-@login_required(api=True)
 def status(jid):
     job = JOBS.get(jid)
     if not job:
@@ -754,7 +648,6 @@ def status(jid):
 
 
 @app.post("/api/cancel/<jid>")
-@login_required(api=True)
 def cancel(jid):
     job = JOBS.get(jid)
     if job:
@@ -763,7 +656,6 @@ def cancel(jid):
 
 
 @app.get("/api/file/<jid>")
-@login_required(api=True)
 def get_file(jid):
     job = JOBS.get(jid)
     if not job or job["state"] != "done" or not os.path.exists(job["path"]):

@@ -24,19 +24,19 @@ export function guideToMarkdown(opts: {
   name: string;
   tagline: Bi;
   pageUrl: string;
-  zipUrl: string;
+  repoUrl: string;
   sourceUrl?: string;
   guide: AppGuide;
   lang: GuideLang;
 }): string {
-  const { name, tagline, pageUrl, zipUrl, sourceUrl, guide, lang } = opts;
+  const { name, tagline, pageUrl, repoUrl, sourceUrl, guide, lang } = opts;
   const t = (b: Bi) => b[lang];
   const L: string[] = [];
 
   L.push(`# ${name} — ${t(guide.heading)}`, '', `> ${t(tagline)}`, '');
   L.push(`- ${lang === 'hi' ? 'भाषा' : 'Language'}: ${lang === 'hi' ? 'हिन्दी (Hindi)' : 'English'}`);
   L.push(`- ${lang === 'hi' ? 'यह पेज' : 'Web page'}: ${pageUrl}`);
-  L.push(`- ${lang === 'hi' ? 'ऐप डाउनलोड (ZIP)' : 'App download (ZIP)'}: ${zipUrl}`);
+  L.push(`- ${lang === 'hi' ? 'ऐप का कोड (git clone)' : 'App code (git clone)'}: ${repoUrl}`);
   if (sourceUrl) L.push(`- ${lang === 'hi' ? 'सोर्स कोड' : 'Source code'}: ${sourceUrl}`);
   L.push('', t(guide.intro), '', t(guide.why), '');
 

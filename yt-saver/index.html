@@ -100,7 +100,6 @@
   .pl-row.error .pl-sub { color:var(--error); font-weight:600; }
   #pdl { width:100%; margin-top:16px; background:var(--cobalt); border-color:var(--cobalt); font-size:1.05rem; }
   .linkbtn { background:none; border:0; padding:0; color:var(--cobalt); font:inherit; font-weight:600; text-decoration:underline; }
-  .logout { position:fixed; top:14px; right:16px; background:none; border:0; color:var(--muted); font-weight:600; padding:8px; }
   .note { margin-top:36px; font-size:.82rem; color:var(--muted); max-width:60ch; }
   @media (max-width:480px) {
     .field { flex-direction:column; }
@@ -112,7 +111,6 @@
 </style>
 </head>
 <body>
-<button id="logout" class="logout">Log out</button>
 <main>
   <h1>Save a video.<br>Pick the quality.</h1>
   <p class="lead">Paste a YouTube link, choose a resolution from highest to lowest, and save it to your device.</p>
@@ -188,7 +186,6 @@
   const fmtTime = (s) => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
     return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(x).padStart(2, "0"); };
   const tag = (h) => h >= 2160 ? "4K" : h >= 1440 ? "2K" : h >= 720 ? "HD" : "";
-  const toLogin = () => { location.href = BASE + "/login"; };
 
   function select(value) {
     selected = value;
@@ -218,7 +215,6 @@
     say("Reading video…");
     try {
       const r = await fetch(BASE + "/api/info", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
-      if (r.status === 401) return toLogin();
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || "Something went wrong.");
 
@@ -259,7 +255,6 @@
     try {
       const r = await fetch(BASE + "/api/start", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: currentUrl, quality: String(selected), expected: expected[selected] || 0 }) });
-      if (r.status === 401) return toLogin();
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || "Could not start.");
       jobId = d.id; polling = true; poll(0);
@@ -276,7 +271,6 @@
     if (!polling || !jobId) return;
     try {
       const r = await fetch(BASE + "/api/status/" + jobId);
-      if (r.status === 401) return toLogin();
       const s = await r.json();
       if (!r.ok) return fail(s.error || "Job expired. Start again.");
 
@@ -333,7 +327,6 @@
     say("Reading playlist…");
     try {
       const r = await fetch(BASE + "/api/playlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
-      if (r.status === 401) return toLogin();
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || "Something went wrong.");
       plVideos = d.videos; batchId = null; bpolling = false; saved = new Set(); saveQueue = [];
@@ -384,7 +377,6 @@
     try {
       const r = await fetch(BASE + "/api/batch/start", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: items.map(({ id, title, quality }) => ({ id, title, quality })) }) });
-      if (r.status === 401) return toLogin();
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || "Could not start.");
       batchId = d.id; bpolling = true; saved = new Set(); saveQueue = [];
@@ -412,7 +404,6 @@
     if (!bpolling || !batchId) return;
     try {
       const r = await fetch(BASE + "/api/batch/" + batchId);
-      if (r.status === 401) return toLogin();
       const d = await r.json();
       if (!r.ok) { bpolling = false; setBusy(false); updateCount(); $("bprog").className = "prog fail"; return setBatchProgress("Failed", 100, d.error || "Batch expired."); }
 
@@ -475,11 +466,9 @@
     drainSaves();
   });
 
-  // Ask the server how it is set up. In the free/public version there is no login,
-  // so hide Log out and show the limits. When a login is needed this just returns 401 and is ignored.
+  // Ask the server how it is set up. In the public version, show the limits.
   fetch(BASE + "/api/config").then((r) => (r.ok ? r.json() : null)).then((c) => {
     if (!c) return;
-    if (c.login === false) $("logout").hidden = true;   // local or public mode: there is no login, so no Log out
     if (!c.public) return;
     publicMode = true;
     $("limits").textContent = "Free to use, with limits: " + c.per_hour + " saves per hour, videos up to " + c.max_minutes +
@@ -494,7 +483,6 @@
     $("cancel").disabled = true; setProgress("Cancelling…", 0, "");
     if (jobId) await fetch(BASE + "/api/cancel/" + jobId, { method: "POST" });
   });
-  $("logout").addEventListener("click", async () => { await fetch(BASE + "/logout", { method: "POST" }); toLogin(); });
 </script>
 </body>
 </html>
