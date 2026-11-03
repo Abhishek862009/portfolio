@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import { AppShell } from '@/components/ui/AppShell';
+import { apps, STORE_PATH } from '@/data/apps';
 
 import { LanguageProvider } from '@/components/i18n/LanguageProvider';
 import { Navbar } from '@/components/layout/Navbar';
@@ -107,8 +108,11 @@ const personSchema = {
   ],
 };
 
-const LANG_SCRIPT =
-  "try{var l=localStorage.getItem('ab-lang');if(l==='hi'||l==='en')document.documentElement.setAttribute('data-lang',l)}catch(e){}";
+// Only the setup-guide pages (the Terminal apps) have an English/Hindi switch; every other
+// page is always English.
+const GUIDE_PATHS = apps.filter((a) => a.platform === 'Terminal').map((a) => `${STORE_PATH}/${a.slug}`);
+
+const LANG_SCRIPT = `try{var p=location.pathname.replace(/\\/+$/,'');if(${JSON.stringify(GUIDE_PATHS)}.indexOf(p)>-1){var l=localStorage.getItem('ab-lang');if(l==='hi')document.documentElement.setAttribute('data-lang','hi')}}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -124,11 +128,11 @@ export default function RootLayout({
     // server's value (English) and the browser's can differ on purpose.
     <html lang="en" data-lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
-        {/* Applies the saved English/Hindi choice before the first paint (no flash). */}
+        {/* On a setup-guide page, applies the saved English/Hindi choice before the first paint (no flash). */}
         <script dangerouslySetInnerHTML={{ __html: LANG_SCRIPT }} />
       </head>
       <body>
-        <LanguageProvider>
+        <LanguageProvider guidePaths={GUIDE_PATHS}>
           <AppShell>
             <Navbar hasResume={hasResume} />
             <main>{children}</main>

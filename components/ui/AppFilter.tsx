@@ -39,7 +39,7 @@ export function AppFilter({ apps }: { apps: AppEntry[] }) {
       <div
         role="group"
         aria-label={t('Filter apps by platform', 'प्लेटफ़ॉर्म के हिसाब से ऐप्स छाँटें')}
-        className="inline-flex flex-wrap rounded-3xl border border-hairline bg-ink/40 p-1"
+        className="flex w-full max-w-full rounded-3xl border border-hairline bg-ink/40 p-1 sm:inline-flex sm:w-auto"
       >
         {OPTIONS.map((option) => {
           const active = filter === option.value;
@@ -54,12 +54,12 @@ export function AppFilter({ apps }: { apps: AppEntry[] }) {
                 `${option.hi}, ${count} ऐप${count === 1 ? '' : '्स'}`
               )}
               onClick={() => setFilter(option.value)}
-              className={`rounded-full px-4 py-1.5 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow ${
+              className={`flex-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm transition-colors sm:flex-none sm:px-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow ${
                 active ? 'bg-glow/15 text-frost' : 'text-slate hover:text-frost'
               }`}
             >
               <T en={option.en} hi={option.hi} />
-              <span className="ml-1.5 text-xs text-slate/70" aria-hidden="true">
+              <span className="ml-1.5 hidden text-xs text-slate/70 min-[420px]:inline" aria-hidden="true">
                 {count}
               </span>
             </button>
