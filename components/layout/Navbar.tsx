@@ -8,17 +8,32 @@ import { T } from '@/components/i18n/T';
 import { useT } from '@/components/i18n/LanguageProvider';
 import { Magnetic } from '@/components/ui/Magnetic';
 
-const NAV_LINKS = [
-  { href: '/#timeline', en: 'Story', hi: 'कहानी' },
-  { href: '/#skills', en: 'Skills', hi: 'स्किल्स' },
-  { href: '/#projects', en: 'Projects', hi: 'प्रोजेक्ट्स' },
-  { href: '/apps', en: 'App Store', hi: 'ऐप स्टोर' },
-  { href: '/#bidevlink', en: 'Bidevlink', hi: 'Bidevlink' },
-  { href: '/blog', en: 'Blog', hi: 'ब्लॉग' },
-  { href: '/#contact', en: 'Contact', hi: 'संपर्क' },
+// `section` = the id of the block on the home page this link belongs to (the dot follows it
+// while scrolling). `route` = the page it belongs to when the visitor is NOT on the home page
+// (so /blog highlights Blog, /apps highlights App Store, and so on).
+type NavLink = { href: string; en: string; hi: string; section?: string; route?: string };
+
+const HOME_LINK: NavLink = { href: '/', en: 'Home', hi: 'होम', section: 'hero' };
+
+const NAV_LINKS: NavLink[] = [
+  { href: '/#timeline', en: 'Story', hi: 'कहानी', section: 'timeline' },
+  { href: '/#skills', en: 'Skills', hi: 'स्किल्स', section: 'skills' },
+  { href: '/#projects', en: 'Projects', hi: 'प्रोजेक्ट्स', section: 'projects', route: '/projects' },
+  { href: '/apps', en: 'App Store', hi: 'ऐप स्टोर', section: 'apps', route: '/apps' },
+  { href: '/#bidevlink', en: 'Bidevlink', hi: 'Bidevlink', section: 'bidevlink', route: '/bidevlink' },
+  { href: '/blog', en: 'Blog', hi: 'ब्लॉग', section: 'blog', route: '/blog' },
+  { href: '/#contact', en: 'Contact', hi: 'संपर्क', section: 'contact' },
 ];
 
-const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'bidevlink', 'contact'];
+// Top-to-bottom order of the blocks on the home page (must match app/page.tsx).
+const SECTION_IDS = ['hero', 'timeline', 'skills', 'projects', 'apps', 'bidevlink', 'blog', 'contact'];
+
+// Which link gets the dot. On the home page it follows the scroll; on any other page it
+// follows the route.
+function isLinkActive(link: NavLink, pathname: string, active: string) {
+  if (pathname === '/') return link.section === active;
+  return Boolean(link.route) && (pathname === link.route || pathname.startsWith(`${link.route}/`));
+}
 
 // Locked behavior (blueprint Section 4): always present, transparent on the
 // hero so it never competes with the reveal, solidifies once the visitor
@@ -37,9 +52,6 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('hero');
 
-  const isHome = pathname === '/';
-  const isHomeActive = isHome && active === 'hero';
-
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 80);
     onScroll();
@@ -47,25 +59,44 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Which block is the visitor in? Computed from scroll position, not IntersectionObserver.
+  // The old observer only looked at the blocks that had just changed, so when a tall block
+  // (Projects, App Store) came into view at the same moment as the one leaving, the leaving
+  // one won and the dot never moved. Here: the active block is simply the last one whose top
+  // edge has passed the line 35% down the screen. At the very bottom of the page it is the
+  // last block, so Contact still lights up even though the page can't scroll any further.
   useEffect(() => {
-    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => Boolean(el)
-    );
-    if (!sections.length) return;
+    if (pathname !== '/') return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActive(visible.target.id);
-      },
-      { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
-    );
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.35;
+      let current = SECTION_IDS[0];
+      let last = SECTION_IDS[0];
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        last = id;
+        if (el.getBoundingClientRect().top <= line) current = id;
+      }
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      setActive(atBottom ? last : current);
+    };
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
 
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
-  }, []);
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
 
   // Lock body scroll while the mobile menu is open
   useEffect(() => {
@@ -99,30 +130,13 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
 
           {/* Desktop nav */}
           <ul className="hidden gap-8 text-sm text-slate md:flex">
-            <li className="relative">
-              <Link
-                href="/"
-                className={`transition-colors hover:text-frost ${
-                  isHomeActive ? 'text-frost' : ''
-                }`}
-              >
-                <T en="Home" hi="होम" />
-              </Link>
-              {isHomeActive && (
-                <motion.span
-                  layoutId="nav-active-dot"
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  className="absolute -bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-glow"
-                />
-              )}
-            </li>
-            {NAV_LINKS.map((link) => {
-              const id = link.href.includes('#') ? link.href.split('#')[1] : null;
-              const isActive = isHome && id !== null && active === id;
+            {[HOME_LINK, ...NAV_LINKS].map((link) => {
+              const isActive = isLinkActive(link, pathname, active);
               return (
                 <li key={link.href} className="relative">
                   <Link
                     href={link.href}
+                    aria-current={isActive ? 'true' : undefined}
                     className={`transition-colors hover:text-frost ${
                       isActive ? 'text-frost' : ''
                     }`}
@@ -203,9 +217,9 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
           >
             <ul className="flex h-full flex-col items-center justify-center gap-6 text-2xl">
               {[
-                { href: '/', en: 'Home', hi: 'होम' },
+                HOME_LINK,
                 ...NAV_LINKS,
-                ...(hasResume ? [{ href: '/resume.pdf', en: 'Resume', hi: 'रिज्यूमे' }] : []),
+                ...(hasResume ? [{ href: '/resume.pdf', en: 'Resume', hi: 'रिज्यूमे' } as NavLink] : []),
               ].map((link, i) => (
                 <motion.li
                   key={link.href}
@@ -224,7 +238,11 @@ export function Navbar({ hasResume = false }: { hasResume?: boolean }) {
                       <T en={link.en} hi={link.hi} />
                     </a>
                   ) : (
-                    <Link href={link.href} onClick={() => setOpen(false)} className="text-frost">
+                    <Link
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className={isLinkActive(link, pathname, active) ? 'text-glow' : 'text-frost'}
+                    >
                       <T en={link.en} hi={link.hi} />
                     </Link>
                   )}

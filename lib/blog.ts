@@ -29,7 +29,8 @@ export function getAllPosts(): BlogPost[] {
       title: data.title ?? filename.replace(/\.mdx$/, ''),
       slug: data.slug ?? filename.replace(/\.mdx$/, ''),
       date: data.date ?? new Date().toISOString(),
-      excerpt: data.excerpt ?? '',
+      // Some posts were written with `summary:` instead of `excerpt:` — accept both.
+      excerpt: data.excerpt ?? data.summary ?? '',
       tags: data.tags ?? [],
       author: data.author ?? 'Abhishek',
       coverImage: data.coverImage ?? '',

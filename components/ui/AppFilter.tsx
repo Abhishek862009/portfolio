@@ -72,6 +72,7 @@ export function AppFilter({ apps }: { apps: AppEntry[] }) {
           {visible.map((app) => (
             <motion.div
               key={app.slug}
+              className="h-full"
               layout={!reduceMotion}
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
