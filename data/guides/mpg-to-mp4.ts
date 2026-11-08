@@ -120,6 +120,14 @@ export const mpgToMp4Guide: AppGuide = {
       ],
       fixes: [
         {
+          problem: b('The app says “Not enough free disk space”', 'ऐप कहता है “Not enough free disk space”'),
+          fix: b(
+            'Your file needs about 1.5 times its size free in the temporary folder. Free some space, or start the app with a folder on a drive that has more room (change the folder name to your own; the app creates it if it is missing).',
+            'आपकी फ़ाइल के साइज़ का लगभग 1.5 गुना टेम्पररी फ़ोल्डर में खाली होना चाहिए। जगह खाली करें, या ऐप को ऐसी ड्राइव के फ़ोल्डर के साथ चालू करें जिसमें ज़्यादा जगह हो (फ़ोल्डर का नाम अपने हिसाब से बदलें; फ़ोल्डर न हो तो ऐप उसे बना देता है)।'
+          ),
+          blocks: [{ label: b('PowerShell', 'PowerShell'), lines: ['$env:MPG_TEMP_DIR="D:\\mpg-temp"', '.venv\\Scripts\\python.exe app.py'] }, { label: b('Command Prompt (CMD)', 'Command Prompt (CMD)'), lines: ['set MPG_TEMP_DIR=D:\\mpg-temp', '.venv\\Scripts\\python.exe app.py'] }],
+        },
+        {
           problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
           fix: b(
             'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), close this PowerShell or CMD window and open a new one. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
@@ -211,6 +219,14 @@ export const mpgToMp4Guide: AppGuide = {
       ],
       fixes: [
         {
+          problem: b('The app says “Not enough free disk space”', 'ऐप कहता है “Not enough free disk space”'),
+          fix: b(
+            'Your file needs about 1.5 times its size free in the temporary folder. Free some space, or start the app with a folder on a drive that has more room (change the folder name to your own; the app creates it if it is missing).',
+            'आपकी फ़ाइल के साइज़ का लगभग 1.5 गुना टेम्पररी फ़ोल्डर में खाली होना चाहिए। जगह खाली करें, या ऐप को ऐसी ड्राइव के फ़ोल्डर के साथ चालू करें जिसमें ज़्यादा जगह हो (फ़ोल्डर का नाम अपने हिसाब से बदलें; फ़ोल्डर न हो तो ऐप उसे बना देता है)।'
+          ),
+          blocks: [{ lines: ['MPG_TEMP_DIR=$HOME/mpg-temp python app.py'] }],
+        },
+        {
           problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
           fix: b(
             'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), then run these lines in Termux. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
@@ -289,6 +305,14 @@ export const mpgToMp4Guide: AppGuide = {
       ],
       fixes: [
         {
+          problem: b('The app says “Not enough free disk space”', 'ऐप कहता है “Not enough free disk space”'),
+          fix: b(
+            'Your file needs about 1.5 times its size free in the temporary folder. Free some space, or start the app with a folder on a drive that has more room (change the folder name to your own; the app creates it if it is missing).',
+            'आपकी फ़ाइल के साइज़ का लगभग 1.5 गुना टेम्पररी फ़ोल्डर में खाली होना चाहिए। जगह खाली करें, या ऐप को ऐसी ड्राइव के फ़ोल्डर के साथ चालू करें जिसमें ज़्यादा जगह हो (फ़ोल्डर का नाम अपने हिसाब से बदलें; फ़ोल्डर न हो तो ऐप उसे बना देता है)।'
+          ),
+          blocks: [{ lines: ['MPG_TEMP_DIR=$HOME/mpg-temp .venv/bin/python app.py'] }],
+        },
+        {
           problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
           fix: b(
             'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), open a new terminal window. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
@@ -366,6 +390,14 @@ export const mpgToMp4Guide: AppGuide = {
       ],
       fixes: [
         {
+          problem: b('The app says “Not enough free disk space”', 'ऐप कहता है “Not enough free disk space”'),
+          fix: b(
+            'Your file needs about 1.5 times its size free in the temporary folder. Free some space, or start the app with a folder on a drive that has more room (change the folder name to your own; the app creates it if it is missing).',
+            'आपकी फ़ाइल के साइज़ का लगभग 1.5 गुना टेम्पररी फ़ोल्डर में खाली होना चाहिए। जगह खाली करें, या ऐप को ऐसी ड्राइव के फ़ोल्डर के साथ चालू करें जिसमें ज़्यादा जगह हो (फ़ोल्डर का नाम अपने हिसाब से बदलें; फ़ोल्डर न हो तो ऐप उसे बना देता है)।'
+          ),
+          blocks: [{ lines: ['MPG_TEMP_DIR=$HOME/mpg-temp .venv/bin/python app.py'] }],
+        },
+        {
           problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
           fix: b(
             'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), open a new Terminal window. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
@@ -395,22 +427,22 @@ export const mpgToMp4Guide: AppGuide = {
   using: [
     b(`Open ${URL_LOCAL} in your browser.`, `अपने ब्राउज़र में ${URL_LOCAL} खोलें।`),
     b('Drop your .mpg or .mpeg file on the box, or click the box and choose the file.', 'अपनी .mpg या .mpeg फ़ाइल बॉक्स पर छोड़ें, या बॉक्स पर क्लिक करके फ़ाइल चुनें।'),
-    b('Press “Convert to MP4” and wait. Longer videos take longer.', '“Convert to MP4” दबाएँ और रुकें। लंबे वीडियो में ज़्यादा समय लगता है।'),
-    b('When it says “Done”, press “Download MP4”. The file goes to your browser’s Downloads folder.', '“Done” दिखे तो “Download MP4” दबाएँ। फ़ाइल आपके ब्राउज़र के Downloads फ़ोल्डर में जाती है।'),
+    b('Choose “Speed or quality” (Fast is best for big files) and press “Convert to MP4”. Two bars show the progress: sending the file to the app, and converting it, with percent, speed and the time left.', '“Speed or quality” चुनें (बड़ी फ़ाइलों के लिए Fast सबसे अच्छा है) और “Convert to MP4” दबाएँ। दो बार प्रोग्रेस दिखाते हैं: फ़ाइल को ऐप तक भेजना, और उसे कन्वर्ट करना, प्रतिशत, स्पीड और बचे समय के साथ।'),
+    b('When it says “Done”, press “Download MP4”. The file goes to your browser’s Downloads folder. Then press “Delete temporary file and convert another” to free the disk space.', '“Done” दिखे तो “Download MP4” दबाएँ। फ़ाइल आपके ब्राउज़र के Downloads फ़ोल्डर में जाती है। फिर डिस्क की जगह खाली करने के लिए “Delete temporary file and convert another” दबाएँ।'),
   ],
   goodToKnowTitle: b('Good to know', 'ध्यान रखें'),
   goodToKnow: [
     b(
-      'The video is re-encoded into H.264 video and AAC audio, which is what MP4 players expect. Quality stays very close to the original, but a long or large video can take several minutes, and a phone is slower than a computer.',
-      'वीडियो को H.264 वीडियो और AAC ऑडियो में दोबारा एन्कोड किया जाता है, जो MP4 प्लेयर को चाहिए। क्वालिटी मूल के बहुत करीब रहती है, लेकिन लंबे या बड़े वीडियो में कई मिनट लग सकते हैं, और फ़ोन कंप्यूटर से धीमा होता है।'
+      'The video is re-encoded into H.264 video and AAC audio, which is what MP4 players expect. There is no size limit, so big files of 7 to 8 GB work. The time depends on your computer: it can take from many minutes to a few hours, so keep the window open and the device awake. “Fast” is the quickest. A phone is much slower than a computer and may run out of space, so use a computer for very big files.',
+      'वीडियो को H.264 वीडियो और AAC ऑडियो में दोबारा एन्कोड किया जाता है, जो MP4 प्लेयर को चाहिए। साइज़ की कोई सीमा नहीं है, इसलिए 7 से 8 GB की बड़ी फ़ाइलें भी चलती हैं। समय आपके कंप्यूटर पर निर्भर करता है: कई मिनट से लेकर कुछ घंटे तक लग सकते हैं, इसलिए विंडो खुली और डिवाइस जगा हुआ रखें। “Fast” सबसे तेज़ है। फ़ोन कंप्यूटर से बहुत धीमा होता है और उसमें जगह कम पड़ सकती है, इसलिए बहुत बड़ी फ़ाइलों के लिए कंप्यूटर इस्तेमाल करें।'
     ),
     b(
-      'The app accepts files up to 2 GB. It only takes .mpg and .mpeg files. If a file is damaged, the app says it could not convert it.',
-      'ऐप 2 GB तक की फ़ाइलें लेता है। यह सिर्फ़ .mpg और .mpeg फ़ाइलें लेता है। अगर फ़ाइल खराब हो, तो ऐप बताता है कि वह कन्वर्ट नहीं हो सकी।'
+      'The app needs free disk space of about 1.5 times the size of your file in its temporary folder (on Windows this is usually the C: drive). If space is short, the app tells you. Press “Delete temporary file and convert another” after downloading. The temporary files are also removed when you stop the app. It only takes .mpg and .mpeg files; if a file is damaged, the app says it could not convert it.',
+      'ऐप को अपने टेम्पररी फ़ोल्डर में आपकी फ़ाइल के साइज़ का लगभग 1.5 गुना खाली डिस्क स्पेस चाहिए (Windows पर यह आम तौर पर C: ड्राइव होती है)। जगह कम हो तो ऐप बता देता है। डाउनलोड के बाद “Delete temporary file and convert another” दबाएँ। ऐप बंद करने पर भी अस्थायी फ़ाइलें हट जाती हैं। यह सिर्फ़ .mpg और .mpeg फ़ाइलें लेता है; फ़ाइल खराब हो तो ऐप बताता है कि वह कन्वर्ट नहीं हो सकी।'
     ),
     b(
-      'Nothing about your videos goes through arvish.xyz. You get the app’s code from GitHub once; after that the conversion happens only on your device, and the temporary files are deleted when it finishes.',
-      'आपके वीडियो का कुछ भी arvish.xyz से होकर नहीं जाता। आप ऐप का कोड एक बार GitHub से लेते हैं; उसके बाद कन्वर्ज़न सिर्फ़ आपके डिवाइस पर होता है, और खत्म होने पर अस्थायी फ़ाइलें हटा दी जाती हैं।'
+      'Nothing about your videos goes through arvish.xyz. You get the app’s code from GitHub once; after that the conversion happens only on your device, and the temporary files are deleted when you press “Delete temporary file and convert another” or stop the app.',
+      'आपके वीडियो का कुछ भी arvish.xyz से होकर नहीं जाता। आप ऐप का कोड एक बार GitHub से लेते हैं; उसके बाद कन्वर्ज़न सिर्फ़ आपके डिवाइस पर होता है, और “Delete temporary file and convert another” दबाने या ऐप बंद करने पर अस्थायी फ़ाइलें हटा दी जाती हैं।'
     ),
     b(
       'The app is open source. The code is in its own repository on GitHub: Abhishek862009/mpg-to-mp4.',
