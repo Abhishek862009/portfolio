@@ -120,6 +120,14 @@ export const mpgToMp4Guide: AppGuide = {
       ],
       fixes: [
         {
+          problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
+          fix: b(
+            'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), close this PowerShell or CMD window and open a new one. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
+            'ऐप सिर्फ़ वही ffmpeg इस्तेमाल कर सकता है जो यह विंडो ढूँढ पाए। ऐप रोकें (Ctrl+C), इस PowerShell या CMD विंडो को बंद करके नई खोलें। पहली लाइन चलाएँ: अगर “ffmpeg version” छपे, तो ऐप फिर से चालू करें। अगर कमांड न मिले, तो दूसरी लाइन से ffmpeg इंस्टॉल करें, फिर विंडो बंद करके नई खोलें और ऐप फिर से चालू करें।'
+          ),
+          blocks: [{ lines: ['ffmpeg -version', 'winget install -e --id Gyan.FFmpeg'] }],
+        },
+        {
           problem: b('“git is not recognized”, “py is not recognized” or “ffmpeg is not recognized”', '“git is not recognized”, “py is not recognized” या “ffmpeg is not recognized”'),
           fix: b(
             'Close the window and open it again. If it still fails, install the program by hand from its official site: git-scm.com, python.org (tick “Add python.exe to PATH” in the installer) and ffmpeg.org (Windows builds).',
@@ -203,6 +211,14 @@ export const mpgToMp4Guide: AppGuide = {
       ],
       fixes: [
         {
+          problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
+          fix: b(
+            'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), then run these lines in Termux. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
+            'ऐप सिर्फ़ वही ffmpeg इस्तेमाल कर सकता है जो यह विंडो ढूँढ पाए। ऐप रोकें (Ctrl+C), फिर Termux में ये लाइनें चलाएँ। पहली लाइन चलाएँ: अगर “ffmpeg version” छपे, तो ऐप फिर से चालू करें। अगर कमांड न मिले, तो दूसरी लाइन से ffmpeg इंस्टॉल करें, फिर विंडो बंद करके नई खोलें और ऐप फिर से चालू करें।'
+          ),
+          blocks: [{ lines: ['ffmpeg -version', 'pkg install -y ffmpeg'] }],
+        },
+        {
           problem: b('pip says “externally-managed-environment”', 'pip कहता है “externally-managed-environment”'),
           fix: b('Run the install again with one extra word:', 'एक शब्द और जोड़कर इंस्टॉल दोबारा चलाएँ:'),
           blocks: [{ lines: ['pip install --break-system-packages -r requirements.txt'] }],
@@ -273,6 +289,14 @@ export const mpgToMp4Guide: AppGuide = {
       ],
       fixes: [
         {
+          problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
+          fix: b(
+            'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), open a new terminal window. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
+            'ऐप सिर्फ़ वही ffmpeg इस्तेमाल कर सकता है जो यह विंडो ढूँढ पाए। ऐप रोकें (Ctrl+C), नई टर्मिनल विंडो खोलें। पहली लाइन चलाएँ: अगर “ffmpeg version” छपे, तो ऐप फिर से चालू करें। अगर कमांड न मिले, तो दूसरी लाइन से ffmpeg इंस्टॉल करें, फिर विंडो बंद करके नई खोलें और ऐप फिर से चालू करें।'
+          ),
+          blocks: [{ lines: ['ffmpeg -version', 'sudo apt install -y ffmpeg'] }],
+        },
+        {
           problem: b('“ensurepip is not available” when creating the virtual environment', 'वर्चुअल एनवायरनमेंट बनाते समय “ensurepip is not available”'),
           fix: b('On Ubuntu and Debian, install the venv package, then run the set-up lines again:', 'Ubuntu और Debian पर venv पैकेज इंस्टॉल करें, फिर सेटअप की लाइनें दोबारा चलाएँ:'),
           blocks: [{ lines: ['sudo apt install -y python3-venv'] }],
@@ -341,6 +365,14 @@ export const mpgToMp4Guide: AppGuide = {
         },
       ],
       fixes: [
+        {
+          problem: b('The page opens, but converting says “ffmpeg was not found”', 'पेज खुलता है, लेकिन कन्वर्ट करने पर “ffmpeg was not found” आता है'),
+          fix: b(
+            'The app can only use an ffmpeg that this window can find. Stop the app (Ctrl+C), open a new Terminal window. Run the first line: if it prints “ffmpeg version”, start the app again. If it says the command is not found, run the second line to install ffmpeg, then close the window, open a new one and start the app again.',
+            'ऐप सिर्फ़ वही ffmpeg इस्तेमाल कर सकता है जो यह विंडो ढूँढ पाए। ऐप रोकें (Ctrl+C), नई Terminal विंडो खोलें। पहली लाइन चलाएँ: अगर “ffmpeg version” छपे, तो ऐप फिर से चालू करें। अगर कमांड न मिले, तो दूसरी लाइन से ffmpeg इंस्टॉल करें, फिर विंडो बंद करके नई खोलें और ऐप फिर से चालू करें।'
+          ),
+          blocks: [{ lines: ['ffmpeg -version', 'brew install ffmpeg'] }],
+        },
         {
           problem: b('“brew: command not found” right after installing Homebrew', 'Homebrew इंस्टॉल करने के ठीक बाद “brew: command not found”'),
           fix: b('Run the “Next steps” lines that the Homebrew installer printed at the end, then open a new Terminal window.', 'Homebrew इंस्टॉलर ने अंत में जो “Next steps” लाइनें छापी थीं, उन्हें चलाएँ और फिर नई Terminal विंडो खोलें।'),
