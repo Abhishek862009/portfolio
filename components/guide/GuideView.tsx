@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Apple, Monitor, Smartphone, Terminal as TerminalIcon } from 'lucide-react';
+import { Apple, Monitor, RefreshCw, Smartphone, Terminal as TerminalIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { T } from '@/components/i18n/T';
@@ -120,59 +120,28 @@ function FixList({ fixes }: { fixes: GuideFix[] }) {
 }
 
 /**
- * "How to update": the same four steps for every Terminal app (stop, git pull, update the
- * libraries, start again), one <details> per device. Like the setup guide, every device is in the
- * HTML at all times; the visitor's own device (if it can be guessed) is just opened for them.
+ * "How to update", at the bottom of one device's guide, so it is always for the device (and the
+ * app) the visitor picked for the setup. A closed <details> that looks like a button; the steps
+ * are in the HTML either way.
  */
-function UpdateSection({ guide }: { guide: AppGuide }) {
-  const [selected, setSelected] = useState<OsId | null>(null);
-
-  useEffect(() => {
-    const guess = detectOs();
-    if (guess && guide.oses.some((o) => o.id === guess)) setSelected(guess);
-  }, [guide.oses]);
-
+function UpdateBlock({ intro, steps, fixes }: { intro: Bi; steps: GuideStep[]; fixes: GuideFix[] }) {
   return (
-    <section id="update" aria-labelledby="update-title" className="mt-16 scroll-mt-24">
-      <h2 id="update-title" className="text-2xl font-semibold text-frost">
+    <details className="mt-10 border-t border-hairline pt-6">
+      <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-glow/40 bg-glow/10 px-5 py-2.5 text-sm font-medium text-frost transition-colors hover:border-glow/60 hover:bg-glow/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow">
+        <RefreshCw className="h-4 w-4" aria-hidden="true" />
         <T en="How to update" hi="अपडेट कैसे करें" />
-      </h2>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate">
-        <T2 b={guide.updateIntro} />
+      </summary>
+
+      <p className="mt-5 text-sm leading-relaxed text-slate">
+        <T2 b={intro} />
       </p>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate">
-        <T
-          en="In short: stop the app, go into its folder, run git pull, update the libraries and start the app again. Open your device below for the exact lines, and copy them into the same kind of terminal window you used for the setup."
-          hi="संक्षेप में: ऐप को रोकें, उसके फ़ोल्डर में जाएँ, git pull चलाएँ, लाइब्रेरी अपडेट करें और ऐप दोबारा चालू करें। सटीक लाइनों के लिए नीचे अपना डिवाइस खोलें, और उन्हें उसी तरह की टर्मिनल विंडो में कॉपी करें जैसी आपने सेटअप में इस्तेमाल की थी।"
-        />
-      </p>
+      <StepList steps={steps} />
 
-      <div className="mt-6 space-y-4">
-        {guide.oses.map((os) => (
-          <details
-            key={os.id}
-            id={`update-${os.id}`}
-            open={selected === os.id}
-            onToggle={(e) => {
-              const isOpen = (e.currentTarget as HTMLDetailsElement).open;
-              setSelected((cur) => (isOpen ? os.id : cur === os.id ? null : cur));
-            }}
-            className="scroll-mt-24 rounded-2xl border border-hairline bg-ink/40 p-5 open:border-glow/30"
-          >
-            <summary className="cursor-pointer list-none text-lg font-medium text-frost">
-              <T2 b={os.name} />
-            </summary>
-
-            <StepList steps={os.update} />
-
-            <h4 className="mt-9 text-base font-medium text-frost">
-              <T en="If something goes wrong" hi="कुछ गड़बड़ हो तो" />
-            </h4>
-            <FixList fixes={os.updateFixes} />
-          </details>
-        ))}
-      </div>
-    </section>
+      <h4 className="mt-9 text-base font-medium text-frost">
+        <T en="If the update fails" hi="अपडेट न हो तो" />
+      </h4>
+      <FixList fixes={fixes} />
+    </details>
   );
 }
 
@@ -321,6 +290,8 @@ export function GuideView({ slug, guide }: { slug: string; guide: AppGuide }) {
               <T en="If something goes wrong" hi="कुछ गड़बड़ हो तो" />
             </h4>
             <FixList fixes={os.fixes} />
+
+            <UpdateBlock intro={guide.updateIntro} steps={os.update} fixes={os.updateFixes} />
           </details>
         ))}
       </div>
@@ -336,9 +307,7 @@ export function GuideView({ slug, guide }: { slug: string; guide: AppGuide }) {
         ))}
       </ol>
 
-      <UpdateSection guide={guide} />
-
-      <h3 className="mt-16 text-lg font-semibold text-frost">
+      <h3 className="mt-10 text-lg font-semibold text-frost">
         <T2 b={guide.goodToKnowTitle} />
       </h3>
       <ul className="mt-3 max-w-2xl list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate">

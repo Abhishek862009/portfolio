@@ -6,9 +6,7 @@ import { T } from '@/components/i18n/T';
 import { AppIcon } from '@/components/ui/AppIcon';
 import { ComingSoonBadge } from '@/components/ui/ComingSoonBadge';
 import { DownloadButton } from '@/components/ui/DownloadButton';
-import { GuideButton } from '@/components/ui/GuideButton';
-import { UpdateButton } from '@/components/ui/UpdateButton';
-import { OpenAppButton } from '@/components/ui/OpenAppButton';
+import { GuideButton } from '@/components/ui/GuideButton';import { OpenAppButton } from '@/components/ui/OpenAppButton';
 
 // Small labels under the description, with their Hindi versions.
 const META_HI: Record<string, string> = {
@@ -82,10 +80,7 @@ export function AppCard({ app }: { app: AppEntry }) {
         {app.platform === 'Android' ? (
           <DownloadButton href={app.downloadUrl} />
         ) : app.platform === 'Terminal' ? (
-          <div className="flex flex-wrap items-center gap-3">
-            <GuideButton href={`${details}#setup`} />
-            <UpdateButton href={`${details}#update`} />
-          </div>
+          <GuideButton href={`${details}#setup`} />
         ) : app.comingSoon ? (
           <ComingSoonBadge />
         ) : (

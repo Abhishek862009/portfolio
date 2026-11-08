@@ -18,9 +18,7 @@ import type { Bi } from '@/data/guides/types';
 import { AppIcon } from '@/components/ui/AppIcon';
 import { ComingSoonBadge } from '@/components/ui/ComingSoonBadge';
 import { DownloadButton } from '@/components/ui/DownloadButton';
-import { GuideButton } from '@/components/ui/GuideButton';
-import { UpdateButton } from '@/components/ui/UpdateButton';
-import { OpenAppButton } from '@/components/ui/OpenAppButton';
+import { GuideButton } from '@/components/ui/GuideButton';import { OpenAppButton } from '@/components/ui/OpenAppButton';
 import { Reveal } from '@/components/ui/Reveal';
 
 export function generateStaticParams() {
@@ -265,14 +263,11 @@ export default function AppPage({ params }: { params: { slug: string } }) {
               size="large"
             />
           ) : app.platform === 'Terminal' ? (
-            <>
-              <GuideButton
-                href="#setup"
-                label={<T en="Choose your device" hi="अपना डिवाइस चुनें" />}
-                size="large"
-              />
-              <UpdateButton href="#update" size="large" />
-            </>
+            <GuideButton
+              href="#setup"
+              label={<T en="Choose your device" hi="अपना डिवाइस चुनें" />}
+              size="large"
+            />
           ) : app.comingSoon ? (
             <ComingSoonBadge size="large" />
           ) : (

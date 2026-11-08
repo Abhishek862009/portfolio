@@ -27,10 +27,10 @@ function stepsToMarkdown(L: string[], steps: GuideStep[], os: OsId, lang: GuideL
   });
 }
 
-function fixesToMarkdown(L: string[], fixes: GuideFix[], os: OsId, lang: GuideLang, hashes: string) {
+function fixesToMarkdown(L: string[], fixes: GuideFix[], os: OsId, lang: GuideLang, hashes: string, title?: string) {
   const t = (b: Bi) => b[lang];
   if (!fixes.length) return;
-  L.push(`${hashes} ${lang === 'hi' ? 'कुछ गड़बड़ हो तो' : 'If something goes wrong'}`, '');
+  L.push(`${hashes} ${title ?? (lang === 'hi' ? 'कुछ गड़बड़ हो तो' : 'If something goes wrong')}`, '');
   for (const fix of fixes) {
     L.push(`- **${t(fix.problem)}**`, `  ${t(fix.fix)}`);
     for (const line of blocks(fix.blocks, os, lang)) L.push(line ? `  ${line}` : line);
@@ -71,16 +71,14 @@ export function guideToMarkdown(opts: {
     L.push(`${os.tested ? '✅' : 'ℹ️'} ${t(os.testedNote)}`, '');
     stepsToMarkdown(L, os.steps, os.id, lang, '###');
     fixesToMarkdown(L, os.fixes, os.id, lang, '###');
+
+    // "How to update" belongs to the same device, right below its setup.
+    L.push(`### ${lang === 'hi' ? 'अपडेट कैसे करें' : 'How to update'}`, '', t(guide.updateIntro), '');
+    stepsToMarkdown(L, os.update, os.id, lang, '####');
+    fixesToMarkdown(L, os.updateFixes, os.id, lang, '####', lang === 'hi' ? 'अपडेट न हो तो' : 'If the update fails');
   }
 
   L.push(`## ${t(guide.usingTitle)}`, '', ...guide.using.map((u, i) => `${i + 1}. ${t(u)}`), '');
-
-  L.push(`## ${lang === 'hi' ? 'अपडेट कैसे करें' : 'How to update'}`, '', t(guide.updateIntro), '');
-  for (const os of guide.oses) {
-    L.push(`### ${t(os.name)}`, '');
-    stepsToMarkdown(L, os.update, os.id, lang, '####');
-    fixesToMarkdown(L, os.updateFixes, os.id, lang, '####');
-  }
 
   L.push(`## ${t(guide.goodToKnowTitle)}`, '', ...guide.goodToKnow.map((g) => `- ${t(g)}`), '');
   return L.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd() + '\n';
