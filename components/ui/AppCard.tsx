@@ -7,6 +7,7 @@ import { AppIcon } from '@/components/ui/AppIcon';
 import { ComingSoonBadge } from '@/components/ui/ComingSoonBadge';
 import { DownloadButton } from '@/components/ui/DownloadButton';
 import { GuideButton } from '@/components/ui/GuideButton';
+import { UpdateButton } from '@/components/ui/UpdateButton';
 import { OpenAppButton } from '@/components/ui/OpenAppButton';
 
 // Small labels under the description, with their Hindi versions.
@@ -81,7 +82,10 @@ export function AppCard({ app }: { app: AppEntry }) {
         {app.platform === 'Android' ? (
           <DownloadButton href={app.downloadUrl} />
         ) : app.platform === 'Terminal' ? (
-          <GuideButton href={`${details}#setup`} />
+          <div className="flex flex-wrap items-center gap-3">
+            <GuideButton href={`${details}#setup`} />
+            <UpdateButton href={`${details}#update`} />
+          </div>
         ) : app.comingSoon ? (
           <ComingSoonBadge />
         ) : (

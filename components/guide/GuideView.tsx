@@ -7,7 +7,7 @@ import type { LucideIcon } from 'lucide-react';
 import { T } from '@/components/i18n/T';
 import { CopyButton } from '@/components/guide/CopyButton';
 import { CopyGuideButton } from '@/components/guide/CopyGuideButton';
-import type { AppGuide, Bi, CodeBlock, OsId } from '@/data/guides/types';
+import type { AppGuide, Bi, CodeBlock, GuideFix, GuideStep, OsId } from '@/data/guides/types';
 
 const OS_ICON: Record<OsId, LucideIcon> = {
   windows: Monitor,
@@ -48,6 +48,131 @@ function Code({ block }: { block: CodeBlock }) {
         </pre>
       </div>
     </div>
+  );
+}
+
+/** Numbered steps, used for both the setup guide and the update guide. */
+function StepList({ steps }: { steps: GuideStep[] }) {
+  return (
+    <ol className="mt-6 space-y-7">
+      {steps.map((step, i) => (
+        <li key={step.title.en} className="flex gap-3">
+          <span
+            aria-hidden="true"
+            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-glow/40 text-xs text-glow"
+          >
+            {i + 1}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h4 className="text-base font-medium text-frost">
+              <T2 b={step.title} />
+            </h4>
+            {step.text && (
+              <p className="mt-1 text-sm leading-relaxed text-slate">
+                <T2 b={step.text} />
+              </p>
+            )}
+            {step.blocks?.map((block) => <Code key={block.lines.join('|')} block={block} />)}
+            {step.after && (
+              <p className="mt-3 text-sm leading-relaxed text-slate">
+                <T2 b={step.after} />
+              </p>
+            )}
+            {step.links && (
+              <ul className="mt-3 space-y-1 text-sm">
+                {step.links.map((l) => (
+                  <li key={l.href}>
+                    <a
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-glow underline-offset-4 hover:underline"
+                    >
+                      <T2 b={l.label} /> ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function FixList({ fixes }: { fixes: GuideFix[] }) {
+  return (
+    <ul className="mt-3 space-y-5">
+      {fixes.map((fix) => (
+        <li key={fix.problem.en} className="text-sm">
+          <p className="font-medium text-frost">
+            <T2 b={fix.problem} />
+          </p>
+          <p className="mt-1 leading-relaxed text-slate">
+            <T2 b={fix.fix} />
+          </p>
+          {fix.blocks?.map((block) => <Code key={block.lines.join('|')} block={block} />)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * "How to update": the same four steps for every Terminal app (stop, git pull, update the
+ * libraries, start again), one <details> per device. Like the setup guide, every device is in the
+ * HTML at all times; the visitor's own device (if it can be guessed) is just opened for them.
+ */
+function UpdateSection({ guide }: { guide: AppGuide }) {
+  const [selected, setSelected] = useState<OsId | null>(null);
+
+  useEffect(() => {
+    const guess = detectOs();
+    if (guess && guide.oses.some((o) => o.id === guess)) setSelected(guess);
+  }, [guide.oses]);
+
+  return (
+    <section id="update" aria-labelledby="update-title" className="mt-16 scroll-mt-24">
+      <h2 id="update-title" className="text-2xl font-semibold text-frost">
+        <T en="How to update" hi="अपडेट कैसे करें" />
+      </h2>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate">
+        <T2 b={guide.updateIntro} />
+      </p>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate">
+        <T
+          en="In short: stop the app, go into its folder, run git pull, update the libraries and start the app again. Open your device below for the exact lines, and copy them into the same kind of terminal window you used for the setup."
+          hi="संक्षेप में: ऐप को रोकें, उसके फ़ोल्डर में जाएँ, git pull चलाएँ, लाइब्रेरी अपडेट करें और ऐप दोबारा चालू करें। सटीक लाइनों के लिए नीचे अपना डिवाइस खोलें, और उन्हें उसी तरह की टर्मिनल विंडो में कॉपी करें जैसी आपने सेटअप में इस्तेमाल की थी।"
+        />
+      </p>
+
+      <div className="mt-6 space-y-4">
+        {guide.oses.map((os) => (
+          <details
+            key={os.id}
+            id={`update-${os.id}`}
+            open={selected === os.id}
+            onToggle={(e) => {
+              const isOpen = (e.currentTarget as HTMLDetailsElement).open;
+              setSelected((cur) => (isOpen ? os.id : cur === os.id ? null : cur));
+            }}
+            className="scroll-mt-24 rounded-2xl border border-hairline bg-ink/40 p-5 open:border-glow/30"
+          >
+            <summary className="cursor-pointer list-none text-lg font-medium text-frost">
+              <T2 b={os.name} />
+            </summary>
+
+            <StepList steps={os.update} />
+
+            <h4 className="mt-9 text-base font-medium text-frost">
+              <T en="If something goes wrong" hi="कुछ गड़बड़ हो तो" />
+            </h4>
+            <FixList fixes={os.updateFixes} />
+          </details>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -190,67 +315,12 @@ export function GuideView({ slug, guide }: { slug: string; guide: AppGuide }) {
               <T2 b={os.testedNote} />
             </p>
 
-            <ol className="mt-6 space-y-7">
-              {os.steps.map((step, i) => (
-                <li key={step.title.en} className="flex gap-3">
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-glow/40 text-xs text-glow"
-                  >
-                    {i + 1}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-base font-medium text-frost">
-                      <T2 b={step.title} />
-                    </h4>
-                    {step.text && (
-                      <p className="mt-1 text-sm leading-relaxed text-slate">
-                        <T2 b={step.text} />
-                      </p>
-                    )}
-                    {step.blocks?.map((block) => <Code key={block.lines.join('|')} block={block} />)}
-                    {step.after && (
-                      <p className="mt-3 text-sm leading-relaxed text-slate">
-                        <T2 b={step.after} />
-                      </p>
-                    )}
-                    {step.links && (
-                      <ul className="mt-3 space-y-1 text-sm">
-                        {step.links.map((l) => (
-                          <li key={l.href}>
-                            <a
-                              href={l.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-glow underline-offset-4 hover:underline"
-                            >
-                              <T2 b={l.label} /> ↗
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <StepList steps={os.steps} />
 
             <h4 className="mt-9 text-base font-medium text-frost">
               <T en="If something goes wrong" hi="कुछ गड़बड़ हो तो" />
             </h4>
-            <ul className="mt-3 space-y-5">
-              {os.fixes.map((fix) => (
-                <li key={fix.problem.en} className="text-sm">
-                  <p className="font-medium text-frost">
-                    <T2 b={fix.problem} />
-                  </p>
-                  <p className="mt-1 leading-relaxed text-slate">
-                    <T2 b={fix.fix} />
-                  </p>
-                  {fix.blocks?.map((block) => <Code key={block.lines.join('|')} block={block} />)}
-                </li>
-              ))}
-            </ul>
+            <FixList fixes={os.fixes} />
           </details>
         ))}
       </div>
@@ -266,7 +336,9 @@ export function GuideView({ slug, guide }: { slug: string; guide: AppGuide }) {
         ))}
       </ol>
 
-      <h3 className="mt-10 text-lg font-semibold text-frost">
+      <UpdateSection guide={guide} />
+
+      <h3 className="mt-16 text-lg font-semibold text-frost">
         <T2 b={guide.goodToKnowTitle} />
       </h3>
       <ul className="mt-3 max-w-2xl list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate">

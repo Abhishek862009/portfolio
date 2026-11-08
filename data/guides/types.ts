@@ -48,6 +48,9 @@ export interface OsGuide {
   testedNote: Bi;
   steps: GuideStep[];
   fixes: GuideFix[];
+  /** "How to update" for this device: stop, git pull, update libraries, start again. Built with makeUpdate (data/guides/update.ts). */
+  update: GuideStep[];
+  updateFixes: GuideFix[];
 }
 
 export interface AppGuide {
@@ -59,6 +62,8 @@ export interface AppGuide {
   chooseTitle: Bi;
   chooseHint: Bi;
   oses: OsGuide[];
+  /** Short text above the "How to update" section: why and when to update this app. */
+  updateIntro: Bi;
   usingTitle: Bi;
   using: Bi[];
   goodToKnowTitle: Bi;

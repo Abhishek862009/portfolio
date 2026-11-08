@@ -1,4 +1,5 @@
 import type { AppGuide, Bi } from './types';
+import { withUpdates } from './update';
 
 // Install guide for YT Saver (the app lives in its own repo, github.com/Abhishek862009/yt-saver).
 //
@@ -24,7 +25,7 @@ const OPEN_APP: Bi = b(
   `जब विंडो में “YT Saver is running” दिखे, तो उसी डिवाइस के ब्राउज़र में ${URL_LOCAL} खोलें। ऐप इस्तेमाल करते समय यह विंडो खुली रहने दें।`
 );
 
-export const ytSaverGuide: AppGuide = {
+export const ytSaverGuide: AppGuide = withUpdates({
   heading: b('Setup guide', 'सेटअप गाइड'),
   intro: b(
     'YT Saver runs on your own device, not on a server. Choose your device below and follow the steps. The first setup takes a while because you install a few free programs; after that, starting the app is one command.',
@@ -120,14 +121,6 @@ export const ytSaverGuide: AppGuide = {
           blocks: [{ lines: ['cd $HOME\\yt-saver', '.\\.venv\\Scripts\\python.exe app.py'] }],
           after: b('To stop the app, click the PowerShell window and press Ctrl+C.', 'ऐप बंद करने के लिए PowerShell विंडो पर क्लिक करके Ctrl+C दबाएँ।'),
         },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: b(
-            'YouTube changes often. If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):',
-            'YouTube अक्सर बदलता रहता है। अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'
-          ),
-          blocks: [{ lines: ['git pull', '.\\.venv\\Scripts\\python.exe -m pip install -U -r requirements.txt'] }],
-        },
       ],
       fixes: [
         {
@@ -212,11 +205,6 @@ export const ytSaverGuide: AppGuide = {
           title: b('Next time', 'अगली बार'),
           blocks: [{ lines: ['cd ~/yt-saver', 'python app.py'] }],
           after: b('To stop the app, press Ctrl+C in Termux (or swipe Termux away).', 'ऐप बंद करने के लिए Termux में Ctrl+C दबाएँ (या Termux को स्वाइप करके हटा दें)।'),
-        },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: b('If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):', 'अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'),
-          blocks: [{ lines: ['git pull', 'pip install -U -r requirements.txt'] }],
         },
       ],
       fixes: [
@@ -309,11 +297,6 @@ export const ytSaverGuide: AppGuide = {
           blocks: [{ lines: ['cd ~/yt-saver', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the terminal and press Ctrl+C.', 'ऐप बंद करने के लिए टर्मिनल पर क्लिक करके Ctrl+C दबाएँ।'),
         },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: b('If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):', 'अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'),
-          blocks: [{ lines: ['git pull', '.venv/bin/python -m pip install -U -r requirements.txt'] }],
-        },
       ],
       fixes: [
         {
@@ -395,11 +378,6 @@ export const ytSaverGuide: AppGuide = {
           blocks: [{ lines: ['cd ~/yt-saver', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the Terminal window and press Control+C.', 'ऐप बंद करने के लिए Terminal विंडो पर क्लिक करके Control+C दबाएँ।'),
         },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: b('If saving suddenly stops working, update the app and the downloader library (run these inside the yt-saver folder):', 'अगर सेव करना अचानक बंद हो जाए, तो ऐप और डाउनलोडर लाइब्रेरी अपडेट करें (yt-saver फ़ोल्डर के अंदर चलाएँ):'),
-          blocks: [{ lines: ['git pull', '.venv/bin/python -m pip install -U -r requirements.txt'] }],
-        },
       ],
       fixes: [
         {
@@ -423,6 +401,10 @@ export const ytSaverGuide: AppGuide = {
     },
   ],
 
+  updateIntro: b(
+    'YouTube changes often, so an old copy of the app can stop saving videos, and new versions of the app add improvements. Updating takes about a minute: it gets the newest version of the app and of its libraries. The files you already saved stay where they are.',
+    'YouTube अक्सर बदलता रहता है, इसलिए ऐप की पुरानी कॉपी वीडियो सेव करना बंद कर सकती है, और ऐप के नए वर्शन में सुधार आते रहते हैं। अपडेट में लगभग एक मिनट लगता है: यह ऐप और उसकी लाइब्रेरी का नया वर्शन ले आता है। जो फ़ाइलें आप पहले सेव कर चुके हैं, वे वहीं रहती हैं।'
+  ),
   usingTitle: b('Using the app', 'ऐप कैसे इस्तेमाल करें'),
   using: [
     b(`Open ${URL_LOCAL} in your browser.`, `अपने ब्राउज़र में ${URL_LOCAL} खोलें।`),
@@ -449,4 +431,4 @@ export const ytSaverGuide: AppGuide = {
       'ऐप ओपन सोर्स है। कोड GitHub पर अपनी अलग रिपॉज़िटरी में है: Abhishek862009/yt-saver।'
     ),
   ],
-};
+}, { folder: 'yt-saver', winPython: '.\\.venv\\Scripts\\python.exe' });

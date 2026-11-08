@@ -1,4 +1,5 @@
 import type { AppGuide, Bi } from './types';
+import { withUpdates } from './update';
 
 // Install guide for MPG to MP4 (the app lives in its own repo, github.com/Abhishek862009/mpg-to-mp4).
 //
@@ -24,10 +25,9 @@ const OPEN_APP: Bi = b(
 const WAIT: Bi = b('This downloads the library the app needs. Wait until the prompt comes back.', 'यह ऐप की ज़रूरी लाइब्रेरी डाउनलोड करता है। प्रॉम्प्ट वापस आने तक रुकें।');
 const PORT_TEXT: Bi = b('Start it on another port, then open that port in the browser (here 5001):', 'इसे दूसरे port पर चालू करें और ब्राउज़र में वही port खोलें (यहाँ 5001):');
 const PORT_PROBLEM: Bi = b('The app says port 5000 is already in use', 'ऐप कहता है कि port 5000 पहले से इस्तेमाल में है');
-const UPDATE_TEXT: Bi = b('To get the latest version of the app, run these inside the mpg-to-mp4 folder:', 'ऐप का नया वर्शन पाने के लिए mpg-to-mp4 फ़ोल्डर के अंदर ये चलाएँ:');
 const NOT_RUN = (en: string, hi: string): Bi => b(en, hi);
 
-export const mpgToMp4Guide: AppGuide = {
+export const mpgToMp4Guide: AppGuide = withUpdates({
   heading: b('Setup guide', 'सेटअप गाइड'),
   intro: b(
     'MPG to MP4 runs on your own device, not on a server. Choose your device below and follow the steps. The first setup takes a few minutes because you install a few free programs; after that, starting the app is one command.',
@@ -111,11 +111,6 @@ export const mpgToMp4Guide: AppGuide = {
             { label: b('Command Prompt (CMD)', 'Command Prompt (CMD)'), lines: ['cd %USERPROFILE%\\mpg-to-mp4', '.venv\\Scripts\\python.exe app.py'] },
           ],
           after: b('To stop the app, click the window and press Ctrl+C.', 'ऐप बंद करने के लिए विंडो पर क्लिक करके Ctrl+C दबाएँ।'),
-        },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: UPDATE_TEXT,
-          blocks: [{ lines: ['git pull', '.venv\\Scripts\\python.exe -m pip install -U -r requirements.txt'] }],
         },
       ],
       fixes: [
@@ -211,11 +206,6 @@ export const mpgToMp4Guide: AppGuide = {
           blocks: [{ lines: ['cd ~/mpg-to-mp4', 'python app.py'] }],
           after: b('To stop the app, press Ctrl+C in Termux (or swipe Termux away).', 'ऐप बंद करने के लिए Termux में Ctrl+C दबाएँ (या Termux को स्वाइप करके हटा दें)।'),
         },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: UPDATE_TEXT,
-          blocks: [{ lines: ['git pull', 'pip install -U -r requirements.txt'] }],
-        },
       ],
       fixes: [
         {
@@ -297,11 +287,6 @@ export const mpgToMp4Guide: AppGuide = {
           blocks: [{ lines: ['cd ~/mpg-to-mp4', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the terminal window and press Ctrl+C.', 'ऐप बंद करने के लिए टर्मिनल विंडो पर क्लिक करके Ctrl+C दबाएँ।'),
         },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: UPDATE_TEXT,
-          blocks: [{ lines: ['git pull', '.venv/bin/python -m pip install -U -r requirements.txt'] }],
-        },
       ],
       fixes: [
         {
@@ -382,11 +367,6 @@ export const mpgToMp4Guide: AppGuide = {
           blocks: [{ lines: ['cd ~/mpg-to-mp4', '.venv/bin/python app.py'] }],
           after: b('To stop the app, click the Terminal window and press Control+C.', 'ऐप बंद करने के लिए Terminal विंडो पर क्लिक करके Control+C दबाएँ।'),
         },
-        {
-          title: b('Keep it updated', 'इसे अपडेट रखें'),
-          text: UPDATE_TEXT,
-          blocks: [{ lines: ['git pull', '.venv/bin/python -m pip install -U -r requirements.txt'] }],
-        },
       ],
       fixes: [
         {
@@ -423,6 +403,10 @@ export const mpgToMp4Guide: AppGuide = {
     },
   ],
 
+  updateIntro: b(
+    'A newer version of the app can fix problems or add improvements. Updating takes about a minute: it gets the newest version of the app and of its library. The videos you already converted stay where they are.',
+    'ऐप का नया वर्शन समस्याएँ ठीक कर सकता है या सुधार ला सकता है। अपडेट में लगभग एक मिनट लगता है: यह ऐप और उसकी लाइब्रेरी का नया वर्शन ले आता है। जो वीडियो आप पहले कन्वर्ट कर चुके हैं, वे वहीं रहते हैं।'
+  ),
   usingTitle: b('Using the app', 'ऐप कैसे इस्तेमाल करें'),
   using: [
     b(`Open ${URL_LOCAL} in your browser.`, `अपने ब्राउज़र में ${URL_LOCAL} खोलें।`),
@@ -449,4 +433,4 @@ export const mpgToMp4Guide: AppGuide = {
       'ऐप ओपन सोर्स है। कोड GitHub पर अपनी अलग रिपॉज़िटरी में है: Abhishek862009/mpg-to-mp4।'
     ),
   ],
-};
+}, { folder: 'mpg-to-mp4', winPython: '.venv\\Scripts\\python.exe', windowsCmd: true });
