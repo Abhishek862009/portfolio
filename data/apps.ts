@@ -29,6 +29,7 @@
 // Pages, sitemap and SEO schema all update from this list.
 
 import { ytSaverGuide } from '@/data/guides/yt-saver';
+import { mpgToMp4Guide } from '@/data/guides/mpg-to-mp4';
 import type { AppGuide } from '@/data/guides/types';
 
 export const SITE_URL = 'https://www.arvish.xyz';
@@ -246,6 +247,51 @@ export const apps: AppEntry[] = [
       },
     },
     keywords: [],
+  },
+  {
+    // A program the visitor runs on their own device. Browsers cannot convert MPG reliably, so the
+    // app uses ffmpeg locally. Code is in its own repo, Abhishek862009/mpg-to-mp4; people get it
+    // with `git clone` (see data/guides/mpg-to-mp4.ts).
+    slug: 'mpg-to-mp4',
+    name: 'MPG to MP4',
+    tagline: 'Convert an MPG video to MP4. Runs on your own device.',
+    description:
+      'MPG to MP4 is a small app that runs on your own computer or phone. Choose an .mpg or .mpeg video, press convert, and download the MP4. It runs in a terminal on Windows (PowerShell or CMD), Android (Termux), Linux and Mac, and this page walks you through the setup step by step.',
+    platform: 'Terminal',
+    fileType: 'Terminal app',
+    repoUrl: 'https://github.com/Abhishek862009/mpg-to-mp4.git',
+    sourceUrl: 'https://github.com/Abhishek862009/mpg-to-mp4',
+    guide: mpgToMp4Guide,
+    icon: 'video',
+    category: 'MultimediaApplication',
+    alternateNames: ['MPG to MP4 converter', 'MPEG to MP4', 'mpg mp4 converter'],
+    seoTitle: 'MPG to MP4 Converter App by Abhishek (Arvish)',
+    seoDescription:
+      'Free MPG to MP4 converter by Abhishek (Arvish) that runs on your own device. Setup guide for Windows PowerShell and CMD, Android Termux, Linux and Mac.',
+    howItWorks: [
+      'Set it up once on your device with the guide below.',
+      'Choose your .mpg or .mpeg file and press \"Convert to MP4\".',
+      'Press \"Download MP4\". The file is saved to your Downloads folder.',
+    ],
+    notice: {
+      title: 'Your videos stay on your device',
+      body: 'The conversion runs on your own computer or phone with ffmpeg. Your videos are never uploaded to arvish.xyz or any other server.',
+    },
+    hi: {
+      tagline: 'MPG वीडियो को MP4 में बदलें। आपके अपने डिवाइस पर चलता है।',
+      description:
+        'MPG to MP4 एक छोटा ऐप है जो आपके अपने कंप्यूटर या फ़ोन पर चलता है। .mpg या .mpeg वीडियो चुनें, convert दबाएँ, और MP4 डाउनलोड करें। यह Windows (PowerShell या CMD), Android (Termux), Linux और Mac पर टर्मिनल में चलता है, और यह पेज सेटअप स्टेप-बाय-स्टेप समझाता है।',
+      howItWorks: [
+        'नीचे की गाइड से इसे अपने डिवाइस पर एक बार सेटअप करें।',
+        'अपनी .mpg या .mpeg फ़ाइल चुनें और “Convert to MP4” दबाएँ।',
+        '“Download MP4” दबाएँ। फ़ाइल आपके Downloads फ़ोल्डर में सेव हो जाती है।',
+      ],
+      notice: {
+        title: 'आपके वीडियो आपके डिवाइस पर ही रहते हैं',
+        body: 'कन्वर्ज़न आपके अपने कंप्यूटर या फ़ोन पर ffmpeg से होता है। आपके वीडियो arvish.xyz या किसी और सर्वर पर कभी अपलोड नहीं होते।',
+      },
+    },
+    keywords: ['MPG to MP4', 'MPG to MP4 converter', 'MPEG to MP4', 'Abhishek MPG to MP4', 'Arvish MPG to MP4'],
   },
 ];
 
