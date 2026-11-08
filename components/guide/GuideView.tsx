@@ -127,7 +127,7 @@ function FixList({ fixes }: { fixes: GuideFix[] }) {
 function UpdateBlock({ intro, steps, fixes }: { intro: Bi; steps: GuideStep[]; fixes: GuideFix[] }) {
   return (
     <details className="mt-10 border-t border-hairline pt-6">
-      <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-glow/40 bg-glow/10 px-5 py-2.5 text-sm font-medium text-frost transition-colors hover:border-glow/60 hover:bg-glow/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow">
+      <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-glow/40 bg-glow/10 px-5 py-3 text-sm font-medium text-frost transition-colors hover:border-glow/60 hover:bg-glow/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow">
         <RefreshCw className="h-4 w-4" aria-hidden="true" />
         <T en="How to update" hi="अपडेट कैसे करें" />
       </summary>
