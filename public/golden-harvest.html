@@ -4,10 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Golden Harvest Exports — Sample Site by Bidevlink</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* Fonts are served from this site (public/fonts, SIL Open Font License), not from Google,
+     so opening this page does not send the visitor's IP address to a third party. */
+  @font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/fraunces-latin-wght-normal.woff2') format('woff2-variations');
+  }
+  @font-face {
+    font-family: 'Karla';
+    font-style: normal;
+    font-weight: 200 800;
+    font-display: swap;
+    src: url('/fonts/karla-latin-wght-normal.woff2') format('woff2-variations');
+  }
   :root {
     --bg: #F3EDE1;
     --ink: #2B2116;
@@ -83,6 +96,8 @@
   input, textarea { padding: 11px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--card); color: var(--ink); font: inherit; font-size: 14.5px; }
   button { background: var(--leaf); color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 600; font-size: 14.5px; cursor: pointer; }
 
+  .demo-note { color: var(--ink-soft); font-size: 13px; margin: 10px 0 0; }
+
   footer { border-top: 1px solid var(--line); padding-top: 22px; color: var(--ink-soft); font-size: 13px; }
 </style>
 </head>
@@ -135,6 +150,7 @@
       <textarea rows="3" placeholder="What are you looking to order?"></textarea>
       <button type="submit">Send Inquiry</button>
     </form>
+    <p class="demo-note">Demo form: nothing you type here is sent or saved anywhere.</p>
   </section>
 
   <footer>

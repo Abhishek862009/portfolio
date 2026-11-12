@@ -55,6 +55,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.6,
     },
+    {
+      url: 'https://www.arvish.xyz/privacy',
+      lastModified: new Date('2026-11-12'),
+      changeFrequency: 'yearly',
+      priority: 0.2,
+    },
     ...posts.map((post) => ({
       url: `https://www.arvish.xyz/blog/${post.slug}`,
       lastModified: new Date(post.date),
