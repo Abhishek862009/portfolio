@@ -52,16 +52,25 @@ export default function PrivacyPage() {
       <Section title="What I collect, and why">
         <p>I collect personal data in one place: the contact form (the “Contact me” form on the home page).</p>
         <ul className="list-disc space-y-1 pl-6">
-          <li>Your name</li>
-          <li>Your email address</li>
-          <li>Your mobile number</li>
-          <li>The message you write</li>
+          <li>
+            <strong className="text-frost">Your name:</strong> so I know who I am replying to.
+          </li>
+          <li>
+            <strong className="text-frost">Your email address:</strong> to send you my written reply.
+          </li>
+          <li>
+            <strong className="text-frost">Your mobile number:</strong> so I can call or message you (including on
+            WhatsApp) to discuss your enquiry, which is often quicker than email for a website or project.
+            It is asked for only for this reason.
+          </li>
+          <li>
+            <strong className="text-frost">The message you write:</strong> to understand what you need.
+          </li>
         </ul>
         <p>
-          <strong className="text-frost">Purpose:</strong> to read your message and reply to it, and, if you
-          are asking about a website or a project, to discuss it with you by email or phone. Nothing
-          else. I do not use it for marketing lists, I do not sell it, and I do not share it for
-          advertising.
+          <strong className="text-frost">Purpose:</strong> to read your message and contact you about it by email or
+          phone. Nothing else. I do not use it for marketing lists, I do not sell it, and I do not share
+          it for advertising.
         </p>
         <p>
           The form asks for your consent before it sends anything. If you email me directly instead

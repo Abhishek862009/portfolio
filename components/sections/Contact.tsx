@@ -90,8 +90,8 @@ export function Contact() {
 
         <p className="text-sm leading-relaxed text-slate">
           <T
-            en="Your name, email, mobile number and message are used only to reply to you. They are delivered through the form service Formspree to my email. "
-            hi="आपका नाम, ईमेल, मोबाइल नंबर और संदेश सिर्फ़ आपको जवाब देने के लिए इस्तेमाल होते हैं। ये फ़ॉर्म सेवा Formspree के ज़रिए मेरे ईमेल तक पहुँचते हैं। "
+            en="Your name, email, mobile number and message are used only to contact you about your enquiry, by email or phone (the mobile number is so I can call or message you). They are delivered through the form service Formspree to my email. "
+            hi="आपका नाम, ईमेल, मोबाइल नंबर और संदेश सिर्फ़ आपकी पूछताछ पर ईमेल या फ़ोन से संपर्क करने के लिए इस्तेमाल होते हैं (मोबाइल नंबर इसलिए कि मैं आपको कॉल या मैसेज कर सकूँ)। ये फ़ॉर्म सेवा Formspree के ज़रिए मेरे ईमेल तक पहुँचते हैं। "
           />
           <Link href={PRIVACY_PATH} className="text-glow underline underline-offset-4">
             <T en="Read the Privacy Notice" hi="गोपनीयता सूचना पढ़ें" />
