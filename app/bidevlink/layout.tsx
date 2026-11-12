@@ -182,6 +182,7 @@ export default function BidevlinkLayout({ children }: { children: React.ReactNod
             <Link href="/bidevlink/process">How it works</Link>
             <Link href="/bidevlink/about">About Us</Link>
             <a href="/#contact">Contact Us</a>
+            <Link href="/privacy">Privacy</Link>
             <a href="https://www.instagram.com/bidevlink" target="_blank" rel="noopener noreferrer">Instagram</a>
             <a href="mailto:abhishek.studio.dev@gmail.com">Email</a>
           </nav>
