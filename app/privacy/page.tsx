@@ -50,7 +50,10 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="What I collect, and why">
-        <p>I collect personal data in one place: the contact form (the “Contact me” form on the home page).</p>
+        <p>
+          I collect personal data in two places: the “Contact me” form on the home page, and the enquiry form on the
+          Bidevlink Contact Us page (arvish.xyz/bidevlink/contact).
+        </p>
         <ul className="list-disc space-y-1 pl-6">
           <li>
             <strong className="text-frost">Your name:</strong> so I know who I am replying to.
@@ -68,12 +71,17 @@ export default function PrivacyPage() {
           </li>
         </ul>
         <p>
+          The Bidevlink enquiry form asks for the same details, with a WhatsApp number or an email (at least
+          one), and optionally your business name and which service you need. I use the WhatsApp number to
+          message you about your enquiry, and for nothing else.
+        </p>
+        <p>
           <strong className="text-frost">Purpose:</strong> to read your message and contact you about it by email or
           phone. Nothing else. I do not use it for marketing lists, I do not sell it, and I do not share
           it for advertising.
         </p>
         <p>
-          The form asks for your consent before it sends anything. If you email me directly instead
+          The forms ask for your consent before they send anything. If you email me directly instead
           (for example from the Bidevlink pages), I get your email address and whatever you write, and
           I use it for the same purpose only.
         </p>
@@ -85,6 +93,11 @@ export default function PrivacyPage() {
             <strong className="text-frost">Formspree</strong> (formspree.io) is the external service that receives
             what you type in the form and forwards it to my email inbox. It may process data on servers
             outside India.
+          </li>
+          <li>
+            <strong className="text-frost">Supabase</strong> (supabase.com) is the database service where Bidevlink
+            enquiries are stored, so I can find and reply to them. It may process data on servers outside
+            India.
           </li>
           <li>
             <strong className="text-frost">My email provider</strong> stores the message once it reaches my inbox.
@@ -133,7 +146,7 @@ export default function PrivacyPage() {
 
       <Section title="Children">
         <p>
-          The contact form is for people aged 18 or over, and asks you to confirm that. If you are under
+          The contact forms are for people aged 18 or over, and ask you to confirm that. If you are under
           18, please ask a parent or guardian to contact me instead. If I learn that I hold a
           child&apos;s details without a parent&apos;s consent, I will delete them.
         </p>

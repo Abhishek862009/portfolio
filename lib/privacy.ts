@@ -6,7 +6,7 @@
 // service that receives the data), bump NOTICE_VERSION. The contact form sends it along
 // with every submission, which gives a record of what each person agreed to.
 
-export const NOTICE_VERSION = '2026-11-12';
+export const NOTICE_VERSION = '2026-11-14';
 
 /** The one address for privacy questions, rights requests, withdrawing consent and complaints. */
 export const PRIVACY_EMAIL = 'abhishek.studio.dev@gmail.com';

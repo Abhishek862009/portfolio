@@ -172,6 +172,17 @@ const styles = `
 .bidevlink-page .field .err { color: #F2A092; font-size: 13.5px; margin-top: 7px; }
 .bidevlink-page .contact-form .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 560px) { .bidevlink-page .contact-form .two { grid-template-columns: 1fr; } }
+.bidevlink-page .field.consent { display: grid; gap: 4px; }
+.bidevlink-page .field.consent .hint { margin: 0 0 8px; line-height: 1.5; }
+.bidevlink-page .field label.check {
+  display: flex; align-items: flex-start; gap: 12px; min-height: 44px; padding: 6px 0;
+  font-weight: 400; font-size: 14.5px; color: var(--d-ink-soft); cursor: pointer; margin: 0;
+}
+.bidevlink-page .field label.check input {
+  width: 22px; height: 22px; min-height: 0; padding: 0; margin: 1px 0 0; flex-shrink: 0;
+  accent-color: var(--d-brass); cursor: pointer;
+}
+.bidevlink-page .field.invalid label.check input { outline: 2px solid #E0705F; outline-offset: 1px; }
 .bidevlink-page .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .bidevlink-page .contact-form .hint { color: var(--d-ink-soft); font-size: 13px; }
 .bidevlink-page button.cta { border: 0; cursor: pointer; font-family: inherit; min-height: 48px; }

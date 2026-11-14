@@ -12,9 +12,10 @@ import {
   SUPABASE_URL,
   type Need,
 } from '@/lib/bidevlink-contact';
+import { NOTICE_VERSION, PRIVACY_EMAIL, PRIVACY_PATH } from '@/lib/privacy';
 
 type Status = 'idle' | 'sending' | 'done' | 'error';
-type Errors = Partial<Record<'name' | 'reach' | 'need', string>>;
+type Errors = Partial<Record<'name' | 'reach' | 'need' | 'consent', string>>;
 
 type Payload = {
   name: string;
@@ -24,6 +25,10 @@ type Payload = {
   need: Need;
   message: string | null;
   src: string | null;
+  // Consent record (DPDP): both must be true, and the notice version the visitor saw.
+  age_18_plus: boolean;
+  consent: boolean;
+  notice_version: string;
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,8 +61,13 @@ async function saveLead(p: Payload): Promise<boolean> {
 // Instant notification: Formspree emails the enquiry to the owner.
 async function emailLead(p: Payload): Promise<boolean> {
   const needLabel = NEEDS.find((n) => n.value === p.need)?.label ?? p.need;
-  const body: Record<string, string> = { _subject: `Bidevlink enquiry: ${needLabel}` };
-  for (const [k, v] of Object.entries(p)) {
+  const { age_18_plus: _age, consent: _consent, ...rest } = p;
+  const body: Record<string, string> = {
+    _subject: `Bidevlink enquiry: ${needLabel}`,
+    age_18_plus: 'Yes',
+    consent: 'Agreed to the Privacy Notice',
+  };
+  for (const [k, v] of Object.entries(rest)) {
     if (v) body[k] = String(v);
   }
   const res = await postWithTimeout(FORMSPREE_URL, {
@@ -123,11 +133,24 @@ export function ContactForm() {
       next.reach = 'That email address does not look right. Please check it.';
     }
     if (!need) next.need = 'Please choose what you need.';
+    const ageOk = fd.get('age_18_plus') === 'Yes';
+    const consentOk = fd.get('consent') === 'Agreed to the Privacy Notice';
+    if (!ageOk || !consentOk) next.consent = 'Please tick both boxes so we can reply to you.';
 
     setErrors(next);
     setFormError('');
     if (Object.keys(next).length > 0) {
-      const first = next.name ? 'name' : next.reach ? (whatsapp || !email ? 'whatsapp' : 'email') : 'need';
+      const first = next.name
+        ? 'name'
+        : next.reach
+          ? whatsapp || !email
+            ? 'whatsapp'
+            : 'email'
+          : next.need
+            ? 'need'
+            : ageOk
+              ? 'consent'
+              : 'age_18_plus';
       (e.currentTarget.elements.namedItem(first) as HTMLElement | null)?.focus();
       return;
     }
@@ -146,6 +169,9 @@ export function ContactForm() {
       need: need as Need,
       message: get('message').slice(0, 1000) || null,
       src,
+      age_18_plus: true,
+      consent: true,
+      notice_version: NOTICE_VERSION,
     };
 
     setStatus('sending');
@@ -284,6 +310,50 @@ export function ContactForm() {
         />
       </div>
 
+      <div className={`field consent${errors.consent ? ' invalid' : ''}`}>
+        <p className="hint" style={{ marginTop: 0 }}>
+          Your name, business name, WhatsApp number, email and message are used only to reply to your
+          enquiry, by WhatsApp, email or phone. They are stored in our database (Supabase) and sent to
+          our email through the form service Formspree.{' '}
+          <Link href={PRIVACY_PATH} className="textlink">
+            Read the Privacy Notice
+          </Link>
+          . You can withdraw consent, or ask us to correct or delete your data, any time at{' '}
+          <a href={`mailto:${PRIVACY_EMAIL}`} className="textlink">
+            {PRIVACY_EMAIL}
+          </a>
+          .
+        </p>
+        <label className="check">
+          <input
+            type="checkbox"
+            name="age_18_plus"
+            value="Yes"
+            aria-invalid={!!errors.consent}
+            aria-describedby={errors.consent ? 'cf-consent-err' : undefined}
+          />
+          <span>I am 18 years of age or older.</span>
+        </label>
+        <label className="check">
+          <input
+            type="checkbox"
+            name="consent"
+            value="Agreed to the Privacy Notice"
+            aria-invalid={!!errors.consent}
+            aria-describedby={errors.consent ? 'cf-consent-err' : undefined}
+          />
+          <span>
+            I agree that my details may be used to reply to my enquiry, as described in the Privacy
+            Notice.
+          </span>
+        </label>
+        {errors.consent && (
+          <div className="err" id="cf-consent-err">
+            {errors.consent}
+          </div>
+        )}
+      </div>
+
       {/* Trap field for bots. Hidden from people and screen readers. */}
       <div className="hp" aria-hidden="true">
         <label htmlFor="cf-hp">Leave this field empty</label>
@@ -312,9 +382,6 @@ export function ContactForm() {
       <button type="submit" className="cta submit" disabled={sending}>
         {sending ? 'Sending…' : 'Send enquiry'}
       </button>
-      <p className="hint" style={{ margin: 0 }}>
-        We use your details only to reply to this enquiry.
-      </p>
     </form>
   );
 }
