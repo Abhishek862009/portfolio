@@ -46,7 +46,7 @@ export default function ProcessPage() {
         <div className="band">
           <h2>Start with step one</h2>
           <p>Contact us and we&apos;ll get going.</p>
-          <a className="cta" href="/#contact">Contact Us</a>
+          <Link className="cta" href="/bidevlink/contact">Contact Us</Link>
           <Link className="cta ghost" href="/bidevlink/services">See services</Link>
         </div>
       </section>

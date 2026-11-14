@@ -143,6 +143,47 @@ const styles = `
 .bidevlink-page .faq summary { cursor: pointer; font-weight: 600; }
 .bidevlink-page .faq p { color: var(--d-ink-soft); font-size: 14.5px; margin: 10px 0 0; }
 
+.bidevlink-page .textlink { color: var(--d-brass); text-decoration: none; }
+.bidevlink-page .textlink:hover { text-decoration: underline; }
+
+/* Contact page */
+.bidevlink-page .contact-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .bidevlink-page .contact-grid { grid-template-columns: 1fr; } }
+.bidevlink-page .contact-side { display: grid; gap: 18px; }
+.bidevlink-page .contact-form { display: grid; gap: 20px; }
+.bidevlink-page .field label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 7px; }
+.bidevlink-page .field .opt { color: var(--d-ink-soft); font-weight: 400; }
+.bidevlink-page .field input,
+.bidevlink-page .field select,
+.bidevlink-page .field textarea {
+  width: 100%; box-sizing: border-box; min-height: 46px; padding: 11px 13px;
+  background: #0B2031; color: var(--d-ink); border: 1px solid var(--d-line); border-radius: 4px;
+  font: inherit; font-size: 16px; color-scheme: dark;
+}
+.bidevlink-page .field textarea { min-height: 112px; resize: vertical; }
+.bidevlink-page .field input::placeholder,
+.bidevlink-page .field textarea::placeholder { color: #6F8795; }
+.bidevlink-page .field input:focus,
+.bidevlink-page .field select:focus,
+.bidevlink-page .field textarea:focus { outline: 2px solid var(--d-brass); outline-offset: 1px; border-color: var(--d-brass); }
+.bidevlink-page .field.invalid input,
+.bidevlink-page .field.invalid select { border-color: #E0705F; }
+.bidevlink-page .field .hint { color: var(--d-ink-soft); font-size: 13px; margin-top: 7px; }
+.bidevlink-page .field .err { color: #F2A092; font-size: 13.5px; margin-top: 7px; }
+.bidevlink-page .contact-form .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .bidevlink-page .contact-form .two { grid-template-columns: 1fr; } }
+.bidevlink-page .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.bidevlink-page .contact-form .hint { color: var(--d-ink-soft); font-size: 13px; }
+.bidevlink-page button.cta { border: 0; cursor: pointer; font-family: inherit; min-height: 48px; }
+.bidevlink-page button.cta.submit { margin-top: 0; width: 100%; }
+.bidevlink-page button.cta:disabled { opacity: .65; cursor: wait; }
+.bidevlink-page .form-msg {
+  border: 1px solid #E0705F; border-radius: 4px; padding: 12px 14px; font-size: 14.5px; color: var(--d-ink);
+}
+.bidevlink-page .form-done { border-top: 3px solid var(--d-brass); }
+.bidevlink-page .form-done:focus { outline: none; }
+.bidevlink-page .form-done p { margin-top: 8px; }
+
 .bidevlink-page .site-footer {
   border-top: 1px solid var(--d-line); padding-top: 24px; color: var(--d-ink-soft);
   font-size: 13.5px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
@@ -167,9 +208,7 @@ export default function BidevlinkLayout({ children }: { children: React.ReactNod
             <Link href="/bidevlink/services">Services</Link>
             <Link href="/bidevlink/process">How it works</Link>
             <Link href="/bidevlink/about">About Us</Link>
-            {/* Contact Us takes visitors to the main site's contact section,
-                where the Contact me button lives. */}
-            <a href="/#contact" className="nav-cta">Contact Us</a>
+            <Link href="/bidevlink/contact" className="nav-cta">Contact Us</Link>
           </nav>
         </header>
 
@@ -181,7 +220,7 @@ export default function BidevlinkLayout({ children }: { children: React.ReactNod
             <Link href="/bidevlink/services">Services</Link>
             <Link href="/bidevlink/process">How it works</Link>
             <Link href="/bidevlink/about">About Us</Link>
-            <a href="/#contact">Contact Us</a>
+            <Link href="/bidevlink/contact">Contact Us</Link>
             <Link href="/privacy">Privacy</Link>
             <a href="https://www.instagram.com/bidevlink" target="_blank" rel="noopener noreferrer">Instagram</a>
             <a href="mailto:abhishek.studio.dev@gmail.com">Email</a>

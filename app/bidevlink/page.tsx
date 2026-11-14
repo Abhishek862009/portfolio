@@ -15,7 +15,7 @@ export default function BidevlinkHome() {
           A clean, working website — built or refreshed in 48 hours — so overseas buyers trust you
           before the first call.
         </p>
-        <a className="cta" href="/#contact">Contact Us</a>
+        <Link className="cta" href="/bidevlink/contact">Contact Us</Link>
         <Link className="cta ghost" href="/bidevlink/services">See services</Link>
       </section>
 
@@ -74,7 +74,7 @@ export default function BidevlinkHome() {
         <div className="band">
           <h2>Ready to get started?</h2>
           <p>Tell us about your business and we&apos;ll take it from there.</p>
-          <a className="cta" href="/#contact">Contact Us</a>
+          <Link className="cta" href="/bidevlink/contact">Contact Us</Link>
         </div>
       </section>
     </>

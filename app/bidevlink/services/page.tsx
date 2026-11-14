@@ -87,7 +87,7 @@ export default function ServicesPage() {
         <div className="band">
           <h2>Want to discuss your requirement?</h2>
           <p>Reach out and tell us what you need.</p>
-          <a className="cta" href="/#contact">Contact Us</a>
+          <Link className="cta" href="/bidevlink/contact">Contact Us</Link>
           <Link className="cta ghost" href="/bidevlink/process">How it works</Link>
         </div>
       </section>

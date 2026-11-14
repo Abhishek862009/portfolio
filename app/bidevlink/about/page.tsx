@@ -94,7 +94,7 @@ export default function AboutPage() {
         <div className="band">
           <h2>Let&apos;s talk about your business</h2>
           <p>Tell us what you export or make, and we will suggest the right website for it.</p>
-          <a className="cta" href="/#contact">Contact Us</a>
+          <Link className="cta" href="/bidevlink/contact">Contact Us</Link>
           <Link className="cta ghost" href="/bidevlink/services">See services</Link>
         </div>
       </section>
