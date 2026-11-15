@@ -9,6 +9,6 @@
 export const NOTICE_VERSION = '2026-11-14';
 
 /** The one address for privacy questions, rights requests, withdrawing consent and complaints. */
-export const PRIVACY_EMAIL = 'abhishek.studio.dev@gmail.com';
+export const PRIVACY_EMAIL = 'bidevlink@arvish.xyz';
 
 export const PRIVACY_PATH = '/privacy';

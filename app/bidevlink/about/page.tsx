@@ -73,8 +73,6 @@ export default function AboutPage() {
             <h3>Email</h3>
             <p>
               <a href="mailto:bidevlink@arvish.xyz">bidevlink@arvish.xyz</a>
-              <br />
-              <a href="mailto:arvish2287@gmail.com">arvish2287@gmail.com</a>
             </p>
           </div>
           <div className="card">
