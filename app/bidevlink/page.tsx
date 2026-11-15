@@ -12,7 +12,7 @@ export default function BidevlinkHome() {
         <div className="kicker">Websites for Indian exporters &amp; manufacturers</div>
         <h1>Look ready for the next international buyer.</h1>
         <p className="lead">
-          A clean, working website — built or refreshed in 48 hours — so overseas buyers trust you
+          A clean, working website, built or refreshed for you, so overseas buyers trust you
           before the first call.
         </p>
         <Link className="cta" href="/bidevlink/contact">Contact Us</Link>
@@ -49,7 +49,7 @@ export default function BidevlinkHome() {
               <li>Product showcase with images</li>
               <li>Certifications &amp; company details</li>
               <li>Direct buyer enquiry option</li>
-              <li>Delivered in 48 hours</li>
+              <li>Your own domain, ready to share</li>
             </ul>
           </div>
           <div className="card care">

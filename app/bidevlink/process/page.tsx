@@ -29,7 +29,7 @@ export default function ProcessPage() {
             <div className="num">2</div>
             <div>
               <div className="t">We build or refresh it</div>
-              <div className="d">New sites are delivered within 48 hours; care-plan updates go out within a day.</div>
+              <div className="d">We build the new site, or refresh your existing one, and share it with you to review.</div>
             </div>
           </div>
           <div className="step">

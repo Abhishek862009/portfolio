@@ -23,7 +23,7 @@ export default function ServicesPage() {
         <div className="grid2">
           <div className="card build">
             <h3>New Website</h3>
-            <div className="tag">delivered in 48 hours</div>
+            <div className="tag">for exporters without a website</div>
             <p style={{ marginTop: 10 }}>
               A clean, professional site for exporters and manufacturers who don&apos;t have one yet.
             </p>

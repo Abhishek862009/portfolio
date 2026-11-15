@@ -15,22 +15,22 @@ const ibmPlexSans = IBM_Plex_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Bidevlink — Websites for Indian Exporters, Built in 48 Hours',
+    default: 'Bidevlink — Websites for Indian Exporters',
     template: '%s | Bidevlink',
   },
   description:
-    'Bidevlink builds simple, professional websites for Indian exporters and manufacturers — a new site in 48 hours, or a care plan to refresh an outdated one. Built to help overseas buyers trust you before the first call.',
+    'Bidevlink builds simple, professional websites for Indian exporters and manufacturers — a new site for exporters without one, or a care plan to refresh an outdated one. Built to help overseas buyers trust you before the first call.',
   keywords: [
     'website for exporters',
     'website for manufacturers India',
     'export company website',
     'website design India',
-    'small business website 48 hours',
+    'small business website',
     'website update service',
   ],
   openGraph: {
     type: 'website',
-    title: 'Bidevlink — Websites for Indian Exporters, Built in 48 Hours',
+    title: 'Bidevlink — Websites for Indian Exporters',
     description:
       'A new website or a refreshed one, built for Indian exporters and manufacturers so international buyers trust you faster.',
     url: '/bidevlink',
@@ -48,7 +48,7 @@ const jsonLd = {
   '@type': 'ProfessionalService',
   name: 'Bidevlink',
   description:
-    'Websites for Indian exporters and manufacturers — new sites built in 48 hours, or a care plan for an existing site.',
+    'Websites for Indian exporters and manufacturers — new sites for exporters without one, or a care plan for an existing site.',
   areaServed: 'IN',
   email: 'bidevlink@arvish.xyz',
   founder: { '@type': 'Person', name: 'Abhishek', alternateName: 'Arvish' },

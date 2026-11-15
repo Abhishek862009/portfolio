@@ -43,8 +43,8 @@ export default function AboutPage() {
             <p>No confusing tech talk. You share your business details and we handle the rest.</p>
           </div>
           <div className="card">
-            <h3>Fast</h3>
-            <p>New websites are delivered in 48 hours, so you are not waiting weeks to look ready.</p>
+            <h3>Simple</h3>
+            <p>No jargon and no long process. You share your details, we build, and you review.</p>
           </div>
           <div className="card">
             <h3>Buyer-focused</h3>
