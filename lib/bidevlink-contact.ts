@@ -12,7 +12,7 @@ export const SUPABASE_URL = 'https://boeazndaegvsfxcwvuft.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_HGuMelkNJurlnemKNu5vPA_VabNQNFe';
 export const FORMSPREE_URL = 'https://formspree.io/f/xyezyqlw';
 
-export const CONTACT_EMAIL = 'abhishek.studio.dev@gmail.com';
+export const CONTACT_EMAIL = 'bidevlink@arvish.xyz';
 export const INSTAGRAM_URL = 'https://www.instagram.com/bidevlink';
 
 // `value` must match the CHECK constraint contact_leads_need_vals in the database.

@@ -12,7 +12,7 @@ import {
   SUPABASE_URL,
   type Need,
 } from '@/lib/bidevlink-contact';
-import { NOTICE_VERSION, PRIVACY_EMAIL, PRIVACY_PATH } from '@/lib/privacy';
+import { NOTICE_VERSION, PRIVACY_PATH } from '@/lib/privacy';
 
 type Status = 'idle' | 'sending' | 'done' | 'error';
 type Errors = Partial<Record<'name' | 'reach' | 'need' | 'consent', string>>;
@@ -319,8 +319,8 @@ export function ContactForm() {
             Read the Privacy Notice
           </Link>
           . You can withdraw consent, or ask us to correct or delete your data, any time at{' '}
-          <a href={`mailto:${PRIVACY_EMAIL}`} className="textlink">
-            {PRIVACY_EMAIL}
+          <a href={`mailto:${CONTACT_EMAIL}`} className="textlink">
+            {CONTACT_EMAIL}
           </a>
           .
         </p>

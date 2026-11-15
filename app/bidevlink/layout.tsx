@@ -50,7 +50,7 @@ const jsonLd = {
   description:
     'Websites for Indian exporters and manufacturers — new sites built in 48 hours, or a care plan for an existing site.',
   areaServed: 'IN',
-  email: 'abhishek.studio.dev@gmail.com',
+  email: 'bidevlink@arvish.xyz',
   founder: { '@type': 'Person', name: 'Abhishek', alternateName: 'Arvish' },
   sameAs: ['https://www.instagram.com/bidevlink'],
 };
@@ -234,7 +234,7 @@ export default function BidevlinkLayout({ children }: { children: React.ReactNod
             <Link href="/bidevlink/contact">Contact Us</Link>
             <Link href="/privacy">Privacy</Link>
             <a href="https://www.instagram.com/bidevlink" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="mailto:abhishek.studio.dev@gmail.com">Email</a>
+            <a href="mailto:bidevlink@arvish.xyz">Email</a>
           </nav>
         </footer>
       </div>
