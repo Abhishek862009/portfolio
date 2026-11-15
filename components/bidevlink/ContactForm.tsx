@@ -306,7 +306,7 @@ export function ContactForm() {
           name="message"
           maxLength={1000}
           rows={4}
-          placeholder="What you sell, who your buyers are, your current website link. If you are nominating someone else, add their business name and contact."
+          placeholder="What you sell, who your buyers are, and your current website link if you have one."
         />
       </div>
 

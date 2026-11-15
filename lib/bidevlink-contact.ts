@@ -15,11 +15,11 @@ export const FORMSPREE_URL = 'https://formspree.io/f/xyezyqlw';
 export const CONTACT_EMAIL = 'bidevlink@arvish.xyz';
 export const INSTAGRAM_URL = 'https://www.instagram.com/bidevlink';
 
-// `value` must match the CHECK constraint contact_leads_need_vals in the database.
+// `value` must match the CHECK constraint contact_leads_need_vals in the database
+// (the DB also still allows 'free_slot', which the form no longer offers).
 export const NEEDS = [
   { value: 'new_site', label: 'A new website' },
   { value: 'refresh', label: 'A refresh for my existing website' },
-  { value: 'free_slot', label: 'The free monthly website (case study)' },
   { value: 'other', label: 'Something else / not sure yet' },
 ] as const;
 

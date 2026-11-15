@@ -27,16 +27,6 @@ export default function ContactPage() {
           <ContactForm />
 
           <aside className="contact-side">
-            <div className="card care">
-              <h3>One free website every month</h3>
-              <p>
-                Each month we build one website free for a business that shares an honest review and
-                lets us show the finished site as a case study. You only pay for your own domain
-                name. It&apos;s one slot a month, so tell us a little about your business and choose
-                &ldquo;The free monthly website&rdquo; in the form.
-              </p>
-            </div>
-
             <div className="card">
               <h3>Prefer to write directly?</h3>
               <p>
